@@ -1,0 +1,1831 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Karan — High School Entrepreneur from Frisco, TX. Building ventures from 500K-user apps to biodegradable coffee pods.">
+  <title>Karan — Entrepreneur & Builder</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap');
+
+:root {
+  --color-bg: #000000;
+  --color-text-primary: #ffffff;
+  --color-text-muted: rgba(255, 255, 255, 0.55);
+  --color-text-subtle: rgba(255, 255, 255, 0.35);
+  --color-accent: #f59e0b;
+  --color-accent-glow: rgba(245, 158, 11, 0.15);
+  --color-accent-glow-strong: rgba(245, 158, 11, 0.30);
+  --color-accent-dim: rgba(245, 158, 11, 0.70);
+  --color-border: rgba(255, 255, 255, 0.07);
+  --color-border-hover: rgba(245, 158, 11, 0.45);
+  --color-surface: rgba(255, 255, 255, 0.03);
+  --color-surface-hover: rgba(255, 255, 255, 0.06);
+  --color-overlay: rgba(0, 0, 0, 0.60);
+
+  --font-heading: 'Space Grotesk', sans-serif;
+  --font-body: 'Inter', sans-serif;
+
+  --fs-hero: clamp(4rem, 12vw, 10rem);
+  --fs-section-title: clamp(2.5rem, 6vw, 5rem);
+  --fs-card-title: clamp(1.1rem, 2vw, 1.4rem);
+  --fs-body: 1rem;
+  --fs-small: 0.875rem;
+  --fs-xs: 0.75rem;
+
+  --fw-regular: 400;
+  --fw-medium: 500;
+  --fw-semibold: 600;
+  --fw-bold: 700;
+
+  --ls-spaced: 0.35em;
+  --ls-wide: 0.12em;
+  --ls-normal: 0.01em;
+
+  --lh-tight: 1.05;
+  --lh-snug: 1.25;
+  --lh-normal: 1.6;
+
+  --space-xs: 0.5rem;
+  --space-sm: 1rem;
+  --space-md: 1.5rem;
+  --space-lg: 2.5rem;
+  --space-xl: 4rem;
+  --space-2xl: 6rem;
+  --space-3xl: 9rem;
+  --space-section: clamp(5rem, 10vw, 10rem);
+
+  --container-max: 1280px;
+  --container-padding: clamp(1.5rem, 5vw, 4rem);
+  --nav-height: 72px;
+  --grid-gap: 1.5rem;
+  --card-radius: 12px;
+  --btn-radius: 8px;
+
+  --shadow-card: 0 1px 3px rgba(0,0,0,0.5), 0 4px 24px rgba(0,0,0,0.3);
+  --shadow-card-hover: 0 0 0 1px rgba(245,158,11,0.45), 0 8px 40px rgba(245,158,11,0.12), 0 2px 8px rgba(0,0,0,0.6);
+  --shadow-btn: 0 0 24px rgba(245,158,11,0.25);
+  --shadow-glow-sm: 0 0 12px rgba(245,158,11,0.20);
+  --shadow-glow-lg: 0 0 48px rgba(245,158,11,0.18);
+
+  --transition-fast: 150ms ease;
+  --transition-base: 280ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-slow: 500ms cubic-bezier(0.4, 0, 0.2, 1);
+
+  --noise-opacity: 0.035;
+
+  --z-base: 0;
+  --z-card: 10;
+  --z-nav: 100;
+  --z-modal: 200;
+}
+
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes counterPop {
+  0% {
+    transform: scale(1.18);
+    color: var(--color-text-primary);
+  }
+  60% {
+    transform: scale(1.04);
+  }
+  100% {
+    transform: scale(1);
+    color: var(--color-accent);
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -200% center;
+  }
+  100% {
+    background-position: 200% center;
+  }
+}
+
+@keyframes grainShift {
+  0% { transform: translate(0, 0); }
+  10% { transform: translate(-2%, -3%); }
+  20% { transform: translate(-4%, 2%); }
+  30% { transform: translate(2%, -4%); }
+  40% { transform: translate(-2%, 5%); }
+  50% { transform: translate(-4%, 2%); }
+  60% { transform: translate(3%, 0); }
+  70% { transform: translate(0, 3%); }
+  80% { transform: translate(-3%, 0); }
+  90% { transform: translate(2%, 3%); }
+  100% { transform: translate(0, 0); }
+}
+
+@keyframes glowPulse {
+  0%, 100% {
+    box-shadow: 0 0 12px rgba(245, 158, 11, 0.20);
+  }
+  50% {
+    box-shadow: 0 0 28px rgba(245, 158, 11, 0.45);
+  }
+}
+
+@keyframes borderGlow {
+  0%, 100% {
+    border-color: rgba(245, 158, 11, 0.30);
+  }
+  50% {
+    border-color: rgba(245, 158, 11, 0.70);
+  }
+}
+
+@keyframes slideInLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-40px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.92);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes dotPing {
+  0% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  75%, 100% {
+    transform: scale(2.2);
+    opacity: 0;
+  }
+}
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+  font-size: 16px;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  background-color: var(--color-bg);
+  color: var(--color-text-primary);
+  font-family: var(--font-body);
+  font-size: var(--fs-body);
+  line-height: var(--lh-normal);
+  overflow-x: hidden;
+}
+
+img, svg {
+  display: block;
+  max-width: 100%;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+ul {
+  list-style: none;
+}
+
+button {
+  cursor: pointer;
+  border: none;
+  background: none;
+  font: inherit;
+}
+
+.reveal {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity var(--transition-slow), transform var(--transition-slow);
+}
+
+.reveal.visible {
+  opacity: 1;
+  transform: translateY(0);
+  animation: fadeUp 0.6s cubic-bezier(0.4, 0, 0.2, 1) both;
+}
+
+.nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: var(--nav-height);
+  z-index: var(--z-nav);
+  border-bottom: 1px solid transparent;
+  transition: border-color var(--transition-base), background var(--transition-base), backdrop-filter var(--transition-base);
+}
+
+.nav--sticky {
+  position: fixed;
+}
+
+.nav--scrolled {
+  background: rgba(0, 0, 0, 0.72);
+  backdrop-filter: blur(20px) saturate(1.4);
+  -webkit-backdrop-filter: blur(20px) saturate(1.4);
+  border-bottom-color: var(--color-border);
+}
+
+.nav__inner {
+  max-width: var(--container-max);
+  margin: 0 auto;
+  padding: 0 var(--container-padding);
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.nav__logo {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+}
+
+.nav__logo-text {
+  font-family: var(--font-heading);
+  font-size: 1.1rem;
+  font-weight: var(--fw-bold);
+  letter-spacing: var(--ls-wide);
+  color: var(--color-text-primary);
+  text-transform: uppercase;
+  transition: color var(--transition-fast);
+}
+
+.nav__logo-text:hover {
+  color: var(--color-accent);
+}
+
+.nav__actions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+}
+
+.nav__cta {
+  display: flex;
+  align-items: center;
+}
+
+.nav__cta--btn {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-xs);
+  padding: 10px 24px;
+  border: 1px solid var(--color-accent);
+  border-radius: var(--btn-radius);
+  color: var(--color-accent);
+  font-family: var(--font-body);
+  font-size: var(--fs-small);
+  font-weight: var(--fw-semibold);
+  letter-spacing: var(--ls-normal);
+  background: transparent;
+  transition: background var(--transition-fast), color var(--transition-fast), box-shadow var(--transition-fast);
+  cursor: pointer;
+}
+
+.nav__cta--btn:hover {
+  background: var(--color-accent);
+  color: #000000;
+  box-shadow: var(--shadow-btn);
+}
+
+.hero {
+  position: relative;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  padding-top: var(--nav-height);
+}
+
+.hero__noise {
+  position: absolute;
+  inset: -20%;
+  width: 140%;
+  height: 140%;
+  pointer-events: none;
+  z-index: 0;
+  opacity: var(--noise-opacity);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23noise)' opacity='1'/%3E%3C/svg%3E");
+  background-repeat: repeat;
+  background-size: 300px 300px;
+  animation: grainShift 8s steps(1) infinite;
+  mix-blend-mode: overlay;
+}
+
+.hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 80% 60% at 50% 0%, rgba(245, 158, 11, 0.06) 0%, transparent 65%),
+    radial-gradient(ellipse 60% 40% at 80% 100%, rgba(245, 158, 11, 0.04) 0%, transparent 60%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.hero__inner {
+  position: relative;
+  z-index: 1;
+  max-width: var(--container-max);
+  width: 100%;
+  margin: 0 auto;
+  padding: var(--space-section) var(--container-padding);
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-lg);
+}
+
+.hero__eyebrow {
+  font-family: var(--font-body);
+  font-size: var(--fs-xs);
+  font-weight: var(--fw-medium);
+  letter-spacing: 0.28em;
+  color: var(--color-accent);
+  text-transform: uppercase;
+  opacity: 0;
+  animation: fadeIn 0.8s ease 0.2s forwards;
+}
+
+.hero__title {
+  font-family: var(--font-heading);
+  font-size: clamp(60px, 10vw, 140px);
+  font-weight: var(--fw-bold);
+  letter-spacing: 0.25em;
+  line-height: var(--lh-tight);
+  color: var(--color-text-primary);
+  text-transform: uppercase;
+  opacity: 0;
+  animation: fadeUp 0.9s cubic-bezier(0.4, 0, 0.2, 1) 0.35s forwards;
+}
+
+.hero__title--spaced {
+  letter-spacing: 0.25em;
+}
+
+.hero__subtitle {
+  font-family: var(--font-body);
+  font-size: clamp(1rem, 2.2vw, 1.35rem);
+  font-weight: var(--fw-regular);
+  color: var(--color-text-muted);
+  line-height: var(--lh-normal);
+  max-width: 560px;
+  opacity: 0;
+  animation: fadeUp 0.9s cubic-bezier(0.4, 0, 0.2, 1) 0.55s forwards;
+}
+
+.hero__stats {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--space-lg);
+  width: 100%;
+  padding-top: var(--space-xl);
+  border-top: 1px solid var(--color-border);
+  opacity: 0;
+  animation: fadeUp 0.9s cubic-bezier(0.4, 0, 0.2, 1) 0.75s forwards;
+}
+
+.hero__stat {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+}
+
+.hero__stat-number {
+  font-family: var(--font-heading);
+  font-size: clamp(2rem, 4vw, 3.2rem);
+  font-weight: var(--fw-bold);
+  color: var(--color-accent);
+  line-height: 1;
+  letter-spacing: -0.02em;
+}
+
+.hero__stat-number--counter {
+  display: inline-block;
+}
+
+.hero__stat-number--counter.pop {
+  animation: counterPop 0.4s ease-out forwards;
+}
+
+.hero__stat-label {
+  font-family: var(--font-body);
+  font-size: var(--fs-small);
+  font-weight: var(--fw-regular);
+  color: var(--color-text-muted);
+  letter-spacing: var(--ls-normal);
+  line-height: var(--lh-snug);
+}
+
+.hero__scroll-hint {
+  position: absolute;
+  bottom: 2.5rem;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  opacity: 0.4;
+  animation: fadeIn 1s ease 1.2s forwards;
+  z-index: 1;
+}
+
+.hero__scroll-hint span {
+  font-size: var(--fs-xs);
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--color-text-subtle);
+  font-family: var(--font-body);
+}
+
+.hero__scroll-hint::after {
+  content: '';
+  display: block;
+  width: 1px;
+  height: 48px;
+  background: linear-gradient(to bottom, var(--color-accent), transparent);
+  animation: fadeIn 1s ease 1.5s both;
+}
+
+.ventures,
+.awards,
+.leadership,
+.experience {
+  position: relative;
+  padding: var(--space-section) 0;
+}
+
+.ventures__inner,
+.awards__inner,
+.leadership__inner,
+.experience__inner {
+  max-width: var(--container-max);
+  margin: 0 auto;
+  padding: 0 var(--container-padding);
+}
+
+.ventures__header,
+.awards__header,
+.leadership__header,
+.experience__header {
+  margin-bottom: var(--space-2xl);
+}
+
+.ventures__section-label,
+.awards__section-label,
+.leadership__section-label,
+.experience__section-label {
+  display: block;
+  font-family: var(--font-body);
+  font-size: var(--fs-xs);
+  font-weight: var(--fw-medium);
+  letter-spacing: 0.28em;
+  color: var(--color-accent);
+  text-transform: uppercase;
+  margin-bottom: var(--space-sm);
+}
+
+.ventures__title,
+.awards__title,
+.leadership__title,
+.experience__title {
+  font-family: var(--font-heading);
+  font-size: clamp(32px, 5vw, 72px);
+  font-weight: var(--fw-bold);
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--color-text-primary);
+  line-height: var(--lh-tight);
+}
+
+.ventures__title--spaced,
+.awards__title--spaced,
+.leadership__title--spaced,
+.experience__title--spaced {
+  letter-spacing: 0.18em;
+}
+
+.ventures {
+  background: linear-gradient(180deg, transparent 0%, rgba(245, 158, 11, 0.02) 50%, transparent 100%);
+}
+
+.ventures__grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--grid-gap);
+}
+
+.venture-card {
+  position: relative;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--card-radius);
+  padding: 28px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+  box-shadow: var(--shadow-card);
+  transition: border-color var(--transition-base), box-shadow var(--transition-base), transform var(--transition-base), background var(--transition-base);
+  cursor: default;
+  overflow: hidden;
+  opacity: 0;
+  transform: translateY(24px);
+  z-index: var(--z-card);
+}
+
+.venture-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: var(--card-radius);
+  background: radial-gradient(ellipse 80% 60% at 50% 0%, var(--color-accent-glow) 0%, transparent 70%);
+  opacity: 0;
+  transition: opacity var(--transition-base);
+  pointer-events: none;
+}
+
+.venture-card--visible {
+  opacity: 1;
+  transform: translateY(0);
+  animation: fadeUp 0.55s cubic-bezier(0.4, 0, 0.2, 1) both;
+}
+
+.venture-card:hover {
+  border-color: var(--color-accent);
+  box-shadow: var(--shadow-card-hover);
+  transform: translateY(-4px);
+  background: var(--color-surface-hover);
+}
+
+.venture-card:hover::before {
+  opacity: 1;
+}
+
+.venture-card__icon {
+  font-size: 2rem;
+  line-height: 1;
+  margin-bottom: var(--space-xs);
+}
+
+.venture-card__body {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  flex: 1;
+}
+
+.venture-card__title {
+  font-family: var(--font-heading);
+  font-size: var(--fs-card-title);
+  font-weight: var(--fw-semibold);
+  color: var(--color-text-primary);
+  letter-spacing: var(--ls-normal);
+  line-height: var(--lh-snug);
+}
+
+.venture-card__desc {
+  font-family: var(--font-body);
+  font-size: var(--fs-small);
+  color: var(--color-text-muted);
+  line-height: var(--lh-normal);
+}
+
+.venture-card__metric {
+  margin-top: auto;
+  padding-top: var(--space-sm);
+}
+
+.venture-card__metric-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  background: rgba(245, 158, 11, 0.12);
+  color: var(--color-accent);
+  border: 1px solid rgba(245, 158, 11, 0.20);
+  border-radius: 4px;
+  font-size: 12px;
+  font-family: var(--font-body);
+  font-weight: var(--fw-semibold);
+  letter-spacing: 0.04em;
+  padding: 3px 8px;
+}
+
+.venture-card__arrow {
+  position: absolute;
+  top: 24px;
+  right: 24px;
+  width: 18px;
+  height: 18px;
+  color: var(--color-text-subtle);
+  opacity: 0;
+  transform: translate(-4px, 4px);
+  transition: opacity var(--transition-base), transform var(--transition-base), color var(--transition-base);
+}
+
+.venture-card:hover .venture-card__arrow {
+  opacity: 1;
+  transform: translate(0, 0);
+  color: var(--color-accent);
+}
+
+.awards {
+  border-top: 1px solid var(--color-border);
+}
+
+.awards__grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0;
+}
+
+.award-item {
+  display: grid;
+  grid-template-columns: 72px 1fr auto;
+  align-items: center;
+  gap: var(--space-md);
+  padding: var(--space-md) 0;
+  border-bottom: 1px solid var(--color-border);
+  border-left: 3px solid transparent;
+  padding-left: var(--space-md);
+  margin-left: calc(-1 * var(--space-md));
+  transition: border-color var(--transition-base), background var(--transition-base), padding-left var(--transition-base);
+  opacity: 0;
+  transform: translateX(-20px);
+  cursor: default;
+}
+
+.award-item--visible {
+  opacity: 1;
+  transform: translateX(0);
+  animation: slideInLeft 0.5s cubic-bezier(0.4, 0, 0.2, 1) both;
+}
+
+.award-item:hover {
+  border-left-color: var(--color-accent);
+  background: linear-gradient(90deg, var(--color-accent-glow) 0%, transparent 60%);
+}
+
+.award-item__rank {
+  font-family: var(--font-heading);
+  font-size: 1.6rem;
+  font-weight: var(--fw-bold);
+  color: var(--color-text-subtle);
+  text-align: center;
+  line-height: 1;
+  transition: color var(--transition-base);
+}
+
+.award-item__rank--highlighted {
+  color: var(--color-accent);
+  text-shadow: var(--shadow-glow-sm);
+}
+
+.award-item:hover .award-item__rank {
+  color: var(--color-accent);
+}
+
+.award-item__body {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.award-item__title {
+  font-family: var(--font-heading);
+  font-size: 1.05rem;
+  font-weight: var(--fw-semibold);
+  color: var(--color-text-primary);
+  letter-spacing: var(--ls-normal);
+  line-height: var(--lh-snug);
+}
+
+.award-item__org {
+  font-family: var(--font-body);
+  font-size: var(--fs-small);
+  color: var(--color-text-muted);
+}
+
+.award-item__amount {
+  font-family: var(--font-heading);
+  font-size: 1.15rem;
+  font-weight: var(--fw-bold);
+  color: var(--color-text-muted);
+  letter-spacing: var(--ls-normal);
+  text-align: right;
+  white-space: nowrap;
+}
+
+.award-item__amount--amber {
+  color: var(--color-accent);
+}
+
+.award-item__divider {
+  grid-column: 1 / -1;
+  height: 1px;
+  background: var(--color-border);
+}
+
+.leadership {
+  border-top: 1px solid var(--color-border);
+  background: linear-gradient(180deg, rgba(245, 158, 11, 0.02) 0%, transparent 100%);
+}
+
+.leadership__grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--grid-gap);
+}
+
+.leadership-card {
+  position: relative;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--card-radius);
+  padding: 28px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+  box-shadow: var(--shadow-card);
+  transition: border-color var(--transition-base), box-shadow var(--transition-base), transform var(--transition-base), background var(--transition-base);
+  opacity: 0;
+  transform: translateY(24px);
+  overflow: hidden;
+}
+
+.leadership-card::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--color-accent), transparent);
+  transform: scaleX(0);
+  transform-origin: center;
+  transition: transform var(--transition-base);
+}
+
+.leadership-card--visible {
+  opacity: 1;
+  transform: translateY(0);
+  animation: fadeUp 0.55s cubic-bezier(0.4, 0, 0.2, 1) both;
+}
+
+.leadership-card:hover {
+  border-color: var(--color-border-hover);
+  box-shadow: var(--shadow-card-hover);
+  transform: translateY(-4px);
+  background: var(--color-surface-hover);
+}
+
+.leadership-card:hover::after {
+  transform: scaleX(1);
+}
+
+.leadership-card__icon {
+  font-size: 1.75rem;
+  line-height: 1;
+}
+
+.leadership-card__org {
+  font-family: var(--font-heading);
+  font-size: var(--fs-card-title);
+  font-weight: var(--fw-semibold);
+  color: var(--color-text-primary);
+  line-height: var(--lh-snug);
+}
+
+.leadership-card__role {
+  font-family: var(--font-body);
+  font-size: var(--fs-small);
+  color: var(--color-accent-dim);
+  font-weight: var(--fw-medium);
+  letter-spacing: 0.05em;
+}
+
+.leadership-card__impact {
+  margin-top: auto;
+  padding-top: var(--space-sm);
+  border-top: 1px solid var(--color-border);
+}
+
+.leadership-card__impact-stat {
+  font-family: var(--font-body);
+  font-size: var(--fs-small);
+  color: var(--color-text-muted);
+  line-height: var(--lh-normal);
+}
+
+.experience {
+  border-top: 1px solid var(--color-border);
+}
+
+.experience__timeline {
+  position: relative;
+  padding-left: 3rem;
+}
+
+.experience__track {
+  position: absolute;
+  left: 0.5rem;
+  top: 0.5rem;
+  bottom: 0.5rem;
+  width: 1px;
+  background: linear-gradient(to bottom, var(--color-accent), rgba(245, 158, 11, 0.10));
+}
+
+.experience-entry {
+  position: relative;
+  padding-bottom: var(--space-2xl);
+  opacity: 0;
+  transform: translateY(20px);
+}
+
+.experience-entry:last-child {
+  padding-bottom: 0;
+}
+
+.experience-entry--visible {
+  opacity: 1;
+  transform: translateY(0);
+  animation: fadeUp 0.6s cubic-bezier(0.4, 0, 0.2, 1) both;
+}
+
+.experience-entry__dot {
+  position: absolute;
+  left: calc(-3rem + 0.5rem - 5px);
+  top: 4px;
+  width: 11px;
+  height: 11px;
+  border-radius: 50%;
+  background: var(--color-text-subtle);
+  border: 2px solid var(--color-bg);
+  box-shadow: 0 0 0 2px var(--color-border);
+  transition: background var(--transition-base), box-shadow var(--transition-base);
+}
+
+.experience-entry__dot--amber {
+  background: var(--color-accent);
+  box-shadow: 0 0 0 2px rgba(245, 158, 11, 0.25), var(--shadow-glow-sm);
+  animation: glowPulse 2.5s ease-in-out infinite;
+}
+
+.experience-entry__dot--amber::after {
+  content: '';
+  position: absolute;
+  inset: -3px;
+  border-radius: 50%;
+  border: 1px solid var(--color-accent);
+  animation: dotPing 1.8s ease-out infinite;
+}
+
+.experience-entry__content {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+}
+
+.experience-entry__date {
+  font-family: var(--font-body);
+  font-size: var(--fs-xs);
+  font-weight: var(--fw-medium);
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--color-accent-dim);
+}
+
+.experience-entry__company {
+  font-family: var(--font-heading);
+  font-size: 1.3rem;
+  font-weight: var(--fw-bold);
+  color: var(--color-text-primary);
+  letter-spacing: var(--ls-normal);
+}
+
+.experience-entry__role {
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  color: var(--color-text-muted);
+  font-weight: var(--fw-medium);
+  margin-bottom: var(--space-xs);
+}
+
+.experience-entry__bullets {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding-top: var(--space-xs);
+}
+
+.experience-entry__bullet {
+  position: relative;
+  font-family: var(--font-body);
+  font-size: var(--fs-small);
+  color: var(--color-text-muted);
+  line-height: var(--lh-normal);
+  padding-left: 1.2em;
+}
+
+.experience-entry__bullet::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0.55em;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--color-accent);
+  opacity: 0.6;
+}
+
+.footer {
+  border-top: 1px solid var(--color-border);
+  padding: var(--space-xl) 0;
+}
+
+.footer__inner {
+  max-width: var(--container-max);
+  margin: 0 auto;
+  padding: 0 var(--container-padding);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: var(--space-md);
+}
+
+.footer__name {
+  font-family: var(--font-heading);
+  font-size: 1.1rem;
+  font-weight: var(--fw-bold);
+  color: var(--color-text-primary);
+  letter-spacing: var(--ls-wide);
+  text-transform: uppercase;
+}
+
+.footer__links {
+  display: flex;
+  align-items: center;
+  gap: var(--space-lg);
+}
+
+.footer__link {
+  font-family: var(--font-body);
+  font-size: var(--fs-small);
+  color: var(--color-text-muted);
+  font-weight: var(--fw-medium);
+  letter-spacing: 0.04em;
+  transition: color var(--transition-fast);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.footer__link:hover {
+  color: var(--color-accent);
+}
+
+.footer__link--email {
+  color: var(--color-text-muted);
+}
+
+.footer__link--email:hover {
+  color: var(--color-accent);
+}
+
+.footer__link--github {
+  color: var(--color-text-muted);
+}
+
+.footer__link--github:hover {
+  color: var(--color-text-primary);
+}
+
+.footer__divider {
+  width: 1px;
+  height: 16px;
+  background: var(--color-border);
+}
+
+.footer__copy {
+  font-family: var(--font-body);
+  font-size: var(--fs-xs);
+  color: var(--color-text-subtle);
+  letter-spacing: 0.04em;
+}
+
+.text-accent {
+  color: var(--color-accent);
+}
+
+.text-muted {
+  color: var(--color-text-muted);
+}
+
+.container {
+  max-width: var(--container-max);
+  margin: 0 auto;
+  padding: 0 var(--container-padding);
+}
+
+.shimmer {
+  background: linear-gradient(
+    90deg,
+    var(--color-surface) 0%,
+    rgba(255, 255, 255, 0.06) 50%,
+    var(--color-surface) 100%
+  );
+  background-size: 200% auto;
+  animation: shimmer 1.8s linear infinite;
+}
+
+::-webkit-scrollbar {
+  width: 4px;
+}
+::-webkit-scrollbar-track {
+  background: var(--color-bg);
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(245, 158, 11, 0.30);
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(245, 158, 11, 0.55);
+}
+
+::selection {
+  background: rgba(245, 158, 11, 0.25);
+  color: var(--color-text-primary);
+}
+
+@media (max-width: 1024px) {
+  .ventures__grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .leadership__grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  :root {
+    --nav-height: 60px;
+  }
+
+  .nav__inner {
+    padding: 0 1.25rem;
+  }
+
+  .nav__cta--btn {
+    padding: 8px 16px;
+    font-size: 0.8rem;
+  }
+
+  .hero__inner {
+    padding: 3rem 1.25rem;
+    gap: var(--space-md);
+  }
+
+  .hero__title {
+    font-size: clamp(3rem, 14vw, 5.5rem);
+    letter-spacing: 0.18em;
+  }
+
+  .hero__stats {
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--space-md);
+  }
+
+  .hero__scroll-hint {
+    display: none;
+  }
+
+  .ventures__inner,
+  .awards__inner,
+  .leadership__inner,
+  .experience__inner {
+    padding: 0 1.25rem;
+  }
+
+  .ventures,
+  .awards,
+  .leadership,
+  .experience {
+    padding: clamp(3rem, 8vw, 5rem) 0;
+  }
+
+  .ventures__header,
+  .awards__header,
+  .leadership__header,
+  .experience__header {
+    margin-bottom: var(--space-xl);
+  }
+
+  .ventures__title,
+  .awards__title,
+  .leadership__title,
+  .experience__title {
+    letter-spacing: 0.10em;
+  }
+
+  .ventures__grid {
+    grid-template-columns: 1fr;
+  }
+
+  .leadership__grid {
+    grid-template-columns: 1fr;
+  }
+
+  .award-item {
+    grid-template-columns: 56px 1fr;
+    gap: var(--space-sm);
+  }
+
+  .award-item__amount {
+    grid-column: 2;
+    text-align: left;
+  }
+
+  .experience__timeline {
+    padding-left: 2rem;
+  }
+
+  .experience-entry__dot {
+    left: calc(-2rem + 0.5rem - 5px);
+  }
+
+  .footer__inner {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-sm);
+    padding: 0 1.25rem;
+  }
+
+  .footer__links {
+    gap: var(--space-md);
+    flex-wrap: wrap;
+  }
+
+  .footer__divider {
+    display: none;
+  }
+}
+
+@media (max-width: 480px) {
+  .hero__stats {
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-sm);
+  }
+
+  .hero__stat-number {
+    font-size: clamp(1.6rem, 7vw, 2.4rem);
+  }
+
+  .venture-card,
+  .leadership-card {
+    padding: 20px 18px;
+  }
+
+  .award-item {
+    grid-template-columns: 44px 1fr;
+    padding-left: 0.75rem;
+    margin-left: -0.75rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+
+  .reveal {
+    opacity: 1;
+    transform: none;
+  }
+
+  .reveal.visible {
+    animation: none;
+  }
+
+  html {
+    scroll-behavior: auto;
+  }
+}
+  </style>
+</head>
+<body>
+<nav class="nav nav--sticky" id="main-nav">
+  <div class="nav__inner">
+    <span class="nav__logo"><span class="nav__logo-text">KARAN</span></span>
+    <div class="nav__actions">
+      <a href="mailto:kvchiefs@gmail.com" class="nav__cta nav__cta--btn">Get in Touch</a>
+    </div>
+  </div>
+</nav>
+
+<section class="hero">
+  <svg class="hero__noise" xmlns="http://www.w3.org/2000/svg" width="0" height="0" style="position:absolute;">
+    <defs>
+      <filter id="noise-filter" x="0%" y="0%" width="100%" height="100%">
+        <feTurbulence type="fractalNoise" baseFrequency="0.65" numOctaves="3" stitchTiles="stitch" result="noiseOut"/>
+        <feColorMatrix type="saturate" values="0" in="noiseOut" result="grayNoise"/>
+        <feBlend in="SourceGraphic" in2="grayNoise" mode="overlay" result="blended"/>
+        <feComposite in="blended" in2="SourceGraphic" operator="in"/>
+      </filter>
+    </defs>
+  </svg>
+  <div class="hero__noise-overlay"></div>
+  <div class="hero__inner">
+    <div class="hero__eyebrow">High School Entrepreneur &middot; Frisco, TX &middot; Class of 2027</div>
+    <h1 class="hero__title hero__title--spaced">K&nbsp;&nbsp;A&nbsp;&nbsp;R&nbsp;&nbsp;A&nbsp;&nbsp;N</h1>
+    <p class="hero__subtitle">Building ventures that matter. From 500K-user apps to biodegradable coffee pods.</p>
+    <div class="hero__stats">
+      <div class="hero__stat">
+        <span class="hero__stat-number hero__stat-number--counter" data-target="500000" data-suffix="K+">0</span>
+        <span class="hero__stat-label">Monthly Active Users</span>
+      </div>
+      <div class="hero__stat">
+        <span class="hero__stat-number hero__stat-number--counter" data-target="20000" data-prefix="$" data-suffix="K+">0</span>
+        <span class="hero__stat-label">in Grants Won ($)</span>
+      </div>
+      <div class="hero__stat">
+        <span class="hero__stat-number hero__stat-number--counter" data-target="20000" data-suffix="K+">0</span>
+        <span class="hero__stat-label">People Fed</span>
+      </div>
+      <div class="hero__stat">
+        <span class="hero__stat-number hero__stat-number--counter" data-target="57" data-prefix="#">#57</span>
+        <span class="hero__stat-label">App Store Rank (Education)</span>
+      </div>
+    </div>
+    <div class="hero__scroll-hint">
+      <span>Scroll to explore</span>
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 3v10M3 8l5 5 5-5" stroke="#f59e0b" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </div>
+  </div>
+</section>
+
+<section class="ventures reveal">
+  <div class="ventures__inner">
+    <div class="ventures__header">
+      <span class="ventures__section-label">What I've Built</span>
+      <h2 class="ventures__title ventures__title--spaced">V&nbsp;&nbsp;E&nbsp;&nbsp;N&nbsp;&nbsp;T&nbsp;&nbsp;U&nbsp;&nbsp;R&nbsp;&nbsp;E&nbsp;&nbsp;S</h2>
+    </div>
+    <div class="ventures__grid">
+
+      <div class="venture-card reveal">
+        <div class="venture-card__icon">&#128241;</div>
+        <div class="venture-card__body">
+          <h3 class="venture-card__title">GradeWay</h3>
+          <p class="venture-card__desc">Student-facing mobile app scaled from zero to 500K+ monthly active users across 450+ school districts with zero paid marketing.</p>
+          <div class="venture-card__metric">
+            <span class="venture-card__metric-badge">500K+ MAU</span>
+            <span class="venture-card__metric-badge">#57 Education</span>
+          </div>
+          <div class="venture-card__meta">Growth Lead &middot; May 2024 &ndash; Present</div>
+        </div>
+        <div class="venture-card__arrow">&#8599;</div>
+      </div>
+
+      <div class="venture-card reveal">
+        <div class="venture-card__icon">&#9749;</div>
+        <div class="venture-card__body">
+          <h3 class="venture-card__title">Naturista</h3>
+          <p class="venture-card__desc">Materials startup developing fully biodegradable coffee pods using Pullulan biopolymer — solving 56 billion pods per year going to landfill.</p>
+          <div class="venture-card__metric">
+            <span class="venture-card__metric-badge">$20K+ Funded</span>
+            <span class="venture-card__metric-badge">SAGE 1st USA</span>
+          </div>
+          <div class="venture-card__meta">Co-Founder</div>
+        </div>
+        <div class="venture-card__arrow">&#8599;</div>
+      </div>
+
+      <div class="venture-card reveal">
+        <div class="venture-card__icon">&#129504;</div>
+        <div class="venture-card__body">
+          <h3 class="venture-card__title">StudyGenie</h3>
+          <p class="venture-card__desc">AI-driven adaptive learning platform with personalized practice generation, progress tracking, and individualized learning paths.</p>
+          <div class="venture-card__metric">
+            <span class="venture-card__metric-badge">30K Students</span>
+            <span class="venture-card__metric-badge">$32K Revenue</span>
+          </div>
+          <div class="venture-card__meta">Co-Founder &middot; <a href="https://studygenie.io/" target="_blank" class="venture-card__link">studygenie.io</a></div>
+        </div>
+        <div class="venture-card__arrow">&#8599;</div>
+      </div>
+
+      <div class="venture-card reveal">
+        <div class="venture-card__icon">&#127374;</div>
+        <div class="venture-card__body">
+          <h3 class="venture-card__title">Plates to Purpose</h3>
+          <p class="venture-card__desc">Logistics platform connecting restaurants, volunteers, and food pantries in real time — redistributed $100K+ worth of food to 20,000+ people.</p>
+          <div class="venture-card__metric">
+            <span class="venture-card__metric-badge">20K+ Fed</span>
+            <span class="venture-card__metric-badge">15 Chapters</span>
+          </div>
+          <div class="venture-card__meta">Co-Founder &middot; <a href="https://platestopurpose.wixsite.com/mysite" target="_blank" class="venture-card__link">platestopurpose.org</a></div>
+        </div>
+        <div class="venture-card__arrow">&#8599;</div>
+      </div>
+
+      <div class="venture-card reveal">
+        <div class="venture-card__icon">&#129516;</div>
+        <div class="venture-card__body">
+          <h3 class="venture-card__title">Saaf Soap</h3>
+          <p class="venture-card__desc">Natural soap brand upcycling used coffee grounds from cafes into cold-processed 100% natural bars across DFW.</p>
+          <div class="venture-card__metric">
+            <span class="venture-card__metric-badge">700+ Bars Sold</span>
+            <span class="venture-card__metric-badge">Stanford Climate Fellows</span>
+          </div>
+          <div class="venture-card__meta">Founder</div>
+        </div>
+        <div class="venture-card__arrow">&#8599;</div>
+      </div>
+
+      <div class="venture-card reveal">
+        <div class="venture-card__icon">&#128176;</div>
+        <div class="venture-card__body">
+          <h3 class="venture-card__title">Invest2Empower</h3>
+          <p class="venture-card__desc">Youth financial literacy nonprofit that educated 500+ children through workshops — presented legislation to U.S. Congressmen Keith Self and Frank Pallone.</p>
+          <div class="venture-card__metric">
+            <span class="venture-card__metric-badge">5 Chapters</span>
+            <span class="venture-card__metric-badge">$2K Grant</span>
+          </div>
+          <div class="venture-card__meta">Co-Founder</div>
+        </div>
+        <div class="venture-card__arrow">&#8599;</div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<section class="awards reveal">
+  <div class="awards__inner">
+    <div class="awards__header">
+      <span class="awards__section-label">Recognition</span>
+      <h2 class="awards__title awards__title--spaced">A&nbsp;&nbsp;W&nbsp;&nbsp;A&nbsp;&nbsp;R&nbsp;&nbsp;D&nbsp;&nbsp;S</h2>
+    </div>
+    <div class="awards__grid">
+
+      <div class="award-item reveal">
+        <span class="award-item__rank award-item__rank--highlighted">&#127945; 1st</span>
+        <div class="award-item__body">
+          <div class="award-item__title">BPA National Champion</div>
+          <div class="award-item__org">Financial Portfolio Management Team (V09) &mdash; 1,000+ competitors nationwide. Charles Schwab recognition.</div>
+        </div>
+        <div class="award-item__divider"></div>
+      </div>
+
+      <div class="award-item reveal">
+        <span class="award-item__rank award-item__rank--highlighted">&#127945; 1st USA / 3rd Global</span>
+        <div class="award-item__body">
+          <div class="award-item__title">SAGE Global Competition</div>
+          <div class="award-item__org">5,000+ competitors across 31 countries (Naturista)</div>
+          <div class="award-item__amount award-item__amount--amber">$1,600 Funding</div>
+        </div>
+        <div class="award-item__divider"></div>
+      </div>
+
+      <div class="award-item reveal">
+        <span class="award-item__rank award-item__rank--highlighted">Top 30</span>
+        <div class="award-item__body">
+          <div class="award-item__title">Blue Ocean Challenge</div>
+          <div class="award-item__org">Top 30 of 13,000+ international teams</div>
+        </div>
+        <div class="award-item__divider"></div>
+      </div>
+
+      <div class="award-item reveal">
+        <span class="award-item__rank award-item__rank--highlighted">Top 20 Global</span>
+        <div class="award-item__body">
+          <div class="award-item__title">DECA ICDC Finalist</div>
+          <div class="award-item__org">Finance Operations Research &mdash; 20,000+ competitors. 2&times; ICDC Qualifier, 2&times; Texas State, 3&times; District.</div>
+        </div>
+        <div class="award-item__divider"></div>
+      </div>
+
+      <div class="award-item reveal">
+        <span class="award-item__rank award-item__rank--highlighted">Semifinalist Top 60</span>
+        <div class="award-item__body">
+          <div class="award-item__title">Mott Million Dollar Challenge</div>
+          <div class="award-item__org">5,300+ submissions &mdash; advancing to Michigan finals (up to $40,000)</div>
+          <div class="award-item__amount award-item__amount--amber">$5,250 Award</div>
+        </div>
+        <div class="award-item__divider"></div>
+      </div>
+
+      <div class="award-item reveal">
+        <span class="award-item__rank award-item__rank--highlighted">&#127945; 2nd Place</span>
+        <div class="award-item__body">
+          <div class="award-item__title">Texas A&amp;M Ideas Challenge</div>
+          <div class="award-item__org">StudyGenie</div>
+          <div class="award-item__amount award-item__amount--amber">$2,000 Grant</div>
+        </div>
+        <div class="award-item__divider"></div>
+      </div>
+
+      <div class="award-item reveal">
+        <span class="award-item__rank award-item__rank--highlighted">&#127945; 1st Place</span>
+        <div class="award-item__body">
+          <div class="award-item__title">Big Idea Competition</div>
+          <div class="award-item__org">Naturista</div>
+          <div class="award-item__amount award-item__amount--amber">$1,000 Grant</div>
+        </div>
+        <div class="award-item__divider"></div>
+      </div>
+
+      <div class="award-item reveal">
+        <span class="award-item__rank award-item__rank--highlighted">&#127945; 1st Place</span>
+        <div class="award-item__body">
+          <div class="award-item__title">Kean Challenge — Community Roots</div>
+          <div class="award-item__org">Invest2Empower</div>
+          <div class="award-item__amount award-item__amount--amber">$2,000 Grant</div>
+        </div>
+        <div class="award-item__divider"></div>
+      </div>
+
+      <div class="award-item reveal">
+        <span class="award-item__rank award-item__rank--highlighted">&#127945; 2nd Place</span>
+        <div class="award-item__body">
+          <div class="award-item__title">Stiftung Entrepreneurship Global</div>
+          <div class="award-item__org">100 international startups</div>
+        </div>
+        <div class="award-item__divider"></div>
+      </div>
+
+      <div class="award-item reveal">
+        <span class="award-item__rank award-item__rank--highlighted">2&times; Semifinalist</span>
+        <div class="award-item__body">
+          <div class="award-item__title">Diamond Challenge</div>
+          <div class="award-item__org">Top 10% of 2,200 teams</div>
+        </div>
+        <div class="award-item__divider"></div>
+      </div>
+
+      <div class="award-item reveal">
+        <span class="award-item__rank award-item__rank--highlighted">&#127945; 3rd Place</span>
+        <div class="award-item__body">
+          <div class="award-item__title">Jacobson Institute Innovator</div>
+          <div class="award-item__org">Naturista</div>
+          <div class="award-item__amount award-item__amount--amber">$500 Award</div>
+        </div>
+        <div class="award-item__divider"></div>
+      </div>
+
+      <div class="award-item reveal">
+        <span class="award-item__rank award-item__rank--highlighted">1550</span>
+        <div class="award-item__body">
+          <div class="award-item__title">SAT Score</div>
+          <div class="award-item__org">790 Math &middot; 760 Reading &amp; Writing</div>
+        </div>
+        <div class="award-item__divider"></div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<section class="leadership reveal">
+  <div class="leadership__inner">
+    <div class="leadership__header">
+      <span class="leadership__section-label">Roles &amp; Organizations</span>
+      <h2 class="leadership__title leadership__title--spaced">L&nbsp;&nbsp;E&nbsp;&nbsp;A&nbsp;&nbsp;D&nbsp;&nbsp;E&nbsp;&nbsp;R&nbsp;&nbsp;S&nbsp;&nbsp;H&nbsp;&nbsp;I&nbsp;&nbsp;P</h2>
+    </div>
+    <div class="leadership__grid">
+
+      <div class="leadership-card reveal">
+        <div class="leadership-card__icon">&#128187;</div>
+        <div class="leadership-card__org">iStart Valley</div>
+        <div class="leadership-card__role">President</div>
+        <p class="leadership-card__impact">Youth Technology &amp; Innovation Nonprofit. Promoted from member in 2 years. Led 4+ national hackathons with 2,000+ participants. Podcast hits 1,000+ listeners per episode.</p>
+        <div class="leadership-card__impact-stat">5,000+ Members</div>
+      </div>
+
+      <div class="leadership-card reveal">
+        <div class="leadership-card__icon">&#128084;</div>
+        <div class="leadership-card__org">DECA</div>
+        <div class="leadership-card__role">Vice-President &rarr; Incoming Chapter President</div>
+        <p class="leadership-card__impact">200+ member chapter. Led 4 community initiatives including a car meet (150 attendees), food drive (200+ items to North Texas Food Bank), and $2,000 fundraiser for National Breast Cancer Foundation.</p>
+        <div class="leadership-card__impact-stat">200+ Members</div>
+      </div>
+
+      <div class="leadership-card reveal">
+        <div class="leadership-card__icon">&#128203;</div>
+        <div class="leadership-card__org">BPA</div>
+        <div class="leadership-card__role">Chapter Vice President &rarr; National Champion</div>
+        <p class="leadership-card__impact">150+ member chapter. Led team from District to State to National Championship in Financial Portfolio Management. Charles Schwab recognition.</p>
+        <div class="leadership-card__impact-stat">National Champion</div>
+      </div>
+
+      <div class="leadership-card reveal">
+        <div class="leadership-card__icon">&#127981;</div>
+        <div class="leadership-card__org">Keith Self Congressional Youth Advisory Council</div>
+        <div class="leadership-card__role">Intern &rarr; Mentor</div>
+        <p class="leadership-card__impact">1 of 5 selected from 70 applicants to travel to Washington D.C. Drafted financial literacy policy. Returned as mentor the following year.</p>
+        <div class="leadership-card__impact-stat">1 of 5 Selected</div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<section class="experience reveal">
+  <div class="experience__inner">
+    <div class="experience__header">
+      <span class="experience__section-label">Where I've Worked</span>
+      <h2 class="experience__title experience__title--spaced">E&nbsp;&nbsp;X&nbsp;&nbsp;P&nbsp;&nbsp;E&nbsp;&nbsp;R&nbsp;&nbsp;I&nbsp;&nbsp;E&nbsp;&nbsp;N&nbsp;&nbsp;C&nbsp;&nbsp;E</h2>
+    </div>
+    <div class="experience__timeline">
+      <div class="experience__track"></div>
+
+      <div class="experience-entry reveal">
+        <div class="experience-entry__dot experience-entry__dot--amber"></div>
+        <div class="experience-entry__content">
+          <div class="experience-entry__date">May 2024 &ndash; Present</div>
+          <div class="experience-entry__company">GradeWay</div>
+          <div class="experience-entry__role">Growth Lead</div>
+          <ul class="experience-entry__bullets">
+            <li class="experience-entry__bullet">Drove organic growth from zero to 500K+ monthly active users across 450+ school districts in NJ and TX.</li>
+            <li class="experience-entry__bullet">Reached #57 in Education on the App Store. Scaled revenue to $800K+ through freemium conversion.</li>
+            <li class="experience-entry__bullet">Zero paid marketing &mdash; built entirely on student-to-student distribution.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="experience-entry reveal">
+        <div class="experience-entry__dot experience-entry__dot--amber"></div>
+        <div class="experience-entry__content">
+          <div class="experience-entry__date">Jan 2024 &ndash; May 2025</div>
+          <div class="experience-entry__company">Young Chefs Academy</div>
+          <div class="experience-entry__role">Lead Chef</div>
+          <ul class="experience-entry__bullets">
+            <li class="experience-entry__bullet">Taught weekly culinary classes to 8&ndash;12 kids ages 6&ndash;14.</li>
+            <li class="experience-entry__bullet">Ran 20+ birthday party events and managed 5+ community event booths in Frisco.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="experience-entry reveal">
+        <div class="experience-entry__dot experience-entry__dot--amber"></div>
+        <div class="experience-entry__content">
+          <div class="experience-entry__date">Prior Experience</div>
+          <div class="experience-entry__company">DiscoverSTEM</div>
+          <div class="experience-entry__role">Executive Team Captain</div>
+          <ul class="experience-entry__bullets">
+            <li class="experience-entry__bullet">Led development of a patent-pending Termite Management System (USPTO Non-Provisional App No. 19347695).</li>
+            <li class="experience-entry__bullet">Chemical-free monitoring using AI-assisted behavioral recording and plant-based adhesive trapping.</li>
+          </ul>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<footer class="footer">
+  <div class="footer__inner">
+    <div class="footer__name">KARAN</div>
+    <div class="footer__links">
+      <a href="mailto:kvchiefs@gmail.com" class="footer__link footer__link--email">kvchiefs@gmail.com</a>
+      <span class="footer__divider">/</span>
+      <a href="https://github.com/kvdoe" target="_blank" class="footer__link footer__link--github">github.com/kvdoe</a>
+    </div>
+  </div>
+  <div class="footer__copy">
+    &copy; 2026 Karan &middot; Frisco, TX &middot; Liberty High School Class of 2027
+  </div>
+</footer>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+
+  // 1. Intersection Observer for .reveal elements
+  var revealObserver = new IntersectionObserver(function (entries) {
+    entries.forEach(function (entry) {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+        revealObserver.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.12 });
+
+  document.querySelectorAll('.reveal').forEach(function (el) {
+    revealObserver.observe(el);
+  });
+
+
+  // 2. Animated number counters
+  function easeOutQuart(t) {
+    return 1 - Math.pow(1 - t, 4);
+  }
+
+  function formatCounterValue(current, target, format, label) {
+    if (format === 'rank') {
+      return '#' + Math.round(current);
+    }
+    if (format === 'currency-k' || (label && label.includes('$') && target >= 1000)) {
+      var k = current / 1000;
+      if (current >= target) {
+        return '$' + Math.round(target / 1000) + 'K+';
+      }
+      return '$' + k.toFixed(k < 10 ? 1 : 0) + 'K';
+    }
+    if (format === 'k' || (target >= 1000 && format !== 'rank')) {
+      var k2 = current / 1000;
+      if (current >= target) {
+        return Math.round(target / 1000) + 'K+';
+      }
+      return k2.toFixed(k2 < 10 ? 1 : 0) + 'K';
+    }
+    return Math.round(current).toString();
+  }
+
+  function animateCounter(el) {
+    var target = parseFloat(el.getAttribute('data-target'));
+    var format = el.getAttribute('data-format') || '';
+    var label = el.closest('[data-label]') ? el.closest('[data-label]').getAttribute('data-label') : (el.parentElement ? el.parentElement.textContent : '');
+    var duration = 1800;
+    var startTime = null;
+
+    function step(timestamp) {
+      if (!startTime) startTime = timestamp;
+      var elapsed = timestamp - startTime;
+      var progress = Math.min(elapsed / duration, 1);
+      var eased = easeOutQuart(progress);
+      var current = eased * target;
+
+      el.textContent = formatCounterValue(current, target, format, label);
+
+      if (progress < 1) {
+        requestAnimationFrame(step);
+      } else {
+        if (format === 'rank') {
+          el.textContent = '#' + target;
+        } else if (format === 'currency-k' || (label && label.includes('$') && target >= 1000)) {
+          el.textContent = '$' + Math.round(target / 1000) + 'K+';
+        } else if (target >= 1000) {
+          el.textContent = Math.round(target / 1000) + 'K+';
+        } else {
+          el.textContent = Math.round(target).toString();
+        }
+      }
+    }
+
+    requestAnimationFrame(step);
+  }
+
+  var counterObserver = new IntersectionObserver(function (entries) {
+    entries.forEach(function (entry) {
+      if (entry.isIntersecting) {
+        animateCounter(entry.target);
+        counterObserver.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.12 });
+
+  document.querySelectorAll('[data-target]').forEach(function (el) {
+    counterObserver.observe(el);
+  });
+
+
+  // 3. Smooth scroll for anchor links
+  document.querySelectorAll('a[href^="#"]').forEach(function (anchor) {
+    anchor.addEventListener('click', function (e) {
+      var href = anchor.getAttribute('href');
+      if (href === '#') return;
+      var target = document.querySelector(href);
+      if (target) {
+        e.preventDefault();
+        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    });
+  });
+
+
+  // 4. Nav scroll behavior
+  var nav = document.querySelector('nav');
+  if (nav) {
+    function handleNavScroll() {
+      if (window.scrollY > 50) {
+        nav.classList.add('scrolled');
+      } else {
+        nav.classList.remove('scrolled');
+      }
+    }
+    window.addEventListener('scroll', handleNavScroll, { passive: true });
+    handleNavScroll();
+  }
+
+
+  // 5. Cursor trail effect — amber dots that fade
+  var trailDots = [];
+  var MAX_DOTS = 12;
+  var lastX = -999;
+  var lastY = -999;
+  var MIN_DIST = 10;
+
+  function createDot(x, y) {
+    var dot = document.createElement('div');
+    dot.style.cssText = [
+      'position:fixed',
+      'pointer-events:none',
+      'z-index:99999',
+      'width:7px',
+      'height:7px',
+      'border-radius:50%',
+      'background:rgba(245,158,11,0.72)',
+      'box-shadow:0 0 6px 2px rgba(245,158,11,0.38)',
+      'transform:translate(-50%,-50%) scale(1)',
+      'transition:opacity 0.6s ease, transform 0.6s ease',
+      'left:' + x + 'px',
+      'top:' + y + 'px',
+      'opacity:1'
+    ].join(';');
+    document.body.appendChild(dot);
+
+    var obj = { el: dot, born: Date.now() };
+    trailDots.push(obj);
+
+    requestAnimationFrame(function () {
+      dot.style.opacity = '0';
+      dot.style.transform = 'translate(-50%,-50%) scale(0.3)';
+    });
+
+    setTimeout(function () {
+      if (dot.parentNode) dot.parentNode.removeChild(dot);
+      var idx = trailDots.indexOf(obj);
+      if (idx !== -1) trailDots.splice(idx, 1);
+    }, 650);
+
+    if (trailDots.length > MAX_DOTS) {
+      var oldest = trailDots.shift();
+      if (oldest.el.parentNode) oldest.el.parentNode.removeChild(oldest.el);
+    }
+  }
+
+  document.addEventListener('mousemove', function (e) {
+    var dx = e.clientX - lastX;
+    var dy = e.clientY - lastY;
+    if (Math.sqrt(dx * dx + dy * dy) >= MIN_DIST) {
+      lastX = e.clientX;
+      lastY = e.clientY;
+      createDot(e.clientX, e.clientY);
+    }
+  });
+
+});
+</script>
+</body>
+</html>
