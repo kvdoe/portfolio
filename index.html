@@ -9,30 +9,779 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
   <style>
-c:\Users\karan\doe-clicker\src\portfolio.css
+    /* ── Design tokens ───────────────────────────────────────────── */
+    :root {
+      --bg:       #020819;
+      --surface:  rgba(255,255,255,0.04);
+      --border:   rgba(255,255,255,0.08);
+      --electric: #38bdf8;
+      --violet:   #a78bfa;
+      --amber:    #f59e0b;
+      --amber2:   #fbbf24;
+      --pale:     #94a3b8;
+      --white:    #f8fafc;
+      --font-h:   'Space Grotesk', sans-serif;
+      --font-b:   'Inter', sans-serif;
+      --font-m:   'Space Mono', monospace;
+      --radius:   12px;
+      --ease:     cubic-bezier(0.16,1,0.3,1);
+    }
 
-The file has been fully rewritten with all specified design tokens, keyframes, and element styles. Key decisions made:
+    /* ── Reset ───────────────────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      background: var(--bg);
+      color: var(--white);
+      font-family: var(--font-b);
+      font-size: 16px;
+      line-height: 1.6;
+      overflow-x: hidden;
+      cursor: none;
+    }
+    a { color: inherit; text-decoration: none; }
+    ul { list-style: none; }
+    img { display: block; max-width: 100%; }
 
-- All 15 keyframes are defined in full: fadeUp (48px Y), fadeLeft/fadeRight (48px X), wordUp (115% Y for word-inner spans), orb1Float/orb2Float/orb3Float (multi-stop translation loops at 12s/16s/20s), pulseGlow (amber box-shadow dim-to-bright), dotPing (scale 1 opacity 1 to scale 2.8 opacity 0), scanLine (top -5% to 105%), float (0 to -16px and back at 4s), lineDrawV (scaleY 0 to 1), shimmer (background-position -200% to 200%).
+    /* ── Canvas neural background ────────────────────────────────── */
+    #neural-bg {
+      position: fixed;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 0;
+      pointer-events: none;
+    }
 
-- canvas#neural-bg is position fixed, inset 0, z-index 0, pointer-events none.
+    /* ── Floating orbs ───────────────────────────────────────────── */
+    .orb {
+      position: fixed;
+      border-radius: 50%;
+      filter: blur(80px);
+      z-index: 0;
+      pointer-events: none;
+      opacity: 0.35;
+    }
+    .orb-1 {
+      width: 600px; height: 600px;
+      background: radial-gradient(circle, var(--violet) 0%, transparent 70%);
+      top: -150px; left: -150px;
+      animation: orb1Float 12s ease-in-out infinite;
+    }
+    .orb-2 {
+      width: 500px; height: 500px;
+      background: radial-gradient(circle, var(--electric) 0%, transparent 70%);
+      top: 30%; right: -100px;
+      animation: orb2Float 16s ease-in-out infinite;
+    }
+    .orb-3 {
+      width: 400px; height: 400px;
+      background: radial-gradient(circle, var(--amber) 0%, transparent 70%);
+      bottom: 10%; left: 30%;
+      animation: orb3Float 20s ease-in-out infinite;
+    }
 
-- Three .orb variants use radial-gradient with the exact colors and sizes specified, animated with their respective orb float keyframes.
+    /* ── Custom cursor ───────────────────────────────────────────── */
+    #cursor-dot {
+      position: fixed;
+      width: 8px; height: 8px;
+      background: var(--amber);
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 9999;
+      transform: translate(-50%, -50%);
+      transition: width 0.2s, height 0.2s, background 0.2s;
+    }
+    #cursor-ring {
+      position: fixed;
+      width: 36px; height: 36px;
+      border: 1.5px solid rgba(248,159,11,0.5);
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 9998;
+      transform: translate(-50%, -50%);
+      transition: border-color 0.2s, width 0.3s, height 0.3s;
+    }
+    #cursor-dot.hovered  { width: 14px; height: 14px; background: var(--electric); }
+    #cursor-ring.hovered { width: 54px; height: 54px; border-color: var(--electric); }
 
-- #cursor-dot and #cursor-ring have the exact sizes, colors, and .hovered state transitions specified.
+    /* ── Scroll progress bar ─────────────────────────────────────── */
+    #progress-bar {
+      position: fixed;
+      top: 0; left: 0;
+      height: 3px;
+      width: 0%;
+      background: linear-gradient(90deg, var(--amber), var(--amber2), var(--electric));
+      box-shadow: 0 0 10px var(--amber);
+      z-index: 10000;
+      transition: width 0.05s linear;
+    }
 
-- #progress-bar uses the three-stop gradient (amber, #fbbf24, electric) with the amber-glow box-shadow.
+    /* ── Navigation ──────────────────────────────────────────────── */
+    .nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 1000;
+      padding: 20px 40px;
+      transition: background 0.4s, backdrop-filter 0.4s, padding 0.4s;
+    }
+    .nav.scrolled {
+      background: rgba(2,8,25,0.88);
+      backdrop-filter: blur(24px) saturate(1.6);
+      padding: 14px 40px;
+      border-bottom: 1px solid var(--border);
+    }
+    .nav__inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      gap: 40px;
+    }
+    .nav__logo {
+      font-family: var(--font-m);
+      font-size: 14px;
+      letter-spacing: 0.18em;
+      color: var(--amber);
+      flex-shrink: 0;
+    }
+    .nav__links {
+      display: flex;
+      gap: 32px;
+      margin-left: auto;
+    }
+    .nav__link {
+      font-family: var(--font-b);
+      font-size: 13px;
+      font-weight: 500;
+      letter-spacing: 0.05em;
+      color: var(--pale);
+      transition: color 0.2s;
+      position: relative;
+    }
+    .nav__link::after {
+      content: '';
+      position: absolute;
+      bottom: -4px; left: 0; right: 0;
+      height: 1px;
+      background: var(--electric);
+      transform: scaleX(0);
+      transition: transform 0.3s var(--ease);
+    }
+    .nav__link:hover, .nav__link.active { color: var(--white); }
+    .nav__link:hover::after, .nav__link.active::after { transform: scaleX(1); }
+    .nav__cta {
+      margin-left: 16px;
+      flex-shrink: 0;
+    }
 
-- .nav.scrolled (not .nav--scrolled) matches the class name pattern implied by the spec, with rgba(2,8,25,0.88) + blur(24px) saturate(1.6).
+    /* ── Buttons ─────────────────────────────────────────────────── */
+    .btn-primary {
+      display: inline-block;
+      padding: 10px 22px;
+      background: var(--amber);
+      color: #000;
+      font-family: var(--font-h);
+      font-size: 13px;
+      font-weight: 600;
+      border-radius: 6px;
+      letter-spacing: 0.04em;
+      transition: background 0.2s, box-shadow 0.2s, transform 0.2s;
+    }
+    .btn-primary:hover {
+      background: var(--amber2);
+      box-shadow: 0 0 24px rgba(245,158,11,0.5);
+    }
+    .btn-outline {
+      display: inline-block;
+      padding: 10px 22px;
+      border: 1px solid var(--border);
+      color: var(--pale);
+      font-family: var(--font-h);
+      font-size: 13px;
+      font-weight: 500;
+      border-radius: 6px;
+      transition: border-color 0.2s, color 0.2s;
+    }
+    .btn-outline:hover {
+      border-color: var(--electric);
+      color: var(--white);
+    }
 
-- .hero::after provides the repeating-linear-gradient CRT scanline texture; a .hero__scanbeam element handles the moving scan beam via the scanLine animation.
+    /* ── Section dots ────────────────────────────────────────────── */
+    #section-dots {
+      position: fixed;
+      right: 24px;
+      top: 50%;
+      transform: translateY(-50%);
+      z-index: 500;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .s-dot {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      background: var(--border);
+      border: 1px solid rgba(255,255,255,0.2);
+      transition: background 0.3s, transform 0.3s;
+    }
+    .s-dot.active, .s-dot:hover {
+      background: var(--amber);
+      transform: scale(1.4);
+    }
 
-- All card hover states, badge variants, award-row grid columns, timeline track lineDrawV behavior, stagger classes with CSS custom property --stagger, and responsive breakpoints (1024/768/640) are included.
+    /* ── Hero ────────────────────────────────────────────────────── */
+    #hero {
+      position: relative;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      overflow: hidden;
+      z-index: 1;
+    }
+    #hero::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: repeating-linear-gradient(
+        0deg,
+        transparent,
+        transparent 2px,
+        rgba(0,0,0,0.08) 2px,
+        rgba(0,0,0,0.08) 4px
+      );
+      pointer-events: none;
+      z-index: 0;
+    }
+    #hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse 80% 60% at 50% 50%, rgba(56,189,248,0.06) 0%, transparent 70%);
+      pointer-events: none;
+      z-index: 0;
+    }
+    .hero__inner {
+      position: relative;
+      z-index: 1;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 120px 40px 80px;
+      width: 100%;
+    }
+    .hero__label {
+      font-family: var(--font-m);
+      font-size: 12px;
+      color: var(--electric);
+      letter-spacing: 0.12em;
+      margin-bottom: 28px;
+      opacity: 0;
+      animation: fadeUp 0.8s var(--ease) 0.2s forwards;
+    }
+    .hero__name {
+      font-family: var(--font-h);
+      font-size: clamp(72px, 12vw, 160px);
+      font-weight: 700;
+      line-height: 1;
+      letter-spacing: -0.03em;
+      color: var(--white);
+      margin-bottom: 32px;
+      display: flex;
+      gap: 0.04em;
+    }
+    .letter-wrap {
+      display: inline-block;
+      overflow: hidden;
+    }
+    .letter-inner {
+      display: inline-block;
+      transform: translateY(100%);
+      opacity: 0;
+      transition: transform 0.7s var(--ease), opacity 0.7s var(--ease);
+    }
+    .letter-inner.in {
+      transform: translateY(0);
+      opacity: 1;
+    }
+    .hero__tagline {
+      font-size: clamp(16px, 2vw, 20px);
+      color: var(--pale);
+      max-width: 620px;
+      line-height: 1.7;
+      margin-bottom: 40px;
+      opacity: 0;
+      animation: fadeUp 0.8s var(--ease) 1.2s forwards;
+    }
+    .hero__cta-row {
+      display: flex;
+      gap: 16px;
+      flex-wrap: wrap;
+      margin-bottom: 64px;
+      opacity: 0;
+      animation: fadeUp 0.8s var(--ease) 1.4s forwards;
+    }
+    .hero__stats {
+      display: flex;
+      gap: 48px;
+      flex-wrap: wrap;
+      opacity: 0;
+      animation: fadeUp 0.8s var(--ease) 1.6s forwards;
+      padding-top: 40px;
+      border-top: 1px solid var(--border);
+    }
+    .hero__stat { display: flex; flex-direction: column; gap: 4px; }
+    .hero__stat-num {
+      font-family: var(--font-h);
+      font-size: clamp(28px, 4vw, 42px);
+      font-weight: 700;
+      color: var(--amber);
+      min-width: 80px;
+      display: inline-block;
+    }
+    .hero__stat-label {
+      font-size: 12px;
+      color: var(--pale);
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+    .hero__scroll {
+      position: absolute;
+      bottom: 40px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      color: var(--pale);
+      font-size: 11px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      opacity: 0;
+      animation: fadeUp 0.8s var(--ease) 2s forwards;
+    }
+    .hero__scroll-line {
+      width: 1px;
+      height: 48px;
+      background: linear-gradient(180deg, var(--electric), transparent);
+      animation: float 2s ease-in-out infinite;
+    }
+
+    /* ── Sections ────────────────────────────────────────────────── */
+    .section {
+      position: relative;
+      z-index: 1;
+      padding: 120px 40px;
+    }
+    .section__inner {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    .section__header {
+      margin-bottom: 64px;
+    }
+    .section__eyebrow {
+      font-family: var(--font-m);
+      font-size: 11px;
+      letter-spacing: 0.18em;
+      color: var(--electric);
+      text-transform: uppercase;
+      margin-bottom: 12px;
+    }
+    .section__title {
+      font-family: var(--font-h);
+      font-size: clamp(36px, 6vw, 72px);
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      line-height: 1.05;
+    }
+
+    /* ── Split text animation ────────────────────────────────────── */
+    .split-text .word-wrap {
+      display: inline-block;
+      overflow: hidden;
+      margin-right: 0.25em;
+    }
+    .split-text .word-inner {
+      display: inline-block;
+      transform: translateY(115%);
+      opacity: 0;
+      transition: transform 0.7s var(--ease), opacity 0.6s var(--ease);
+    }
+    .split-text.in .word-inner { transform: translateY(0); opacity: 1; }
+
+    /* ── Ventures grid ───────────────────────────────────────────── */
+    .ventures__grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+      gap: 24px;
+    }
+    .venture-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 28px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      transition: border-color 0.3s, box-shadow 0.3s;
+      will-change: transform;
+      backdrop-filter: blur(12px);
+      opacity: 0;
+      transform: translateY(32px);
+    }
+    .venture-card.visible {
+      opacity: 1;
+      transform: translateY(0);
+      transition: opacity 0.6s var(--ease), transform 0.6s var(--ease), border-color 0.3s, box-shadow 0.3s;
+    }
+    .venture-card:hover {
+      border-color: rgba(56,189,248,0.3);
+      box-shadow: 0 0 40px rgba(56,189,248,0.08);
+    }
+    .venture-card__tag {
+      font-family: var(--font-m);
+      font-size: 10px;
+      letter-spacing: 0.12em;
+      color: var(--electric);
+      text-transform: uppercase;
+    }
+    .venture-card__icon { font-size: 28px; }
+    .venture-card__title {
+      font-family: var(--font-h);
+      font-size: 22px;
+      font-weight: 600;
+      color: var(--white);
+    }
+    .venture-card__desc {
+      font-size: 14px;
+      color: var(--pale);
+      line-height: 1.7;
+      flex: 1;
+    }
+    .venture-card__footer {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-top: auto;
+      padding-top: 16px;
+      border-top: 1px solid var(--border);
+    }
+    .venture-card__badges { display: flex; gap: 8px; flex-wrap: wrap; }
+    .badge {
+      font-family: var(--font-m);
+      font-size: 10px;
+      padding: 4px 10px;
+      border-radius: 4px;
+      background: rgba(245,158,11,0.1);
+      border: 1px solid rgba(245,158,11,0.25);
+      color: var(--amber);
+      letter-spacing: 0.06em;
+    }
+    .venture-card__role {
+      font-size: 12px;
+      color: var(--pale);
+      opacity: 0.7;
+    }
+    .venture-card__link {
+      font-size: 13px;
+      color: var(--electric);
+      transition: opacity 0.2s;
+    }
+    .venture-card__link:hover { opacity: 0.7; }
+
+    /* stagger delays for venture cards */
+    .stagger-1 { transition-delay: 0ms; }
+    .stagger-2 { transition-delay: 80ms; }
+    .stagger-3 { transition-delay: 160ms; }
+    .stagger-4 { transition-delay: 240ms; }
+    .stagger-5 { transition-delay: 320ms; }
+    .stagger-6 { transition-delay: 400ms; }
+
+    /* ── Awards list ─────────────────────────────────────────────── */
+    .awards__list { display: flex; flex-direction: column; gap: 0; }
+    .award-row {
+      display: grid;
+      grid-template-columns: 80px 1fr 80px;
+      align-items: center;
+      gap: 24px;
+      padding: 20px 0;
+      border-bottom: 1px solid var(--border);
+      position: relative;
+      transition: background 0.2s;
+    }
+    .award-row::before {
+      content: '';
+      position: absolute;
+      left: -40px; top: 0; bottom: 0;
+      width: 3px;
+      background: linear-gradient(180deg, var(--amber), var(--electric));
+      transform: scaleY(0);
+      transform-origin: top;
+      transition: transform 0.4s var(--ease);
+    }
+    .award-row:hover::before { transform: scaleY(1); }
+    .award-row:hover { background: rgba(255,255,255,0.02); }
+    .award-row__rank {
+      font-family: var(--font-m);
+      font-size: 14px;
+      color: var(--amber);
+      font-weight: 700;
+    }
+    .award-row__title {
+      font-family: var(--font-h);
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--white);
+      margin-bottom: 4px;
+    }
+    .award-row__sub {
+      font-size: 13px;
+      color: var(--pale);
+      line-height: 1.5;
+    }
+    .award-row__prize {
+      font-family: var(--font-m);
+      font-size: 13px;
+      color: var(--electric);
+      text-align: right;
+    }
+
+    /* ── Leadership grid ─────────────────────────────────────────── */
+    .leadership-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 24px;
+    }
+    .leadership-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 28px;
+      backdrop-filter: blur(12px);
+      transition: border-color 0.3s, box-shadow 0.3s;
+    }
+    .leadership-card:hover {
+      border-color: rgba(167,139,250,0.3);
+      box-shadow: 0 0 40px rgba(167,139,250,0.08);
+    }
+    .leadership-card__icon { font-size: 28px; margin-bottom: 14px; }
+    .leadership-card__org {
+      font-family: var(--font-m);
+      font-size: 11px;
+      letter-spacing: 0.1em;
+      color: var(--violet);
+      text-transform: uppercase;
+      margin-bottom: 6px;
+    }
+    .leadership-card__role {
+      font-family: var(--font-h);
+      font-size: 17px;
+      font-weight: 600;
+      color: var(--white);
+      margin-bottom: 12px;
+    }
+    .leadership-card__body {
+      font-size: 13px;
+      color: var(--pale);
+      line-height: 1.7;
+      margin-bottom: 16px;
+    }
+    .leadership-card__stat {
+      font-family: var(--font-m);
+      font-size: 11px;
+      color: var(--amber);
+      letter-spacing: 0.06em;
+    }
+
+    /* ── Experience / Timeline ───────────────────────────────────── */
+    .timeline {
+      position: relative;
+      padding-left: 40px;
+    }
+    .timeline__track {
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: 2px;
+      background: linear-gradient(180deg, var(--electric), var(--violet), var(--amber));
+    }
+    .exp-item {
+      position: relative;
+      padding-bottom: 56px;
+    }
+    .exp-item:last-child { padding-bottom: 0; }
+    .exp-item__dot {
+      position: absolute;
+      left: -47px;
+      top: 6px;
+      width: 12px; height: 12px;
+      border-radius: 50%;
+      background: var(--surface);
+      border: 2px solid var(--electric);
+      transition: background 0.3s;
+    }
+    .exp-item__dot.active { background: var(--electric); }
+    .exp-item__date {
+      font-family: var(--font-m);
+      font-size: 11px;
+      color: var(--electric);
+      letter-spacing: 0.1em;
+      margin-bottom: 6px;
+    }
+    .exp-item__company {
+      font-family: var(--font-h);
+      font-size: 20px;
+      font-weight: 600;
+      color: var(--white);
+      margin-bottom: 4px;
+    }
+    .exp-item__role {
+      font-size: 14px;
+      color: var(--amber);
+      margin-bottom: 16px;
+    }
+    .exp-item__bullets { display: flex; flex-direction: column; gap: 8px; }
+    .exp-item__bullets li {
+      font-size: 14px;
+      color: var(--pale);
+      line-height: 1.6;
+      padding-left: 16px;
+      position: relative;
+    }
+    .exp-item__bullets li::before {
+      content: '→';
+      position: absolute;
+      left: 0;
+      color: var(--electric);
+      font-size: 12px;
+    }
+
+    /* ── Footer ──────────────────────────────────────────────────── */
+    .footer {
+      position: relative;
+      z-index: 1;
+      padding: 60px 40px;
+      border-top: 1px solid var(--border);
+      text-align: center;
+    }
+    .footer__inner { max-width: 1200px; margin: 0 auto; }
+    .footer__brand {
+      font-family: var(--font-m);
+      font-size: 13px;
+      letter-spacing: 0.2em;
+      color: var(--amber);
+      margin-bottom: 8px;
+    }
+    .footer__sub {
+      font-size: 13px;
+      color: var(--pale);
+      margin-bottom: 20px;
+    }
+    .footer__links { display: flex; justify-content: center; gap: 32px; }
+    .footer__link {
+      font-size: 13px;
+      color: var(--pale);
+      transition: color 0.2s;
+    }
+    .footer__link:hover { color: var(--electric); }
+
+    /* ── Reveal scroll animations ────────────────────────────────── */
+    .reveal {
+      opacity: 0;
+      transform: translateY(32px);
+      transition: opacity 0.7s var(--ease), transform 0.7s var(--ease);
+    }
+    .reveal-left {
+      opacity: 0;
+      transform: translateX(-48px);
+      transition: opacity 0.7s var(--ease), transform 0.7s var(--ease);
+    }
+    .reveal-right {
+      opacity: 0;
+      transform: translateX(48px);
+      transition: opacity 0.7s var(--ease), transform 0.7s var(--ease);
+    }
+    .reveal.visible, .reveal-left.visible, .reveal-right.visible {
+      opacity: 1;
+      transform: translate(0);
+    }
+
+    /* ── Keyframes ───────────────────────────────────────────────── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(48px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes fadeLeft {
+      from { opacity: 0; transform: translateX(-48px); }
+      to   { opacity: 1; transform: translateX(0); }
+    }
+    @keyframes fadeRight {
+      from { opacity: 0; transform: translateX(48px); }
+      to   { opacity: 1; transform: translateX(0); }
+    }
+    @keyframes orb1Float {
+      0%,100% { transform: translate(0,0) scale(1); }
+      33%      { transform: translate(60px,40px) scale(1.08); }
+      66%      { transform: translate(-30px,70px) scale(0.95); }
+    }
+    @keyframes orb2Float {
+      0%,100% { transform: translate(0,0) scale(1); }
+      40%      { transform: translate(-80px,50px) scale(1.1); }
+      70%      { transform: translate(40px,-60px) scale(0.9); }
+    }
+    @keyframes orb3Float {
+      0%,100% { transform: translate(0,0) scale(1); }
+      25%      { transform: translate(50px,-40px) scale(1.05); }
+      75%      { transform: translate(-60px,30px) scale(0.92); }
+    }
+    @keyframes dotPing {
+      0%  { transform: scale(1); opacity: 1; }
+      100%{ transform: scale(2.8); opacity: 0; }
+    }
+    @keyframes float {
+      0%,100% { transform: translateY(0); }
+      50%     { transform: translateY(-16px); }
+    }
+    @keyframes shimmer {
+      from { background-position: -200% center; }
+      to   { background-position: 200% center; }
+    }
+    @keyframes pulseGlow {
+      0%,100% { box-shadow: 0 0 8px rgba(245,158,11,0.2); }
+      50%     { box-shadow: 0 0 24px rgba(245,158,11,0.6); }
+    }
+
+    /* ── Responsive ──────────────────────────────────────────────── */
+    @media (max-width: 1024px) {
+      .nav { padding: 16px 24px; }
+      .nav.scrolled { padding: 12px 24px; }
+      .nav__links { gap: 20px; }
+      .section { padding: 80px 24px; }
+      .hero__inner { padding: 100px 24px 60px; }
+      #section-dots { display: none; }
+    }
+    @media (max-width: 768px) {
+      .nav__links { display: none; }
+      .ventures__grid { grid-template-columns: 1fr; }
+      .leadership-grid { grid-template-columns: 1fr; }
+      .award-row { grid-template-columns: 60px 1fr; }
+      .award-row__prize { display: none; }
+      .hero__stats { gap: 24px; }
+      .timeline { padding-left: 24px; }
+      .timeline__track { display: none; }
+    }
+    @media (max-width: 640px) {
+      .hero__name { font-size: 60px; }
+      .hero__cta-row { flex-direction: column; }
+      .btn-primary, .btn-outline { text-align: center; }
+      .footer__links { flex-direction: column; gap: 12px; }
+    }
   </style>
 </head>
 <body>
-Now I have enough context. The task is to return the raw HTML body content. Let me write the complete HTML.
-
 <canvas id="neural-bg"></canvas>
 <div class="orb orb-1"></div>
 <div class="orb orb-2"></div>
