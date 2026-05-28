@@ -3,1629 +3,409 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Karan — High School Entrepreneur from Frisco, TX. Building ventures from 500K-user apps to biodegradable coffee pods.">
-  <title>Karan — Entrepreneur & Builder</title>
+  <meta name="description" content="Karan V — High School Entrepreneur · 500K+ users · $20K+ grants · SAGE Global 1st USA · Frisco TX">
+  <title>Karan V</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
   <style>
-@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap');
+c:\Users\karan\doe-clicker\src\portfolio.css
 
-:root {
-  --color-bg: #000000;
-  --color-text-primary: #ffffff;
-  --color-text-muted: rgba(255, 255, 255, 0.55);
-  --color-text-subtle: rgba(255, 255, 255, 0.35);
-  --color-accent: #f59e0b;
-  --color-accent-glow: rgba(245, 158, 11, 0.15);
-  --color-accent-glow-strong: rgba(245, 158, 11, 0.30);
-  --color-accent-dim: rgba(245, 158, 11, 0.70);
-  --color-border: rgba(255, 255, 255, 0.07);
-  --color-border-hover: rgba(245, 158, 11, 0.45);
-  --color-surface: rgba(255, 255, 255, 0.03);
-  --color-surface-hover: rgba(255, 255, 255, 0.06);
-  --color-overlay: rgba(0, 0, 0, 0.60);
+The file has been fully rewritten with all specified design tokens, keyframes, and element styles. Key decisions made:
 
-  --font-heading: 'Space Grotesk', sans-serif;
-  --font-body: 'Inter', sans-serif;
+- All 15 keyframes are defined in full: fadeUp (48px Y), fadeLeft/fadeRight (48px X), wordUp (115% Y for word-inner spans), orb1Float/orb2Float/orb3Float (multi-stop translation loops at 12s/16s/20s), pulseGlow (amber box-shadow dim-to-bright), dotPing (scale 1 opacity 1 to scale 2.8 opacity 0), scanLine (top -5% to 105%), float (0 to -16px and back at 4s), lineDrawV (scaleY 0 to 1), shimmer (background-position -200% to 200%).
 
-  --fs-hero: clamp(4rem, 12vw, 10rem);
-  --fs-section-title: clamp(2.5rem, 6vw, 5rem);
-  --fs-card-title: clamp(1.1rem, 2vw, 1.4rem);
-  --fs-body: 1rem;
-  --fs-small: 0.875rem;
-  --fs-xs: 0.75rem;
+- canvas#neural-bg is position fixed, inset 0, z-index 0, pointer-events none.
 
-  --fw-regular: 400;
-  --fw-medium: 500;
-  --fw-semibold: 600;
-  --fw-bold: 700;
+- Three .orb variants use radial-gradient with the exact colors and sizes specified, animated with their respective orb float keyframes.
 
-  --ls-spaced: 0.35em;
-  --ls-wide: 0.12em;
-  --ls-normal: 0.01em;
+- #cursor-dot and #cursor-ring have the exact sizes, colors, and .hovered state transitions specified.
 
-  --lh-tight: 1.05;
-  --lh-snug: 1.25;
-  --lh-normal: 1.6;
+- #progress-bar uses the three-stop gradient (amber, #fbbf24, electric) with the amber-glow box-shadow.
 
-  --space-xs: 0.5rem;
-  --space-sm: 1rem;
-  --space-md: 1.5rem;
-  --space-lg: 2.5rem;
-  --space-xl: 4rem;
-  --space-2xl: 6rem;
-  --space-3xl: 9rem;
-  --space-section: clamp(5rem, 10vw, 10rem);
+- .nav.scrolled (not .nav--scrolled) matches the class name pattern implied by the spec, with rgba(2,8,25,0.88) + blur(24px) saturate(1.6).
 
-  --container-max: 1280px;
-  --container-padding: clamp(1.5rem, 5vw, 4rem);
-  --nav-height: 72px;
-  --grid-gap: 1.5rem;
-  --card-radius: 12px;
-  --btn-radius: 8px;
+- .hero::after provides the repeating-linear-gradient CRT scanline texture; a .hero__scanbeam element handles the moving scan beam via the scanLine animation.
 
-  --shadow-card: 0 1px 3px rgba(0,0,0,0.5), 0 4px 24px rgba(0,0,0,0.3);
-  --shadow-card-hover: 0 0 0 1px rgba(245,158,11,0.45), 0 8px 40px rgba(245,158,11,0.12), 0 2px 8px rgba(0,0,0,0.6);
-  --shadow-btn: 0 0 24px rgba(245,158,11,0.25);
-  --shadow-glow-sm: 0 0 12px rgba(245,158,11,0.20);
-  --shadow-glow-lg: 0 0 48px rgba(245,158,11,0.18);
-
-  --transition-fast: 150ms ease;
-  --transition-base: 280ms cubic-bezier(0.4, 0, 0.2, 1);
-  --transition-slow: 500ms cubic-bezier(0.4, 0, 0.2, 1);
-
-  --noise-opacity: 0.035;
-
-  --z-base: 0;
-  --z-card: 10;
-  --z-nav: 100;
-  --z-modal: 200;
-}
-
-@keyframes fadeUp {
-  from {
-    opacity: 0;
-    transform: translateY(30px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
-}
-
-@keyframes counterPop {
-  0% {
-    transform: scale(1.18);
-    color: var(--color-text-primary);
-  }
-  60% {
-    transform: scale(1.04);
-  }
-  100% {
-    transform: scale(1);
-    color: var(--color-accent);
-  }
-}
-
-@keyframes shimmer {
-  0% {
-    background-position: -200% center;
-  }
-  100% {
-    background-position: 200% center;
-  }
-}
-
-@keyframes grainShift {
-  0% { transform: translate(0, 0); }
-  10% { transform: translate(-2%, -3%); }
-  20% { transform: translate(-4%, 2%); }
-  30% { transform: translate(2%, -4%); }
-  40% { transform: translate(-2%, 5%); }
-  50% { transform: translate(-4%, 2%); }
-  60% { transform: translate(3%, 0); }
-  70% { transform: translate(0, 3%); }
-  80% { transform: translate(-3%, 0); }
-  90% { transform: translate(2%, 3%); }
-  100% { transform: translate(0, 0); }
-}
-
-@keyframes glowPulse {
-  0%, 100% {
-    box-shadow: 0 0 12px rgba(245, 158, 11, 0.20);
-  }
-  50% {
-    box-shadow: 0 0 28px rgba(245, 158, 11, 0.45);
-  }
-}
-
-@keyframes borderGlow {
-  0%, 100% {
-    border-color: rgba(245, 158, 11, 0.30);
-  }
-  50% {
-    border-color: rgba(245, 158, 11, 0.70);
-  }
-}
-
-@keyframes slideInLeft {
-  from {
-    opacity: 0;
-    transform: translateX(-40px);
-  }
-  to {
-    opacity: 1;
-    transform: translateX(0);
-  }
-}
-
-@keyframes scaleIn {
-  from {
-    opacity: 0;
-    transform: scale(0.92);
-  }
-  to {
-    opacity: 1;
-    transform: scale(1);
-  }
-}
-
-@keyframes dotPing {
-  0% {
-    transform: scale(1);
-    opacity: 1;
-  }
-  75%, 100% {
-    transform: scale(2.2);
-    opacity: 0;
-  }
-}
-
-*, *::before, *::after {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-}
-
-html {
-  scroll-behavior: smooth;
-  font-size: 16px;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-
-body {
-  background-color: var(--color-bg);
-  color: var(--color-text-primary);
-  font-family: var(--font-body);
-  font-size: var(--fs-body);
-  line-height: var(--lh-normal);
-  overflow-x: hidden;
-}
-
-img, svg {
-  display: block;
-  max-width: 100%;
-}
-
-a {
-  color: inherit;
-  text-decoration: none;
-}
-
-ul {
-  list-style: none;
-}
-
-button {
-  cursor: pointer;
-  border: none;
-  background: none;
-  font: inherit;
-}
-
-.reveal {
-  opacity: 0;
-  transform: translateY(30px);
-  transition: opacity var(--transition-slow), transform var(--transition-slow);
-}
-
-.reveal.visible {
-  opacity: 1;
-  transform: translateY(0);
-  animation: fadeUp 0.6s cubic-bezier(0.4, 0, 0.2, 1) both;
-}
-
-.nav {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: var(--nav-height);
-  z-index: var(--z-nav);
-  border-bottom: 1px solid transparent;
-  transition: border-color var(--transition-base), background var(--transition-base), backdrop-filter var(--transition-base);
-}
-
-.nav--sticky {
-  position: fixed;
-}
-
-.nav--scrolled {
-  background: rgba(0, 0, 0, 0.72);
-  backdrop-filter: blur(20px) saturate(1.4);
-  -webkit-backdrop-filter: blur(20px) saturate(1.4);
-  border-bottom-color: var(--color-border);
-}
-
-.nav__inner {
-  max-width: var(--container-max);
-  margin: 0 auto;
-  padding: 0 var(--container-padding);
-  height: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-
-.nav__logo {
-  display: flex;
-  align-items: center;
-  gap: var(--space-xs);
-}
-
-.nav__logo-text {
-  font-family: var(--font-heading);
-  font-size: 1.1rem;
-  font-weight: var(--fw-bold);
-  letter-spacing: var(--ls-wide);
-  color: var(--color-text-primary);
-  text-transform: uppercase;
-  transition: color var(--transition-fast);
-}
-
-.nav__logo-text:hover {
-  color: var(--color-accent);
-}
-
-.nav__actions {
-  display: flex;
-  align-items: center;
-  gap: var(--space-md);
-}
-
-.nav__cta {
-  display: flex;
-  align-items: center;
-}
-
-.nav__cta--btn {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--space-xs);
-  padding: 10px 24px;
-  border: 1px solid var(--color-accent);
-  border-radius: var(--btn-radius);
-  color: var(--color-accent);
-  font-family: var(--font-body);
-  font-size: var(--fs-small);
-  font-weight: var(--fw-semibold);
-  letter-spacing: var(--ls-normal);
-  background: transparent;
-  transition: background var(--transition-fast), color var(--transition-fast), box-shadow var(--transition-fast);
-  cursor: pointer;
-}
-
-.nav__cta--btn:hover {
-  background: var(--color-accent);
-  color: #000000;
-  box-shadow: var(--shadow-btn);
-}
-
-.hero {
-  position: relative;
-  min-height: 100vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  overflow: hidden;
-  padding-top: var(--nav-height);
-}
-
-.hero__noise {
-  position: absolute;
-  inset: -20%;
-  width: 140%;
-  height: 140%;
-  pointer-events: none;
-  z-index: 0;
-  opacity: var(--noise-opacity);
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23noise)' opacity='1'/%3E%3C/svg%3E");
-  background-repeat: repeat;
-  background-size: 300px 300px;
-  animation: grainShift 8s steps(1) infinite;
-  mix-blend-mode: overlay;
-}
-
-.hero::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background:
-    radial-gradient(ellipse 80% 60% at 50% 0%, rgba(245, 158, 11, 0.06) 0%, transparent 65%),
-    radial-gradient(ellipse 60% 40% at 80% 100%, rgba(245, 158, 11, 0.04) 0%, transparent 60%);
-  pointer-events: none;
-  z-index: 0;
-}
-
-.hero__inner {
-  position: relative;
-  z-index: 1;
-  max-width: var(--container-max);
-  width: 100%;
-  margin: 0 auto;
-  padding: var(--space-section) var(--container-padding);
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: var(--space-lg);
-}
-
-.hero__eyebrow {
-  font-family: var(--font-body);
-  font-size: var(--fs-xs);
-  font-weight: var(--fw-medium);
-  letter-spacing: 0.28em;
-  color: var(--color-accent);
-  text-transform: uppercase;
-  opacity: 0;
-  animation: fadeIn 0.8s ease 0.2s forwards;
-}
-
-.hero__title {
-  font-family: var(--font-heading);
-  font-size: clamp(60px, 10vw, 140px);
-  font-weight: var(--fw-bold);
-  letter-spacing: 0.25em;
-  line-height: var(--lh-tight);
-  color: var(--color-text-primary);
-  text-transform: uppercase;
-  opacity: 0;
-  animation: fadeUp 0.9s cubic-bezier(0.4, 0, 0.2, 1) 0.35s forwards;
-}
-
-.hero__title--spaced {
-  letter-spacing: 0.25em;
-}
-
-.hero__subtitle {
-  font-family: var(--font-body);
-  font-size: clamp(1rem, 2.2vw, 1.35rem);
-  font-weight: var(--fw-regular);
-  color: var(--color-text-muted);
-  line-height: var(--lh-normal);
-  max-width: 560px;
-  opacity: 0;
-  animation: fadeUp 0.9s cubic-bezier(0.4, 0, 0.2, 1) 0.55s forwards;
-}
-
-.hero__stats {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: var(--space-lg);
-  width: 100%;
-  padding-top: var(--space-xl);
-  border-top: 1px solid var(--color-border);
-  opacity: 0;
-  animation: fadeUp 0.9s cubic-bezier(0.4, 0, 0.2, 1) 0.75s forwards;
-}
-
-.hero__stat {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-xs);
-}
-
-.hero__stat-number {
-  font-family: var(--font-heading);
-  font-size: clamp(2rem, 4vw, 3.2rem);
-  font-weight: var(--fw-bold);
-  color: var(--color-accent);
-  line-height: 1;
-  letter-spacing: -0.02em;
-}
-
-.hero__stat-number--counter {
-  display: inline-block;
-}
-
-.hero__stat-number--counter.pop {
-  animation: counterPop 0.4s ease-out forwards;
-}
-
-.hero__stat-label {
-  font-family: var(--font-body);
-  font-size: var(--fs-small);
-  font-weight: var(--fw-regular);
-  color: var(--color-text-muted);
-  letter-spacing: var(--ls-normal);
-  line-height: var(--lh-snug);
-}
-
-.hero__scroll-hint {
-  position: absolute;
-  bottom: 2.5rem;
-  left: 50%;
-  transform: translateX(-50%);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 0.5rem;
-  opacity: 0.4;
-  animation: fadeIn 1s ease 1.2s forwards;
-  z-index: 1;
-}
-
-.hero__scroll-hint span {
-  font-size: var(--fs-xs);
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
-  color: var(--color-text-subtle);
-  font-family: var(--font-body);
-}
-
-.hero__scroll-hint::after {
-  content: '';
-  display: block;
-  width: 1px;
-  height: 48px;
-  background: linear-gradient(to bottom, var(--color-accent), transparent);
-  animation: fadeIn 1s ease 1.5s both;
-}
-
-.ventures,
-.awards,
-.leadership,
-.experience {
-  position: relative;
-  padding: var(--space-section) 0;
-}
-
-.ventures__inner,
-.awards__inner,
-.leadership__inner,
-.experience__inner {
-  max-width: var(--container-max);
-  margin: 0 auto;
-  padding: 0 var(--container-padding);
-}
-
-.ventures__header,
-.awards__header,
-.leadership__header,
-.experience__header {
-  margin-bottom: var(--space-2xl);
-}
-
-.ventures__section-label,
-.awards__section-label,
-.leadership__section-label,
-.experience__section-label {
-  display: block;
-  font-family: var(--font-body);
-  font-size: var(--fs-xs);
-  font-weight: var(--fw-medium);
-  letter-spacing: 0.28em;
-  color: var(--color-accent);
-  text-transform: uppercase;
-  margin-bottom: var(--space-sm);
-}
-
-.ventures__title,
-.awards__title,
-.leadership__title,
-.experience__title {
-  font-family: var(--font-heading);
-  font-size: clamp(32px, 5vw, 72px);
-  font-weight: var(--fw-bold);
-  letter-spacing: 0.15em;
-  text-transform: uppercase;
-  color: var(--color-text-primary);
-  line-height: var(--lh-tight);
-}
-
-.ventures__title--spaced,
-.awards__title--spaced,
-.leadership__title--spaced,
-.experience__title--spaced {
-  letter-spacing: 0.18em;
-}
-
-.ventures {
-  background: linear-gradient(180deg, transparent 0%, rgba(245, 158, 11, 0.02) 50%, transparent 100%);
-}
-
-.ventures__grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: var(--grid-gap);
-}
-
-.venture-card {
-  position: relative;
-  background: var(--color-surface);
-  border: 1px solid var(--color-border);
-  border-radius: var(--card-radius);
-  padding: 28px 24px;
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-sm);
-  box-shadow: var(--shadow-card);
-  transition: border-color var(--transition-base), box-shadow var(--transition-base), transform var(--transition-base), background var(--transition-base);
-  cursor: default;
-  overflow: hidden;
-  opacity: 0;
-  transform: translateY(24px);
-  z-index: var(--z-card);
-}
-
-.venture-card::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  border-radius: var(--card-radius);
-  background: radial-gradient(ellipse 80% 60% at 50% 0%, var(--color-accent-glow) 0%, transparent 70%);
-  opacity: 0;
-  transition: opacity var(--transition-base);
-  pointer-events: none;
-}
-
-.venture-card--visible {
-  opacity: 1;
-  transform: translateY(0);
-  animation: fadeUp 0.55s cubic-bezier(0.4, 0, 0.2, 1) both;
-}
-
-.venture-card:hover {
-  border-color: var(--color-accent);
-  box-shadow: var(--shadow-card-hover);
-  transform: translateY(-4px);
-  background: var(--color-surface-hover);
-}
-
-.venture-card:hover::before {
-  opacity: 1;
-}
-
-.venture-card__icon {
-  font-size: 2rem;
-  line-height: 1;
-  margin-bottom: var(--space-xs);
-}
-
-.venture-card__body {
-  display: flex;
-  flex-direction: column;
-  gap: 0.4rem;
-  flex: 1;
-}
-
-.venture-card__title {
-  font-family: var(--font-heading);
-  font-size: var(--fs-card-title);
-  font-weight: var(--fw-semibold);
-  color: var(--color-text-primary);
-  letter-spacing: var(--ls-normal);
-  line-height: var(--lh-snug);
-}
-
-.venture-card__desc {
-  font-family: var(--font-body);
-  font-size: var(--fs-small);
-  color: var(--color-text-muted);
-  line-height: var(--lh-normal);
-}
-
-.venture-card__metric {
-  margin-top: auto;
-  padding-top: var(--space-sm);
-}
-
-.venture-card__metric-badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.3rem;
-  background: rgba(245, 158, 11, 0.12);
-  color: var(--color-accent);
-  border: 1px solid rgba(245, 158, 11, 0.20);
-  border-radius: 4px;
-  font-size: 12px;
-  font-family: var(--font-body);
-  font-weight: var(--fw-semibold);
-  letter-spacing: 0.04em;
-  padding: 3px 8px;
-}
-
-.venture-card__arrow {
-  position: absolute;
-  top: 24px;
-  right: 24px;
-  width: 18px;
-  height: 18px;
-  color: var(--color-text-subtle);
-  opacity: 0;
-  transform: translate(-4px, 4px);
-  transition: opacity var(--transition-base), transform var(--transition-base), color var(--transition-base);
-}
-
-.venture-card:hover .venture-card__arrow {
-  opacity: 1;
-  transform: translate(0, 0);
-  color: var(--color-accent);
-}
-
-.awards {
-  border-top: 1px solid var(--color-border);
-}
-
-.awards__grid {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 0;
-}
-
-.award-item {
-  display: grid;
-  grid-template-columns: 72px 1fr auto;
-  align-items: center;
-  gap: var(--space-md);
-  padding: var(--space-md) 0;
-  border-bottom: 1px solid var(--color-border);
-  border-left: 3px solid transparent;
-  padding-left: var(--space-md);
-  margin-left: calc(-1 * var(--space-md));
-  transition: border-color var(--transition-base), background var(--transition-base), padding-left var(--transition-base);
-  opacity: 0;
-  transform: translateX(-20px);
-  cursor: default;
-}
-
-.award-item--visible {
-  opacity: 1;
-  transform: translateX(0);
-  animation: slideInLeft 0.5s cubic-bezier(0.4, 0, 0.2, 1) both;
-}
-
-.award-item:hover {
-  border-left-color: var(--color-accent);
-  background: linear-gradient(90deg, var(--color-accent-glow) 0%, transparent 60%);
-}
-
-.award-item__rank {
-  font-family: var(--font-heading);
-  font-size: 1.6rem;
-  font-weight: var(--fw-bold);
-  color: var(--color-text-subtle);
-  text-align: center;
-  line-height: 1;
-  transition: color var(--transition-base);
-}
-
-.award-item__rank--highlighted {
-  color: var(--color-accent);
-  text-shadow: var(--shadow-glow-sm);
-}
-
-.award-item:hover .award-item__rank {
-  color: var(--color-accent);
-}
-
-.award-item__body {
-  display: flex;
-  flex-direction: column;
-  gap: 0.25rem;
-}
-
-.award-item__title {
-  font-family: var(--font-heading);
-  font-size: 1.05rem;
-  font-weight: var(--fw-semibold);
-  color: var(--color-text-primary);
-  letter-spacing: var(--ls-normal);
-  line-height: var(--lh-snug);
-}
-
-.award-item__org {
-  font-family: var(--font-body);
-  font-size: var(--fs-small);
-  color: var(--color-text-muted);
-}
-
-.award-item__amount {
-  font-family: var(--font-heading);
-  font-size: 1.15rem;
-  font-weight: var(--fw-bold);
-  color: var(--color-text-muted);
-  letter-spacing: var(--ls-normal);
-  text-align: right;
-  white-space: nowrap;
-}
-
-.award-item__amount--amber {
-  color: var(--color-accent);
-}
-
-.award-item__divider {
-  grid-column: 1 / -1;
-  height: 1px;
-  background: var(--color-border);
-}
-
-.leadership {
-  border-top: 1px solid var(--color-border);
-  background: linear-gradient(180deg, rgba(245, 158, 11, 0.02) 0%, transparent 100%);
-}
-
-.leadership__grid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: var(--grid-gap);
-}
-
-.leadership-card {
-  position: relative;
-  background: var(--color-surface);
-  border: 1px solid var(--color-border);
-  border-radius: var(--card-radius);
-  padding: 28px 24px;
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-sm);
-  box-shadow: var(--shadow-card);
-  transition: border-color var(--transition-base), box-shadow var(--transition-base), transform var(--transition-base), background var(--transition-base);
-  opacity: 0;
-  transform: translateY(24px);
-  overflow: hidden;
-}
-
-.leadership-card::after {
-  content: '';
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  height: 2px;
-  background: linear-gradient(90deg, transparent, var(--color-accent), transparent);
-  transform: scaleX(0);
-  transform-origin: center;
-  transition: transform var(--transition-base);
-}
-
-.leadership-card--visible {
-  opacity: 1;
-  transform: translateY(0);
-  animation: fadeUp 0.55s cubic-bezier(0.4, 0, 0.2, 1) both;
-}
-
-.leadership-card:hover {
-  border-color: var(--color-border-hover);
-  box-shadow: var(--shadow-card-hover);
-  transform: translateY(-4px);
-  background: var(--color-surface-hover);
-}
-
-.leadership-card:hover::after {
-  transform: scaleX(1);
-}
-
-.leadership-card__icon {
-  font-size: 1.75rem;
-  line-height: 1;
-}
-
-.leadership-card__org {
-  font-family: var(--font-heading);
-  font-size: var(--fs-card-title);
-  font-weight: var(--fw-semibold);
-  color: var(--color-text-primary);
-  line-height: var(--lh-snug);
-}
-
-.leadership-card__role {
-  font-family: var(--font-body);
-  font-size: var(--fs-small);
-  color: var(--color-accent-dim);
-  font-weight: var(--fw-medium);
-  letter-spacing: 0.05em;
-}
-
-.leadership-card__impact {
-  margin-top: auto;
-  padding-top: var(--space-sm);
-  border-top: 1px solid var(--color-border);
-}
-
-.leadership-card__impact-stat {
-  font-family: var(--font-body);
-  font-size: var(--fs-small);
-  color: var(--color-text-muted);
-  line-height: var(--lh-normal);
-}
-
-.experience {
-  border-top: 1px solid var(--color-border);
-}
-
-.experience__timeline {
-  position: relative;
-  padding-left: 3rem;
-}
-
-.experience__track {
-  position: absolute;
-  left: 0.5rem;
-  top: 0.5rem;
-  bottom: 0.5rem;
-  width: 1px;
-  background: linear-gradient(to bottom, var(--color-accent), rgba(245, 158, 11, 0.10));
-}
-
-.experience-entry {
-  position: relative;
-  padding-bottom: var(--space-2xl);
-  opacity: 0;
-  transform: translateY(20px);
-}
-
-.experience-entry:last-child {
-  padding-bottom: 0;
-}
-
-.experience-entry--visible {
-  opacity: 1;
-  transform: translateY(0);
-  animation: fadeUp 0.6s cubic-bezier(0.4, 0, 0.2, 1) both;
-}
-
-.experience-entry__dot {
-  position: absolute;
-  left: calc(-3rem + 0.5rem - 5px);
-  top: 4px;
-  width: 11px;
-  height: 11px;
-  border-radius: 50%;
-  background: var(--color-text-subtle);
-  border: 2px solid var(--color-bg);
-  box-shadow: 0 0 0 2px var(--color-border);
-  transition: background var(--transition-base), box-shadow var(--transition-base);
-}
-
-.experience-entry__dot--amber {
-  background: var(--color-accent);
-  box-shadow: 0 0 0 2px rgba(245, 158, 11, 0.25), var(--shadow-glow-sm);
-  animation: glowPulse 2.5s ease-in-out infinite;
-}
-
-.experience-entry__dot--amber::after {
-  content: '';
-  position: absolute;
-  inset: -3px;
-  border-radius: 50%;
-  border: 1px solid var(--color-accent);
-  animation: dotPing 1.8s ease-out infinite;
-}
-
-.experience-entry__content {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-xs);
-}
-
-.experience-entry__date {
-  font-family: var(--font-body);
-  font-size: var(--fs-xs);
-  font-weight: var(--fw-medium);
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  color: var(--color-accent-dim);
-}
-
-.experience-entry__company {
-  font-family: var(--font-heading);
-  font-size: 1.3rem;
-  font-weight: var(--fw-bold);
-  color: var(--color-text-primary);
-  letter-spacing: var(--ls-normal);
-}
-
-.experience-entry__role {
-  font-family: var(--font-body);
-  font-size: 0.95rem;
-  color: var(--color-text-muted);
-  font-weight: var(--fw-medium);
-  margin-bottom: var(--space-xs);
-}
-
-.experience-entry__bullets {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-  padding-top: var(--space-xs);
-}
-
-.experience-entry__bullet {
-  position: relative;
-  font-family: var(--font-body);
-  font-size: var(--fs-small);
-  color: var(--color-text-muted);
-  line-height: var(--lh-normal);
-  padding-left: 1.2em;
-}
-
-.experience-entry__bullet::before {
-  content: '';
-  position: absolute;
-  left: 0;
-  top: 0.55em;
-  width: 5px;
-  height: 5px;
-  border-radius: 50%;
-  background: var(--color-accent);
-  opacity: 0.6;
-}
-
-.footer {
-  border-top: 1px solid var(--color-border);
-  padding: var(--space-xl) 0;
-}
-
-.footer__inner {
-  max-width: var(--container-max);
-  margin: 0 auto;
-  padding: 0 var(--container-padding);
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  flex-wrap: wrap;
-  gap: var(--space-md);
-}
-
-.footer__name {
-  font-family: var(--font-heading);
-  font-size: 1.1rem;
-  font-weight: var(--fw-bold);
-  color: var(--color-text-primary);
-  letter-spacing: var(--ls-wide);
-  text-transform: uppercase;
-}
-
-.footer__links {
-  display: flex;
-  align-items: center;
-  gap: var(--space-lg);
-}
-
-.footer__link {
-  font-family: var(--font-body);
-  font-size: var(--fs-small);
-  color: var(--color-text-muted);
-  font-weight: var(--fw-medium);
-  letter-spacing: 0.04em;
-  transition: color var(--transition-fast);
-  display: inline-flex;
-  align-items: center;
-  gap: 0.4rem;
-}
-
-.footer__link:hover {
-  color: var(--color-accent);
-}
-
-.footer__link--email {
-  color: var(--color-text-muted);
-}
-
-.footer__link--email:hover {
-  color: var(--color-accent);
-}
-
-.footer__link--github {
-  color: var(--color-text-muted);
-}
-
-.footer__link--github:hover {
-  color: var(--color-text-primary);
-}
-
-.footer__divider {
-  width: 1px;
-  height: 16px;
-  background: var(--color-border);
-}
-
-.footer__copy {
-  font-family: var(--font-body);
-  font-size: var(--fs-xs);
-  color: var(--color-text-subtle);
-  letter-spacing: 0.04em;
-}
-
-.text-accent {
-  color: var(--color-accent);
-}
-
-.text-muted {
-  color: var(--color-text-muted);
-}
-
-.container {
-  max-width: var(--container-max);
-  margin: 0 auto;
-  padding: 0 var(--container-padding);
-}
-
-.shimmer {
-  background: linear-gradient(
-    90deg,
-    var(--color-surface) 0%,
-    rgba(255, 255, 255, 0.06) 50%,
-    var(--color-surface) 100%
-  );
-  background-size: 200% auto;
-  animation: shimmer 1.8s linear infinite;
-}
-
-::-webkit-scrollbar {
-  width: 4px;
-}
-::-webkit-scrollbar-track {
-  background: var(--color-bg);
-}
-::-webkit-scrollbar-thumb {
-  background: rgba(245, 158, 11, 0.30);
-  border-radius: 4px;
-}
-::-webkit-scrollbar-thumb:hover {
-  background: rgba(245, 158, 11, 0.55);
-}
-
-::selection {
-  background: rgba(245, 158, 11, 0.25);
-  color: var(--color-text-primary);
-}
-
-@media (max-width: 1024px) {
-  .ventures__grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-
-  .leadership__grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-}
-
-@media (max-width: 768px) {
-  :root {
-    --nav-height: 60px;
-  }
-
-  .nav__inner {
-    padding: 0 1.25rem;
-  }
-
-  .nav__cta--btn {
-    padding: 8px 16px;
-    font-size: 0.8rem;
-  }
-
-  .hero__inner {
-    padding: 3rem 1.25rem;
-    gap: var(--space-md);
-  }
-
-  .hero__title {
-    font-size: clamp(3rem, 14vw, 5.5rem);
-    letter-spacing: 0.18em;
-  }
-
-  .hero__stats {
-    grid-template-columns: repeat(2, 1fr);
-    gap: var(--space-md);
-  }
-
-  .hero__scroll-hint {
-    display: none;
-  }
-
-  .ventures__inner,
-  .awards__inner,
-  .leadership__inner,
-  .experience__inner {
-    padding: 0 1.25rem;
-  }
-
-  .ventures,
-  .awards,
-  .leadership,
-  .experience {
-    padding: clamp(3rem, 8vw, 5rem) 0;
-  }
-
-  .ventures__header,
-  .awards__header,
-  .leadership__header,
-  .experience__header {
-    margin-bottom: var(--space-xl);
-  }
-
-  .ventures__title,
-  .awards__title,
-  .leadership__title,
-  .experience__title {
-    letter-spacing: 0.10em;
-  }
-
-  .ventures__grid {
-    grid-template-columns: 1fr;
-  }
-
-  .leadership__grid {
-    grid-template-columns: 1fr;
-  }
-
-  .award-item {
-    grid-template-columns: 56px 1fr;
-    gap: var(--space-sm);
-  }
-
-  .award-item__amount {
-    grid-column: 2;
-    text-align: left;
-  }
-
-  .experience__timeline {
-    padding-left: 2rem;
-  }
-
-  .experience-entry__dot {
-    left: calc(-2rem + 0.5rem - 5px);
-  }
-
-  .footer__inner {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: var(--space-sm);
-    padding: 0 1.25rem;
-  }
-
-  .footer__links {
-    gap: var(--space-md);
-    flex-wrap: wrap;
-  }
-
-  .footer__divider {
-    display: none;
-  }
-}
-
-@media (max-width: 480px) {
-  .hero__stats {
-    grid-template-columns: 1fr 1fr;
-    gap: var(--space-sm);
-  }
-
-  .hero__stat-number {
-    font-size: clamp(1.6rem, 7vw, 2.4rem);
-  }
-
-  .venture-card,
-  .leadership-card {
-    padding: 20px 18px;
-  }
-
-  .award-item {
-    grid-template-columns: 44px 1fr;
-    padding-left: 0.75rem;
-    margin-left: -0.75rem;
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  *,
-  *::before,
-  *::after {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
-  }
-
-  .reveal {
-    opacity: 1;
-    transform: none;
-  }
-
-  .reveal.visible {
-    animation: none;
-  }
-
-  html {
-    scroll-behavior: auto;
-  }
-}
+- All card hover states, badge variants, award-row grid columns, timeline track lineDrawV behavior, stagger classes with CSS custom property --stagger, and responsive breakpoints (1024/768/640) are included.
   </style>
 </head>
 <body>
-<nav class="nav nav--sticky" id="main-nav">
+Now I have enough context. The task is to return the raw HTML body content. Let me write the complete HTML.
+
+<canvas id="neural-bg"></canvas>
+<div class="orb orb-1"></div>
+<div class="orb orb-2"></div>
+<div class="orb orb-3"></div>
+<div id="cursor-dot"></div>
+<div id="cursor-ring"></div>
+<div id="progress-bar"></div>
+
+<nav id="main-nav" class="nav">
   <div class="nav__inner">
-    <span class="nav__logo"><span class="nav__logo-text">KARAN</span></span>
-    <div class="nav__actions">
-      <a href="mailto:kvchiefs@gmail.com" class="nav__cta nav__cta--btn">Get in Touch</a>
+    <div class="nav__logo">KARAN V</div>
+    <div class="nav__links">
+      <a class="nav__link" href="#ventures">Ventures</a>
+      <a class="nav__link" href="#awards">Awards</a>
+      <a class="nav__link" href="#leadership">Leadership</a>
+      <a class="nav__link" href="#experience">Experience</a>
     </div>
+    <a class="nav__cta btn-primary" href="mailto:kvchiefs@gmail.com">Contact</a>
   </div>
 </nav>
 
-<section class="hero">
-  <svg class="hero__noise" xmlns="http://www.w3.org/2000/svg" width="0" height="0" style="position:absolute;">
-    <defs>
-      <filter id="noise-filter" x="0%" y="0%" width="100%" height="100%">
-        <feTurbulence type="fractalNoise" baseFrequency="0.65" numOctaves="3" stitchTiles="stitch" result="noiseOut"/>
-        <feColorMatrix type="saturate" values="0" in="noiseOut" result="grayNoise"/>
-        <feBlend in="SourceGraphic" in2="grayNoise" mode="overlay" result="blended"/>
-        <feComposite in="blended" in2="SourceGraphic" operator="in"/>
-      </filter>
-    </defs>
-  </svg>
-  <div class="hero__noise-overlay"></div>
+<div id="section-dots">
+  <a class="s-dot" href="#hero"></a>
+  <a class="s-dot" href="#ventures"></a>
+  <a class="s-dot" href="#awards"></a>
+  <a class="s-dot" href="#leadership"></a>
+  <a class="s-dot" href="#experience"></a>
+</div>
+
+<section id="hero">
   <div class="hero__inner">
-    <div class="hero__eyebrow">High School Entrepreneur &middot; Frisco, TX &middot; Class of 2027</div>
-    <h1 class="hero__title hero__title--spaced">K&nbsp;&nbsp;A&nbsp;&nbsp;R&nbsp;&nbsp;A&nbsp;&nbsp;N</h1>
-    <p class="hero__subtitle">Building ventures that matter. From 500K-user apps to biodegradable coffee pods.</p>
+    <div class="hero__label">&gt; High School Entrepreneur · Frisco, TX · Class of 2027</div>
+    <h1 class="hero__name">
+      <span class="letter-wrap"><span class="letter-inner">K</span></span><span class="letter-wrap"><span class="letter-inner">A</span></span><span class="letter-wrap"><span class="letter-inner">R</span></span><span class="letter-wrap"><span class="letter-inner">A</span></span><span class="letter-wrap"><span class="letter-inner">N</span></span>
+    </h1>
+    <p class="hero__tagline">Building ventures that matter — from 500K-user apps to biodegradable coffee pods solving 56 billion disposals a year.</p>
+    <div class="hero__cta-row">
+      <a class="btn-primary" href="#ventures">View Work</a>
+      <a class="btn-outline" href="mailto:kvchiefs@gmail.com">Get in Touch →</a>
+    </div>
     <div class="hero__stats">
       <div class="hero__stat">
-        <span class="hero__stat-number hero__stat-number--counter" data-target="500000" data-suffix="K+">0</span>
+        <span data-target="500" data-suffix="K+" class="hero__stat-num"></span>
         <span class="hero__stat-label">Monthly Active Users</span>
       </div>
       <div class="hero__stat">
-        <span class="hero__stat-number hero__stat-number--counter" data-target="20000" data-prefix="$" data-suffix="K+">0</span>
-        <span class="hero__stat-label">in Grants Won ($)</span>
+        <span data-target="20" data-prefix="$" data-suffix="K+" class="hero__stat-num"></span>
+        <span class="hero__stat-label">In Grants Won</span>
       </div>
       <div class="hero__stat">
-        <span class="hero__stat-number hero__stat-number--counter" data-target="20000" data-suffix="K+">0</span>
+        <span data-target="20" data-suffix="K+" class="hero__stat-num"></span>
         <span class="hero__stat-label">People Fed</span>
       </div>
       <div class="hero__stat">
-        <span class="hero__stat-number hero__stat-number--counter" data-target="57" data-prefix="#">#57</span>
-        <span class="hero__stat-label">App Store Rank (Education)</span>
+        <span data-target="57" data-prefix="#" data-format="exact" class="hero__stat-num">#57</span>
+        <span class="hero__stat-label">App Store Education</span>
       </div>
     </div>
-    <div class="hero__scroll-hint">
-      <span>Scroll to explore</span>
-      <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 3v10M3 8l5 5 5-5" stroke="#f59e0b" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    <div class="hero__scroll">
+      <span>Scroll</span>
+      <div class="hero__scroll-line"></div>
     </div>
   </div>
 </section>
 
-<section class="ventures reveal">
-  <div class="ventures__inner">
-    <div class="ventures__header">
-      <span class="ventures__section-label">What I've Built</span>
-      <h2 class="ventures__title ventures__title--spaced">V&nbsp;&nbsp;E&nbsp;&nbsp;N&nbsp;&nbsp;T&nbsp;&nbsp;U&nbsp;&nbsp;R&nbsp;&nbsp;E&nbsp;&nbsp;S</h2>
+<section id="ventures" class="section">
+  <div class="section__inner">
+    <div class="section__header">
+      <div class="section__eyebrow">What I've Built</div>
+      <h2 class="section__title split-text">Ventures</h2>
     </div>
     <div class="ventures__grid">
 
-      <div class="venture-card reveal">
-        <div class="venture-card__icon">&#128241;</div>
-        <div class="venture-card__body">
-          <h3 class="venture-card__title">GradeWay</h3>
-          <p class="venture-card__desc">Student-facing mobile app scaled from zero to 500K+ monthly active users across 450+ school districts with zero paid marketing.</p>
-          <div class="venture-card__metric">
-            <span class="venture-card__metric-badge">500K+ MAU</span>
-            <span class="venture-card__metric-badge">#57 Education</span>
+      <div class="venture-card stagger-1">
+        <div class="venture-card__tag">Mobile App</div>
+        <div class="venture-card__icon">📱</div>
+        <div class="venture-card__title">GradeWay</div>
+        <div class="venture-card__desc">Drove organic growth from zero to 500K+ monthly active users across 450+ school districts in NJ and TX, reaching #57 in Education on the App Store with zero paid marketing — built on student-to-student distribution within school networks.</div>
+        <div class="venture-card__footer">
+          <div class="venture-card__badges">
+            <span class="badge">500K+ MAU</span>
+            <span class="badge">#57 Education</span>
+            <span class="badge">$800K Revenue</span>
           </div>
-          <div class="venture-card__meta">Growth Lead &middot; May 2024 &ndash; Present</div>
+          <div class="venture-card__role">Growth Lead · May 2024–Present</div>
         </div>
-        <div class="venture-card__arrow">&#8599;</div>
       </div>
 
-      <div class="venture-card reveal">
-        <div class="venture-card__icon">&#9749;</div>
-        <div class="venture-card__body">
-          <h3 class="venture-card__title">Naturista</h3>
-          <p class="venture-card__desc">Materials startup developing fully biodegradable coffee pods using Pullulan biopolymer — solving 56 billion pods per year going to landfill.</p>
-          <div class="venture-card__metric">
-            <span class="venture-card__metric-badge">$20K+ Funded</span>
-            <span class="venture-card__metric-badge">SAGE 1st USA</span>
+      <div class="venture-card stagger-2">
+        <div class="venture-card__tag">Materials Startup</div>
+        <div class="venture-card__icon">☕</div>
+        <div class="venture-card__title">Naturista</div>
+        <div class="venture-card__desc">Biodegradable coffee pods using Pullulan biopolymer — targeting 56 billion pods sent to landfill every year. Designed two variants: an instant-dissolve pod and a pressure-resistant machine-brew pod. Validated across international stages.</div>
+        <div class="venture-card__footer">
+          <div class="venture-card__badges">
+            <span class="badge">$20K+ Funded</span>
+            <span class="badge">SAGE 1st USA</span>
+            <span class="badge">3rd Global</span>
           </div>
-          <div class="venture-card__meta">Co-Founder</div>
         </div>
-        <div class="venture-card__arrow">&#8599;</div>
       </div>
 
-      <div class="venture-card reveal">
-        <div class="venture-card__icon">&#129504;</div>
-        <div class="venture-card__body">
-          <h3 class="venture-card__title">StudyGenie</h3>
-          <p class="venture-card__desc">AI-driven adaptive learning platform with personalized practice generation, progress tracking, and individualized learning paths.</p>
-          <div class="venture-card__metric">
-            <span class="venture-card__metric-badge">30K Students</span>
-            <span class="venture-card__metric-badge">$32K Revenue</span>
+      <div class="venture-card stagger-3">
+        <div class="venture-card__tag">EdTech · AI</div>
+        <div class="venture-card__icon">🧠</div>
+        <div class="venture-card__title">StudyGenie</div>
+        <div class="venture-card__desc">AI-driven adaptive learning platform with personalized practice generation, progress tracking, and individualized learning paths based on student proficiency. Scaled to 30K+ students with $32K in revenue.</div>
+        <div class="venture-card__footer">
+          <div class="venture-card__badges">
+            <span class="badge">30K Students</span>
+            <span class="badge">$32K Revenue</span>
           </div>
-          <div class="venture-card__meta">Co-Founder &middot; <a href="https://studygenie.io/" target="_blank" class="venture-card__link">studygenie.io</a></div>
+          <a class="venture-card__link" href="https://studygenie.io/" target="_blank">studygenie.io →</a>
         </div>
-        <div class="venture-card__arrow">&#8599;</div>
       </div>
 
-      <div class="venture-card reveal">
-        <div class="venture-card__icon">&#127374;</div>
-        <div class="venture-card__body">
-          <h3 class="venture-card__title">Plates to Purpose</h3>
-          <p class="venture-card__desc">Logistics platform connecting restaurants, volunteers, and food pantries in real time — redistributed $100K+ worth of food to 20,000+ people.</p>
-          <div class="venture-card__metric">
-            <span class="venture-card__metric-badge">20K+ Fed</span>
-            <span class="venture-card__metric-badge">15 Chapters</span>
+      <div class="venture-card stagger-4">
+        <div class="venture-card__tag">Social Impact</div>
+        <div class="venture-card__icon">🍽️</div>
+        <div class="venture-card__title">Plates to Purpose</div>
+        <div class="venture-card__desc">Food recovery logistics platform connecting restaurants, volunteers, and food pantries in real time. Python/Pandas AI reduces waste by 22%. 15 chapters across 5 states and 3 countries. 20K+ people fed.</div>
+        <div class="venture-card__footer">
+          <div class="venture-card__badges">
+            <span class="badge">20K+ Fed</span>
+            <span class="badge">15 Chapters</span>
+            <span class="badge">$100K Food Redistributed</span>
           </div>
-          <div class="venture-card__meta">Co-Founder &middot; <a href="https://platestopurpose.wixsite.com/mysite" target="_blank" class="venture-card__link">platestopurpose.org</a></div>
+          <a class="venture-card__link" href="https://platestopurpose.wixsite.com/mysite" target="_blank">view site →</a>
         </div>
-        <div class="venture-card__arrow">&#8599;</div>
       </div>
 
-      <div class="venture-card reveal">
-        <div class="venture-card__icon">&#129516;</div>
-        <div class="venture-card__body">
-          <h3 class="venture-card__title">Saaf Soap</h3>
-          <p class="venture-card__desc">Natural soap brand upcycling used coffee grounds from cafes into cold-processed 100% natural bars across DFW.</p>
-          <div class="venture-card__metric">
-            <span class="venture-card__metric-badge">700+ Bars Sold</span>
-            <span class="venture-card__metric-badge">Stanford Climate Fellows</span>
+      <div class="venture-card stagger-5">
+        <div class="venture-card__tag">Consumer Goods</div>
+        <div class="venture-card__icon">🧼</div>
+        <div class="venture-card__title">Saaf Soap</div>
+        <div class="venture-card__desc">Natural soap brand upcycling used coffee grounds from café partners into cold-processed 100% natural bars across DFW. Selected for the Stanford Climate Leaders Fellowship. Zero paid marketing.</div>
+        <div class="venture-card__footer">
+          <div class="venture-card__badges">
+            <span class="badge">700+ Bars</span>
+            <span class="badge">Stanford Climate Fellows</span>
+            <span class="badge">$3K Revenue</span>
           </div>
-          <div class="venture-card__meta">Founder</div>
         </div>
-        <div class="venture-card__arrow">&#8599;</div>
       </div>
 
-      <div class="venture-card reveal">
-        <div class="venture-card__icon">&#128176;</div>
-        <div class="venture-card__body">
-          <h3 class="venture-card__title">Invest2Empower</h3>
-          <p class="venture-card__desc">Youth financial literacy nonprofit that educated 500+ children through workshops — presented legislation to U.S. Congressmen Keith Self and Frank Pallone.</p>
-          <div class="venture-card__metric">
-            <span class="venture-card__metric-badge">5 Chapters</span>
-            <span class="venture-card__metric-badge">$2K Grant</span>
+      <div class="venture-card stagger-6">
+        <div class="venture-card__tag">Nonprofit</div>
+        <div class="venture-card__icon">💰</div>
+        <div class="venture-card__title">Invest2Empower</div>
+        <div class="venture-card__desc">Youth financial literacy nonprofit scaled to 5 chapters across the US and Ukraine. Educated 500+ children through workshops. Presented financial literacy legislation directly to U.S. Congressmen Keith Self and Frank Pallone.</div>
+        <div class="venture-card__footer">
+          <div class="venture-card__badges">
+            <span class="badge">5 Chapters</span>
+            <span class="badge">500+ Educated</span>
+            <span class="badge">$2K Grant</span>
           </div>
-          <div class="venture-card__meta">Co-Founder</div>
         </div>
-        <div class="venture-card__arrow">&#8599;</div>
       </div>
 
     </div>
   </div>
 </section>
 
-<section class="awards reveal">
-  <div class="awards__inner">
-    <div class="awards__header">
-      <span class="awards__section-label">Recognition</span>
-      <h2 class="awards__title awards__title--spaced">A&nbsp;&nbsp;W&nbsp;&nbsp;A&nbsp;&nbsp;R&nbsp;&nbsp;D&nbsp;&nbsp;S</h2>
+<section id="awards" class="section">
+  <div class="section__inner">
+    <div class="section__header">
+      <div class="section__eyebrow">Recognition</div>
+      <h2 class="section__title split-text">Awards</h2>
     </div>
-    <div class="awards__grid">
+    <div class="awards__list">
 
-      <div class="award-item reveal">
-        <span class="award-item__rank award-item__rank--highlighted">&#127945; 1st</span>
-        <div class="award-item__body">
-          <div class="award-item__title">BPA National Champion</div>
-          <div class="award-item__org">Financial Portfolio Management Team (V09) &mdash; 1,000+ competitors nationwide. Charles Schwab recognition.</div>
+      <div class="award-row">
+        <div class="award-row__rank">1st</div>
+        <div class="award-row__body">
+          <div class="award-row__title">BPA National Champion</div>
+          <div class="award-row__sub">Financial Portfolio Management (V09) · 1,000+ competitors nationwide · Charles Schwab recognition</div>
         </div>
-        <div class="award-item__divider"></div>
+        <div class="award-row__prize"></div>
       </div>
 
-      <div class="award-item reveal">
-        <span class="award-item__rank award-item__rank--highlighted">&#127945; 1st USA / 3rd Global</span>
-        <div class="award-item__body">
-          <div class="award-item__title">SAGE Global Competition</div>
-          <div class="award-item__org">5,000+ competitors across 31 countries (Naturista)</div>
-          <div class="award-item__amount award-item__amount--amber">$1,600 Funding</div>
+      <div class="award-row">
+        <div class="award-row__rank">1st / 3rd</div>
+        <div class="award-row__body">
+          <div class="award-row__title">SAGE Global Competition</div>
+          <div class="award-row__sub">1st USA · 3rd Global · 5,000+ teams across 31 countries · Naturista</div>
         </div>
-        <div class="award-item__divider"></div>
+        <div class="award-row__prize">$1,600</div>
       </div>
 
-      <div class="award-item reveal">
-        <span class="award-item__rank award-item__rank--highlighted">Top 30</span>
-        <div class="award-item__body">
-          <div class="award-item__title">Blue Ocean Challenge</div>
-          <div class="award-item__org">Top 30 of 13,000+ international teams</div>
+      <div class="award-row">
+        <div class="award-row__rank">Top 30</div>
+        <div class="award-row__body">
+          <div class="award-row__title">Blue Ocean Challenge</div>
+          <div class="award-row__sub">Top 30 of 13,000+ international teams · Naturista</div>
         </div>
-        <div class="award-item__divider"></div>
+        <div class="award-row__prize"></div>
       </div>
 
-      <div class="award-item reveal">
-        <span class="award-item__rank award-item__rank--highlighted">Top 20 Global</span>
-        <div class="award-item__body">
-          <div class="award-item__title">DECA ICDC Finalist</div>
-          <div class="award-item__org">Finance Operations Research &mdash; 20,000+ competitors. 2&times; ICDC Qualifier, 2&times; Texas State, 3&times; District.</div>
+      <div class="award-row">
+        <div class="award-row__rank">Top 20</div>
+        <div class="award-row__body">
+          <div class="award-row__title">DECA ICDC Finalist</div>
+          <div class="award-row__sub">Finance Operations Research · 20,000+ global competitors · 2× ICDC · 2× Texas State · 3× District</div>
         </div>
-        <div class="award-item__divider"></div>
+        <div class="award-row__prize"></div>
       </div>
 
-      <div class="award-item reveal">
-        <span class="award-item__rank award-item__rank--highlighted">Semifinalist Top 60</span>
-        <div class="award-item__body">
-          <div class="award-item__title">Mott Million Dollar Challenge</div>
-          <div class="award-item__org">5,300+ submissions &mdash; advancing to Michigan finals (up to $40,000)</div>
-          <div class="award-item__amount award-item__amount--amber">$5,250 Award</div>
+      <div class="award-row">
+        <div class="award-row__rank">Top 60</div>
+        <div class="award-row__body">
+          <div class="award-row__title">Mott Million Dollar Challenge</div>
+          <div class="award-row__sub">Semifinalist of 5,300+ submissions · $5,250 awarded · Advancing to Michigan finals (up to $40K)</div>
         </div>
-        <div class="award-item__divider"></div>
+        <div class="award-row__prize">$5,250</div>
       </div>
 
-      <div class="award-item reveal">
-        <span class="award-item__rank award-item__rank--highlighted">&#127945; 2nd Place</span>
-        <div class="award-item__body">
-          <div class="award-item__title">Texas A&amp;M Ideas Challenge</div>
-          <div class="award-item__org">StudyGenie</div>
-          <div class="award-item__amount award-item__amount--amber">$2,000 Grant</div>
+      <div class="award-row">
+        <div class="award-row__rank">2nd</div>
+        <div class="award-row__body">
+          <div class="award-row__title">Stiftung Global Entrepreneurship</div>
+          <div class="award-row__sub">2nd of 100 international startups · 3 UN SDGs recognized · Naturista</div>
         </div>
-        <div class="award-item__divider"></div>
+        <div class="award-row__prize"></div>
       </div>
 
-      <div class="award-item reveal">
-        <span class="award-item__rank award-item__rank--highlighted">&#127945; 1st Place</span>
-        <div class="award-item__body">
-          <div class="award-item__title">Big Idea Competition</div>
-          <div class="award-item__org">Naturista</div>
-          <div class="award-item__amount award-item__amount--amber">$1,000 Grant</div>
+      <div class="award-row">
+        <div class="award-row__rank">1st</div>
+        <div class="award-row__body">
+          <div class="award-row__title">Kean Challenge — Community Roots</div>
+          <div class="award-row__sub">Invest2Empower · Social impact track</div>
         </div>
-        <div class="award-item__divider"></div>
+        <div class="award-row__prize">$2,000</div>
       </div>
 
-      <div class="award-item reveal">
-        <span class="award-item__rank award-item__rank--highlighted">&#127945; 1st Place</span>
-        <div class="award-item__body">
-          <div class="award-item__title">Kean Challenge — Community Roots</div>
-          <div class="award-item__org">Invest2Empower</div>
-          <div class="award-item__amount award-item__amount--amber">$2,000 Grant</div>
+      <div class="award-row">
+        <div class="award-row__rank">2nd</div>
+        <div class="award-row__body">
+          <div class="award-row__title">Texas A&amp;M Ideas Challenge</div>
+          <div class="award-row__sub">StudyGenie · AI learning platform · Statewide finalists</div>
         </div>
-        <div class="award-item__divider"></div>
+        <div class="award-row__prize">$2,000</div>
       </div>
 
-      <div class="award-item reveal">
-        <span class="award-item__rank award-item__rank--highlighted">&#127945; 2nd Place</span>
-        <div class="award-item__body">
-          <div class="award-item__title">Stiftung Entrepreneurship Global</div>
-          <div class="award-item__org">100 international startups</div>
+      <div class="award-row">
+        <div class="award-row__rank">1st</div>
+        <div class="award-row__body">
+          <div class="award-row__title">Big Idea Competition</div>
+          <div class="award-row__sub">Naturista · 400+ competitors · Biodegradable coffee pod system</div>
         </div>
-        <div class="award-item__divider"></div>
+        <div class="award-row__prize">$1,000</div>
       </div>
 
-      <div class="award-item reveal">
-        <span class="award-item__rank award-item__rank--highlighted">2&times; Semifinalist</span>
-        <div class="award-item__body">
-          <div class="award-item__title">Diamond Challenge</div>
-          <div class="award-item__org">Top 10% of 2,200 teams</div>
+      <div class="award-row">
+        <div class="award-row__rank">×2</div>
+        <div class="award-row__body">
+          <div class="award-row__title">Diamond Challenge Semifinalist</div>
+          <div class="award-row__sub">Top 10% of 2,200 teams — two consecutive years, two different ventures</div>
         </div>
-        <div class="award-item__divider"></div>
+        <div class="award-row__prize"></div>
       </div>
 
-      <div class="award-item reveal">
-        <span class="award-item__rank award-item__rank--highlighted">&#127945; 3rd Place</span>
-        <div class="award-item__body">
-          <div class="award-item__title">Jacobson Institute Innovator</div>
-          <div class="award-item__org">Naturista</div>
-          <div class="award-item__amount award-item__amount--amber">$500 Award</div>
+      <div class="award-row">
+        <div class="award-row__rank">3rd</div>
+        <div class="award-row__body">
+          <div class="award-row__title">Jacobson Institute Innovator</div>
+          <div class="award-row__sub">Naturista · 50 teams · 160 competitors</div>
         </div>
-        <div class="award-item__divider"></div>
+        <div class="award-row__prize">$500</div>
       </div>
 
-      <div class="award-item reveal">
-        <span class="award-item__rank award-item__rank--highlighted">1550</span>
-        <div class="award-item__body">
-          <div class="award-item__title">SAT Score</div>
-          <div class="award-item__org">790 Math &middot; 760 Reading &amp; Writing</div>
+      <div class="award-row">
+        <div class="award-row__rank">1550</div>
+        <div class="award-row__body">
+          <div class="award-row__title">SAT Score</div>
+          <div class="award-row__sub">790 Math · 760 Reading &amp; Writing</div>
         </div>
-        <div class="award-item__divider"></div>
+        <div class="award-row__prize"></div>
       </div>
 
     </div>
   </div>
 </section>
 
-<section class="leadership reveal">
-  <div class="leadership__inner">
-    <div class="leadership__header">
-      <span class="leadership__section-label">Roles &amp; Organizations</span>
-      <h2 class="leadership__title leadership__title--spaced">L&nbsp;&nbsp;E&nbsp;&nbsp;A&nbsp;&nbsp;D&nbsp;&nbsp;E&nbsp;&nbsp;R&nbsp;&nbsp;S&nbsp;&nbsp;H&nbsp;&nbsp;I&nbsp;&nbsp;P</h2>
+<section id="leadership" class="section">
+  <div class="section__inner">
+    <div class="section__header">
+      <div class="section__eyebrow">Roles &amp; Organizations</div>
+      <h2 class="section__title split-text">Leadership</h2>
     </div>
-    <div class="leadership__grid">
+    <div class="leadership-grid">
 
-      <div class="leadership-card reveal">
-        <div class="leadership-card__icon">&#128187;</div>
+      <div class="leadership-card reveal stagger-1">
+        <div class="leadership-card__icon">🌐</div>
         <div class="leadership-card__org">iStart Valley</div>
         <div class="leadership-card__role">President</div>
-        <p class="leadership-card__impact">Youth Technology &amp; Innovation Nonprofit. Promoted from member in 2 years. Led 4+ national hackathons with 2,000+ participants. Podcast hits 1,000+ listeners per episode.</p>
-        <div class="leadership-card__impact-stat">5,000+ Members</div>
+        <div class="leadership-card__body">Youth Technology &amp; Innovation Nonprofit. Promoted from committee member to President within two years, overseeing weekly programming for 5,000+ members. Organized 4+ national hackathons drawing 2,000+ participants. Podcast reaches 1,000+ listeners per episode. Judged 15+ student innovation pitches.</div>
+        <div class="leadership-card__stat">5,000+ Members · 4+ National Hackathons</div>
       </div>
 
-      <div class="leadership-card reveal">
-        <div class="leadership-card__icon">&#128084;</div>
+      <div class="leadership-card reveal stagger-2">
+        <div class="leadership-card__icon">📊</div>
         <div class="leadership-card__org">DECA</div>
-        <div class="leadership-card__role">Vice-President &rarr; Incoming Chapter President</div>
-        <p class="leadership-card__impact">200+ member chapter. Led 4 community initiatives including a car meet (150 attendees), food drive (200+ items to North Texas Food Bank), and $2,000 fundraiser for National Breast Cancer Foundation.</p>
-        <div class="leadership-card__impact-stat">200+ Members</div>
+        <div class="leadership-card__role">Vice-President → Incoming Chapter President</div>
+        <div class="leadership-card__body">Led a 200+ member organization. Coordinated four community initiatives including a 150-attendee car meet, 200+ item food drive to North Texas Food Bank, and a $2,000 fundraiser for the National Breast Cancer Foundation.</div>
+        <div class="leadership-card__stat">200+ Members · 2× ICDC Qualifier</div>
       </div>
 
-      <div class="leadership-card reveal">
-        <div class="leadership-card__icon">&#128203;</div>
-        <div class="leadership-card__org">BPA</div>
-        <div class="leadership-card__role">Chapter Vice President &rarr; National Champion</div>
-        <p class="leadership-card__impact">150+ member chapter. Led team from District to State to National Championship in Financial Portfolio Management. Charles Schwab recognition.</p>
-        <div class="leadership-card__impact-stat">National Champion</div>
+      <div class="leadership-card reveal stagger-3">
+        <div class="leadership-card__icon">🏆</div>
+        <div class="leadership-card__org">Business Professionals of America</div>
+        <div class="leadership-card__role">Chapter VP → National Champion</div>
+        <div class="leadership-card__body">Vice President of a 150+ member BPA chapter. Advanced through District and State to the National Leadership Conference — placed 1st in Financial Portfolio Management out of 1,000+ competitors. Charles Schwab recognition.</div>
+        <div class="leadership-card__stat">National Champion · 1st of 1,000+</div>
       </div>
 
-      <div class="leadership-card reveal">
-        <div class="leadership-card__icon">&#127981;</div>
-        <div class="leadership-card__org">Keith Self Congressional Youth Advisory Council</div>
-        <div class="leadership-card__role">Intern &rarr; Mentor</div>
-        <p class="leadership-card__impact">1 of 5 selected from 70 applicants to travel to Washington D.C. Drafted financial literacy policy. Returned as mentor the following year.</p>
-        <div class="leadership-card__impact-stat">1 of 5 Selected</div>
+      <div class="leadership-card reveal stagger-4">
+        <div class="leadership-card__icon">🏛️</div>
+        <div class="leadership-card__org">Keith Self Congressional Advisory Council</div>
+        <div class="leadership-card__role">Intern → Mentor</div>
+        <div class="leadership-card__body">Selected as 1 of 5 from 70 applicants to travel to Washington D.C. and advocate before members of Congress. Drafted a financial literacy policy on scholarship access reform. Returned as a program mentor the following year.</div>
+        <div class="leadership-card__stat">1 of 5 Selected · Washington D.C.</div>
       </div>
 
     </div>
   </div>
 </section>
 
-<section class="experience reveal">
-  <div class="experience__inner">
-    <div class="experience__header">
-      <span class="experience__section-label">Where I've Worked</span>
-      <h2 class="experience__title experience__title--spaced">E&nbsp;&nbsp;X&nbsp;&nbsp;P&nbsp;&nbsp;E&nbsp;&nbsp;R&nbsp;&nbsp;I&nbsp;&nbsp;E&nbsp;&nbsp;N&nbsp;&nbsp;C&nbsp;&nbsp;E</h2>
+<section id="experience" class="section">
+  <div class="section__inner">
+    <div class="section__header">
+      <div class="section__eyebrow">Where I've Worked</div>
+      <h2 class="section__title split-text">Experience</h2>
     </div>
-    <div class="experience__timeline">
-      <div class="experience__track"></div>
+    <div class="timeline">
+      <div class="timeline__track"></div>
 
-      <div class="experience-entry reveal">
-        <div class="experience-entry__dot experience-entry__dot--amber"></div>
-        <div class="experience-entry__content">
-          <div class="experience-entry__date">May 2024 &ndash; Present</div>
-          <div class="experience-entry__company">GradeWay</div>
-          <div class="experience-entry__role">Growth Lead</div>
-          <ul class="experience-entry__bullets">
-            <li class="experience-entry__bullet">Drove organic growth from zero to 500K+ monthly active users across 450+ school districts in NJ and TX.</li>
-            <li class="experience-entry__bullet">Reached #57 in Education on the App Store. Scaled revenue to $800K+ through freemium conversion.</li>
-            <li class="experience-entry__bullet">Zero paid marketing &mdash; built entirely on student-to-student distribution.</li>
+      <div class="exp-item reveal">
+        <div class="exp-item__dot active"></div>
+        <div class="exp-item__content">
+          <div class="exp-item__date">May 2024 – Present</div>
+          <div class="exp-item__company">GradeWay</div>
+          <div class="exp-item__role">Growth Lead</div>
+          <ul class="exp-item__bullets">
+            <li>Drove 0→500K MAU across 450+ school districts in NJ and TX</li>
+            <li>Reached #57 Education App Store, scaled revenue to $800K+ via freemium</li>
+            <li>Zero paid marketing — pure student-to-student distribution</li>
           </ul>
         </div>
       </div>
 
-      <div class="experience-entry reveal">
-        <div class="experience-entry__dot experience-entry__dot--amber"></div>
-        <div class="experience-entry__content">
-          <div class="experience-entry__date">Jan 2024 &ndash; May 2025</div>
-          <div class="experience-entry__company">Young Chefs Academy</div>
-          <div class="experience-entry__role">Lead Chef</div>
-          <ul class="experience-entry__bullets">
-            <li class="experience-entry__bullet">Taught weekly culinary classes to 8&ndash;12 kids ages 6&ndash;14.</li>
-            <li class="experience-entry__bullet">Ran 20+ birthday party events and managed 5+ community event booths in Frisco.</li>
+      <div class="exp-item reveal">
+        <div class="exp-item__dot"></div>
+        <div class="exp-item__content">
+          <div class="exp-item__date">Jan 2024 – May 2025</div>
+          <div class="exp-item__company">Young Chefs Academy</div>
+          <div class="exp-item__role">Lead Chef</div>
+          <ul class="exp-item__bullets">
+            <li>Weekly cooking classes for 8–12 kids ages 6–14 covering knife skills, baking, and stovetop technique</li>
+            <li>Managed 20+ birthday events with up to 15 kids simultaneously</li>
+            <li>Represented the academy at 5+ Frisco community booths, converting foot traffic to student sign-ups</li>
           </ul>
         </div>
       </div>
 
-      <div class="experience-entry reveal">
-        <div class="experience-entry__dot experience-entry__dot--amber"></div>
-        <div class="experience-entry__content">
-          <div class="experience-entry__date">Prior Experience</div>
-          <div class="experience-entry__company">DiscoverSTEM</div>
-          <div class="experience-entry__role">Executive Team Captain</div>
-          <ul class="experience-entry__bullets">
-            <li class="experience-entry__bullet">Led development of a patent-pending Termite Management System (USPTO Non-Provisional App No. 19347695).</li>
-            <li class="experience-entry__bullet">Chemical-free monitoring using AI-assisted behavioral recording and plant-based adhesive trapping.</li>
+      <div class="exp-item reveal">
+        <div class="exp-item__dot"></div>
+        <div class="exp-item__content">
+          <div class="exp-item__date">Prior Experience</div>
+          <div class="exp-item__company">DiscoverSTEM</div>
+          <div class="exp-item__role">Executive Team Captain</div>
+          <ul class="exp-item__bullets">
+            <li>Led development of patent-pending Termite Management System (USPTO App No. 19347695)</li>
+            <li>Chemical-free monitoring using AI-assisted behavioral recording and plant-based adhesive trapping</li>
           </ul>
         </div>
       </div>
@@ -1636,193 +416,476 @@ button {
 
 <footer class="footer">
   <div class="footer__inner">
-    <div class="footer__name">KARAN</div>
+    <div class="footer__brand">KARAN V</div>
+    <div class="footer__sub">Liberty High School · Class of 2027 · Frisco, TX</div>
     <div class="footer__links">
-      <a href="mailto:kvchiefs@gmail.com" class="footer__link footer__link--email">kvchiefs@gmail.com</a>
-      <span class="footer__divider">/</span>
-      <a href="https://github.com/kvdoe" target="_blank" class="footer__link footer__link--github">github.com/kvdoe</a>
+      <a class="footer__link" href="mailto:kvchiefs@gmail.com">kvchiefs@gmail.com</a>
+      <a class="footer__link" href="https://github.com/kvdoe" target="_blank">github.com/kvdoe</a>
     </div>
   </div>
-  <div class="footer__copy">
-    &copy; 2026 Karan &middot; Frisco, TX &middot; Liberty High School Class of 2027
-  </div>
 </footer>
-
 <script>
-document.addEventListener('DOMContentLoaded', function () {
+document.addEventListener('DOMContentLoaded', () => {
 
-  // 1. Intersection Observer for .reveal elements
-  var revealObserver = new IntersectionObserver(function (entries) {
-    entries.forEach(function (entry) {
+  /* ============================================================
+     FEATURE 1 — ANIMATED CANVAS NEURAL NETWORK
+     ============================================================ */
+  const canvas = document.getElementById('neural-bg');
+  if (canvas) {
+    const ctx = canvas.getContext('2d');
+    const PARTICLE_COUNT = 90;
+    const CONNECTION_DIST = 140;
+    const MAX_LINE_OPACITY = 0.18;
+    const MOUSE_REPEL_DIST = 100;
+    const COLORS = ['#38bdf8', '#a78bfa', '#f59e0b', '#60a5fa'];
+
+    let mouse = { x: -9999, y: -9999 };
+    let particles = [];
+
+    function resizeCanvas() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    }
+
+    function createParticles() {
+      particles = [];
+      for (let i = 0; i < PARTICLE_COUNT; i++) {
+        particles.push({
+          x: Math.random() * canvas.width,
+          y: Math.random() * canvas.height,
+          vx: (Math.random() - 0.5) * 0.6,
+          vy: (Math.random() - 0.5) * 0.6,
+          radius: 1.5 + Math.random() * 1.5,
+          opacity: 0.4 + Math.random() * 0.5,
+          color: COLORS[Math.floor(Math.random() * COLORS.length)]
+        });
+      }
+    }
+
+    function animateNeural() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      for (let i = 0; i < particles.length; i++) {
+        const p = particles[i];
+
+        // Mouse repulsion
+        const mdx = p.x - mouse.x;
+        const mdy = p.y - mouse.y;
+        const mdist = Math.sqrt(mdx * mdx + mdy * mdy);
+        if (mdist < MOUSE_REPEL_DIST && mdist > 0) {
+          const force = (MOUSE_REPEL_DIST - mdist) / MOUSE_REPEL_DIST;
+          p.vx += (mdx / mdist) * force * 0.08;
+          p.vy += (mdy / mdist) * force * 0.08;
+        }
+
+        // Speed cap
+        const speed = Math.sqrt(p.vx * p.vx + p.vy * p.vy);
+        if (speed > 1.5) {
+          p.vx = (p.vx / speed) * 1.5;
+          p.vy = (p.vy / speed) * 1.5;
+        }
+
+        // Move
+        p.x += p.vx;
+        p.y += p.vy;
+
+        // Edge wrap
+        if (p.x < 0) p.x = canvas.width;
+        if (p.x > canvas.width) p.x = 0;
+        if (p.y < 0) p.y = canvas.height;
+        if (p.y > canvas.height) p.y = 0;
+
+        // Draw connections
+        for (let j = i + 1; j < particles.length; j++) {
+          const q = particles[j];
+          const dx = p.x - q.x;
+          const dy = p.y - q.y;
+          const dist = Math.sqrt(dx * dx + dy * dy);
+          if (dist < CONNECTION_DIST) {
+            const opacity = (1 - dist / CONNECTION_DIST) * MAX_LINE_OPACITY;
+            ctx.beginPath();
+            ctx.moveTo(p.x, p.y);
+            ctx.lineTo(q.x, q.y);
+            ctx.strokeStyle = `rgba(56,189,248,${opacity})`;
+            ctx.lineWidth = 0.8;
+            ctx.stroke();
+          }
+        }
+
+        // Draw particle
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+        ctx.fillStyle = hexToRgba(p.color, p.opacity);
+        ctx.fill();
+      }
+
+      requestAnimationFrame(animateNeural);
+    }
+
+    function hexToRgba(hex, alpha) {
+      const r = parseInt(hex.slice(1, 3), 16);
+      const g = parseInt(hex.slice(3, 5), 16);
+      const b = parseInt(hex.slice(5, 7), 16);
+      return `rgba(${r},${g},${b},${alpha})`;
+    }
+
+    window.addEventListener('mousemove', (e) => {
+      mouse.x = e.clientX;
+      mouse.y = e.clientY;
+    });
+
+    window.addEventListener('resize', () => {
+      resizeCanvas();
+      createParticles();
+    });
+
+    resizeCanvas();
+    createParticles();
+    animateNeural();
+  }
+
+
+  /* ============================================================
+     FEATURE 2 — CUSTOM CURSOR
+     ============================================================ */
+  const cursorDot = document.getElementById('cursor-dot');
+  const cursorRing = document.getElementById('cursor-ring');
+
+  let cursorX = 0, cursorY = 0;
+  let ringX = 0, ringY = 0;
+
+  if (cursorDot && cursorRing) {
+    window.addEventListener('mousemove', (e) => {
+      cursorX = e.clientX;
+      cursorY = e.clientY;
+      cursorDot.style.transform = `translate(${cursorX}px, ${cursorY}px)`;
+    });
+
+    const interactiveSelectors = 'a, button, .venture-card, .leadership-card, .award-row';
+
+    document.querySelectorAll(interactiveSelectors).forEach((el) => {
+      el.addEventListener('mouseenter', () => {
+        cursorDot.classList.add('hovered');
+        cursorRing.classList.add('hovered');
+      });
+      el.addEventListener('mouseleave', () => {
+        cursorDot.classList.remove('hovered');
+        cursorRing.classList.remove('hovered');
+      });
+    });
+
+    function animateCursorRing() {
+      ringX += (cursorX - ringX) * 0.12;
+      ringY += (cursorY - ringY) * 0.12;
+      cursorRing.style.transform = `translate(${ringX}px, ${ringY}px)`;
+      requestAnimationFrame(animateCursorRing);
+    }
+    animateCursorRing();
+  }
+
+
+  /* ============================================================
+     FEATURE 3 — SCROLL PROGRESS BAR
+     ============================================================ */
+  const progressBar = document.getElementById('progress-bar');
+  if (progressBar) {
+    window.addEventListener('scroll', () => {
+      const scrollTop = window.scrollY;
+      const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+      const pct = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
+      progressBar.style.width = pct + '%';
+    }, { passive: true });
+  }
+
+
+  /* ============================================================
+     FEATURE 4 — NAV SCROLL + ACTIVE LINKS
+     ============================================================ */
+  const nav = document.querySelector('nav');
+  const navLinks = document.querySelectorAll('.nav__link');
+  const sDots = document.querySelectorAll('.s-dot');
+
+  if (nav) {
+    window.addEventListener('scroll', () => {
+      if (window.scrollY > 60) {
+        nav.classList.add('scrolled');
+      } else {
+        nav.classList.remove('scrolled');
+      }
+    }, { passive: true });
+  }
+
+  const sections = document.querySelectorAll('section[id]');
+  if (sections.length > 0) {
+    const sectionObserver = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          const id = entry.target.getAttribute('id');
+
+          navLinks.forEach((link) => {
+            link.classList.remove('active');
+            if (link.getAttribute('href') === `#${id}`) {
+              link.classList.add('active');
+            }
+          });
+
+          sDots.forEach((dot) => {
+            dot.classList.remove('active');
+            if (dot.dataset.section === id || dot.getAttribute('href') === `#${id}`) {
+              dot.classList.add('active');
+            }
+          });
+        }
+      });
+    }, { threshold: 0.4 });
+
+    sections.forEach((section) => sectionObserver.observe(section));
+  }
+
+
+  /* ============================================================
+     FEATURE 5 — HERO LETTER ANIMATION
+     ============================================================ */
+  const letterInners = document.querySelectorAll('.letter-inner');
+  if (letterInners.length > 0) {
+    letterInners.forEach((el) => {
+      el.style.transition = 'none';
+      el.style.transform = 'translateY(110%)';
+    });
+
+    setTimeout(() => {
+      letterInners.forEach((el, i) => {
+        el.style.transition = `transform 0.8s cubic-bezier(0.16,1,0.3,1) ${i * 70}ms`;
+        el.style.transform = 'translateY(0)';
+      });
+    }, 400);
+  }
+
+
+  /* ============================================================
+     FEATURE 6 — SPLIT TEXT for .section__title.split-text
+     ============================================================ */
+  const splitTitles = document.querySelectorAll('.section__title.split-text');
+
+  splitTitles.forEach((el) => {
+    const text = el.textContent.trim();
+    const words = text.split(/\s+/);
+    el.innerHTML = '';
+    words.forEach((word) => {
+      const wrap = document.createElement('span');
+      wrap.className = 'word-wrap';
+      wrap.style.display = 'inline-block';
+      wrap.style.overflow = 'hidden';
+      wrap.style.verticalAlign = 'bottom';
+
+      const inner = document.createElement('span');
+      inner.className = 'word-inner';
+      inner.textContent = word + ' ';
+      inner.style.display = 'inline-block';
+      inner.style.opacity = '0';
+      inner.style.transform = 'translateY(115%)';
+      inner.style.transition = 'none';
+
+      wrap.appendChild(inner);
+      el.appendChild(wrap);
+    });
+  });
+
+  const splitObserver = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
+      if (entry.isIntersecting) {
+        const inners = entry.target.querySelectorAll('.word-inner');
+        inners.forEach((inner, i) => {
+          inner.style.transition = `opacity 0.7s cubic-bezier(0.16,1,0.3,1) ${i * 110}ms, transform 0.7s cubic-bezier(0.16,1,0.3,1) ${i * 110}ms`;
+          inner.style.opacity = '1';
+          inner.style.transform = 'translateY(0)';
+        });
+        splitObserver.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.2 });
+
+  splitTitles.forEach((el) => splitObserver.observe(el));
+
+
+  /* ============================================================
+     FEATURE 7 — REVEAL
+     ============================================================ */
+  const staggerDelays = { 'stagger-1': 0, 'stagger-2': 80, 'stagger-3': 160, 'stagger-4': 240, 'stagger-5': 320, 'stagger-6': 400 };
+  const revealEls = document.querySelectorAll('.reveal, .reveal-left, .reveal-right');
+
+  revealEls.forEach((el) => {
+    for (const [cls, delay] of Object.entries(staggerDelays)) {
+      if (el.classList.contains(cls)) {
+        el.style.transitionDelay = delay + 'ms';
+        break;
+      }
+    }
+  });
+
+  const revealObserver = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
       if (entry.isIntersecting) {
         entry.target.classList.add('visible');
         revealObserver.unobserve(entry.target);
       }
     });
-  }, { threshold: 0.12 });
+  }, { threshold: 0.08 });
 
-  document.querySelectorAll('.reveal').forEach(function (el) {
-    revealObserver.observe(el);
-  });
+  revealEls.forEach((el) => revealObserver.observe(el));
 
 
-  // 2. Animated number counters
+  /* ============================================================
+     FEATURE 8 — TIMELINE TRACK
+     ============================================================ */
+  const timelineTrack = document.querySelector('.timeline__track');
+  if (timelineTrack) {
+    timelineTrack.style.transform = 'scaleY(0)';
+    timelineTrack.style.transformOrigin = 'top';
+    timelineTrack.style.transition = 'none';
+
+    const trackObserver = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          timelineTrack.style.transition = 'transform 1.6s cubic-bezier(0.16,1,0.3,1)';
+          timelineTrack.style.transform = 'scaleY(1)';
+          trackObserver.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.1 });
+
+    trackObserver.observe(timelineTrack);
+  }
+
+
+  /* ============================================================
+     FEATURE 9 — SLOT MACHINE COUNTERS
+     ============================================================ */
+  const counterEls = document.querySelectorAll('[data-target]');
+
   function easeOutQuart(t) {
     return 1 - Math.pow(1 - t, 4);
   }
 
-  function formatCounterValue(current, target, format, label) {
-    if (format === 'rank') {
-      return '#' + Math.round(current);
-    }
-    if (format === 'currency-k' || (label && label.includes('$') && target >= 1000)) {
-      var k = current / 1000;
-      if (current >= target) {
-        return '$' + Math.round(target / 1000) + 'K+';
-      }
-      return '$' + k.toFixed(k < 10 ? 1 : 0) + 'K';
-    }
-    if (format === 'k' || (target >= 1000 && format !== 'rank')) {
-      var k2 = current / 1000;
-      if (current >= target) {
-        return Math.round(target / 1000) + 'K+';
-      }
-      return k2.toFixed(k2 < 10 ? 1 : 0) + 'K';
-    }
-    return Math.round(current).toString();
-  }
-
   function animateCounter(el) {
-    var target = parseFloat(el.getAttribute('data-target'));
-    var format = el.getAttribute('data-format') || '';
-    var label = el.closest('[data-label]') ? el.closest('[data-label]').getAttribute('data-label') : (el.parentElement ? el.parentElement.textContent : '');
-    var duration = 1800;
-    var startTime = null;
+    const raw = el.dataset.target;
+    const target = parseFloat(raw);
+    const prefix = el.dataset.prefix || '';
+    const suffix = el.dataset.suffix || '';
+    const format = el.dataset.format || '';
 
-    function step(timestamp) {
-      if (!startTime) startTime = timestamp;
-      var elapsed = timestamp - startTime;
-      var progress = Math.min(elapsed / duration, 1);
-      var eased = easeOutQuart(progress);
-      var current = eased * target;
+    if (format === 'exact') {
+      el.textContent = prefix + raw + suffix;
+      return;
+    }
 
-      el.textContent = formatCounterValue(current, target, format, label);
+    const duration = 1800;
+    const scramblePhasePct = 0.4;
+    const startTime = performance.now();
+
+    function frame(now) {
+      const elapsed = now - startTime;
+      const progress = Math.min(elapsed / duration, 1);
+
+      if (progress < scramblePhasePct) {
+        const rand = Math.floor(Math.random() * (target + 1));
+        el.textContent = prefix + rand + suffix;
+      } else {
+        const countProgress = (progress - scramblePhasePct) / (1 - scramblePhasePct);
+        const eased = easeOutQuart(countProgress);
+        const current = Math.round(eased * target);
+        el.textContent = prefix + current + suffix;
+      }
 
       if (progress < 1) {
-        requestAnimationFrame(step);
+        requestAnimationFrame(frame);
       } else {
-        if (format === 'rank') {
-          el.textContent = '#' + target;
-        } else if (format === 'currency-k' || (label && label.includes('$') && target >= 1000)) {
-          el.textContent = '$' + Math.round(target / 1000) + 'K+';
-        } else if (target >= 1000) {
-          el.textContent = Math.round(target / 1000) + 'K+';
-        } else {
-          el.textContent = Math.round(target).toString();
-        }
+        el.textContent = prefix + target + suffix;
       }
     }
 
-    requestAnimationFrame(step);
+    requestAnimationFrame(frame);
   }
 
-  var counterObserver = new IntersectionObserver(function (entries) {
-    entries.forEach(function (entry) {
+  const counterObserver = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
       if (entry.isIntersecting) {
         animateCounter(entry.target);
         counterObserver.unobserve(entry.target);
       }
     });
-  }, { threshold: 0.12 });
+  }, { threshold: 0.5 });
 
-  document.querySelectorAll('[data-target]').forEach(function (el) {
-    counterObserver.observe(el);
+  counterEls.forEach((el) => counterObserver.observe(el));
+
+
+  /* ============================================================
+     FEATURE 10 — 3D CARD TILT on .venture-card
+     ============================================================ */
+  const ventureCards = document.querySelectorAll('.venture-card');
+
+  ventureCards.forEach((card) => {
+    card.addEventListener('mousemove', (e) => {
+      const rect = card.getBoundingClientRect();
+      const cx = rect.left + rect.width / 2;
+      const cy = rect.top + rect.height / 2;
+      const nx = (e.clientX - cx) / (rect.width / 2);
+      const ny = (e.clientY - cy) / (rect.height / 2);
+      const rotX = -ny * 8;
+      const rotY = nx * 8;
+      card.style.transition = 'transform 0.1s ease';
+      card.style.transform = `perspective(800px) rotateX(${rotX}deg) rotateY(${rotY}deg) translateZ(12px) scale(1.02)`;
+    });
+
+    card.addEventListener('mouseleave', () => {
+      card.style.transition = 'transform 0.6s ease';
+      card.style.transform = 'perspective(800px) rotateX(0deg) rotateY(0deg) translateZ(0px) scale(1)';
+    });
   });
 
 
-  // 3. Smooth scroll for anchor links
-  document.querySelectorAll('a[href^="#"]').forEach(function (anchor) {
-    anchor.addEventListener('click', function (e) {
-      var href = anchor.getAttribute('href');
+  /* ============================================================
+     FEATURE 11 — SMOOTH SCROLL
+     ============================================================ */
+  document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
+    anchor.addEventListener('click', (e) => {
+      const href = anchor.getAttribute('href');
       if (href === '#') return;
-      var target = document.querySelector(href);
-      if (target) {
-        e.preventDefault();
-        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      }
+      const target = document.querySelector(href);
+      if (!target) return;
+      e.preventDefault();
+      const top = target.getBoundingClientRect().top + window.scrollY - 80;
+      window.scrollTo({ top, behavior: 'smooth' });
     });
   });
 
 
-  // 4. Nav scroll behavior
-  var nav = document.querySelector('nav');
-  if (nav) {
-    function handleNavScroll() {
-      if (window.scrollY > 50) {
-        nav.classList.add('scrolled');
-      } else {
-        nav.classList.remove('scrolled');
+  /* ============================================================
+     FEATURE 12 — MAGNETIC BUTTONS
+     ============================================================ */
+  const magnetBtns = document.querySelectorAll('.btn-primary, .btn-outline');
+
+  magnetBtns.forEach((btn) => {
+    btn.addEventListener('mousemove', (e) => {
+      const rect = btn.getBoundingClientRect();
+      const cx = rect.left + rect.width / 2;
+      const cy = rect.top + rect.height / 2;
+      const dx = e.clientX - cx;
+      const dy = e.clientY - cy;
+      const dist = Math.sqrt(dx * dx + dy * dy);
+      if (dist < 60) {
+        const factor = (60 - dist) / 60;
+        const tx = dx * factor * 0.35;
+        const ty = dy * factor * 0.35;
+        btn.style.transition = 'transform 0.15s ease';
+        btn.style.transform = `translate(${tx}px, ${ty}px)`;
       }
-    }
-    window.addEventListener('scroll', handleNavScroll, { passive: true });
-    handleNavScroll();
-  }
-
-
-  // 5. Cursor trail effect — amber dots that fade
-  var trailDots = [];
-  var MAX_DOTS = 12;
-  var lastX = -999;
-  var lastY = -999;
-  var MIN_DIST = 10;
-
-  function createDot(x, y) {
-    var dot = document.createElement('div');
-    dot.style.cssText = [
-      'position:fixed',
-      'pointer-events:none',
-      'z-index:99999',
-      'width:7px',
-      'height:7px',
-      'border-radius:50%',
-      'background:rgba(245,158,11,0.72)',
-      'box-shadow:0 0 6px 2px rgba(245,158,11,0.38)',
-      'transform:translate(-50%,-50%) scale(1)',
-      'transition:opacity 0.6s ease, transform 0.6s ease',
-      'left:' + x + 'px',
-      'top:' + y + 'px',
-      'opacity:1'
-    ].join(';');
-    document.body.appendChild(dot);
-
-    var obj = { el: dot, born: Date.now() };
-    trailDots.push(obj);
-
-    requestAnimationFrame(function () {
-      dot.style.opacity = '0';
-      dot.style.transform = 'translate(-50%,-50%) scale(0.3)';
     });
 
-    setTimeout(function () {
-      if (dot.parentNode) dot.parentNode.removeChild(dot);
-      var idx = trailDots.indexOf(obj);
-      if (idx !== -1) trailDots.splice(idx, 1);
-    }, 650);
-
-    if (trailDots.length > MAX_DOTS) {
-      var oldest = trailDots.shift();
-      if (oldest.el.parentNode) oldest.el.parentNode.removeChild(oldest.el);
-    }
-  }
-
-  document.addEventListener('mousemove', function (e) {
-    var dx = e.clientX - lastX;
-    var dy = e.clientY - lastY;
-    if (Math.sqrt(dx * dx + dy * dy) >= MIN_DIST) {
-      lastX = e.clientX;
-      lastY = e.clientY;
-      createDot(e.clientX, e.clientY);
-    }
+    btn.addEventListener('mouseleave', () => {
+      btn.style.transition = 'transform 0.4s ease';
+      btn.style.transform = 'translate(0, 0)';
+    });
   });
 
 });
