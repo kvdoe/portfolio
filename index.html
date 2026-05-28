@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -1404,8 +1404,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     setTimeout(() => {
       letterInners.forEach((el, i) => {
-        el.style.transition = `transform 0.8s cubic-bezier(0.16,1,0.3,1) ${i * 70}ms`;
+        el.style.transition = `transform 0.8s cubic-bezier(0.16,1,0.3,1) ${i * 70}ms, opacity 0.8s cubic-bezier(0.16,1,0.3,1) ${i * 70}ms`;
         el.style.transform = 'translateY(0)';
+        el.style.opacity = '1';
       });
     }, 400);
   }
@@ -1461,7 +1462,7 @@ document.addEventListener('DOMContentLoaded', () => {
      FEATURE 7 — REVEAL
      ============================================================ */
   const staggerDelays = { 'stagger-1': 0, 'stagger-2': 80, 'stagger-3': 160, 'stagger-4': 240, 'stagger-5': 320, 'stagger-6': 400 };
-  const revealEls = document.querySelectorAll('.reveal, .reveal-left, .reveal-right');
+  const revealEls = document.querySelectorAll('.reveal, .reveal-left, .reveal-right, .venture-card');
 
   revealEls.forEach((el) => {
     for (const [cls, delay] of Object.entries(staggerDelays)) {
