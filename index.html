@@ -919,6 +919,160 @@
 
     /* make venture cards show pointer */
     .venture-card { cursor: pointer; }
+
+    /* ── AI Chatbot ─────────────────────────────────────────────── */
+    #chat-btn {
+      position: fixed;
+      bottom: 32px;
+      right: 32px;
+      z-index: 3000;
+      width: 56px; height: 56px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--amber), var(--violet));
+      border: none;
+      cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 4px 24px rgba(212,168,83,0.4);
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    #chat-btn:hover {
+      transform: scale(1.1);
+      box-shadow: 0 8px 32px rgba(212,168,83,0.6);
+    }
+    #chat-btn svg { width: 24px; height: 24px; color: #000; }
+
+    #chat-panel {
+      position: fixed;
+      bottom: 104px;
+      right: 32px;
+      z-index: 3000;
+      width: 380px;
+      max-height: 560px;
+      background: rgba(14,10,6,0.97);
+      border: 1px solid rgba(201,169,110,0.25);
+      border-radius: 20px;
+      display: flex; flex-direction: column;
+      backdrop-filter: blur(24px);
+      box-shadow: 0 24px 60px rgba(0,0,0,0.6);
+      overflow: hidden;
+      transform: translateY(16px) scale(0.97);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.25s var(--ease), transform 0.25s var(--ease);
+    }
+    #chat-panel.open {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+      pointer-events: all;
+    }
+    .chat-header {
+      padding: 18px 20px 14px;
+      border-bottom: 1px solid var(--border);
+      display: flex; align-items: center; gap: 12px;
+    }
+    .chat-header-avatar {
+      width: 36px; height: 36px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--amber), var(--violet));
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+      font-family: var(--font-h);
+      font-size: 13px; font-weight: 700; color: #000;
+    }
+    .chat-header-info { flex: 1; min-width: 0; }
+    .chat-header-name {
+      font-family: var(--font-h);
+      font-size: 14px; font-weight: 600; color: var(--white);
+    }
+    .chat-header-sub {
+      font-size: 11px; color: var(--pale); letter-spacing: 0.04em;
+    }
+    .chat-close {
+      background: none; border: none; color: var(--pale);
+      font-size: 20px; cursor: pointer; line-height: 1;
+      transition: color 0.2s;
+    }
+    .chat-close:hover { color: var(--white); }
+    #chat-messages {
+      flex: 1;
+      overflow-y: auto;
+      padding: 16px;
+      display: flex; flex-direction: column; gap: 12px;
+      scroll-behavior: smooth;
+    }
+    #chat-messages::-webkit-scrollbar { width: 4px; }
+    #chat-messages::-webkit-scrollbar-track { background: transparent; }
+    #chat-messages::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+    .chat-msg {
+      display: flex; flex-direction: column;
+      max-width: 85%;
+      gap: 4px;
+    }
+    .chat-msg.user { align-self: flex-end; align-items: flex-end; }
+    .chat-msg.bot  { align-self: flex-start; align-items: flex-start; }
+    .chat-bubble {
+      padding: 10px 14px;
+      border-radius: 14px;
+      font-size: 13px; line-height: 1.6;
+    }
+    .chat-msg.user .chat-bubble {
+      background: linear-gradient(135deg, var(--amber), var(--violet));
+      color: #000; font-weight: 500;
+      border-bottom-right-radius: 4px;
+    }
+    .chat-msg.bot .chat-bubble {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      color: var(--white);
+      border-bottom-left-radius: 4px;
+    }
+    .chat-typing { display: flex; gap: 4px; align-items: center; padding: 12px 14px; }
+    .chat-typing span {
+      width: 6px; height: 6px; border-radius: 50%;
+      background: var(--pale); display: inline-block;
+      animation: typingDot 1.2s ease-in-out infinite;
+    }
+    .chat-typing span:nth-child(2) { animation-delay: 0.2s; }
+    .chat-typing span:nth-child(3) { animation-delay: 0.4s; }
+    @keyframes typingDot {
+      0%,60%,100% { transform: translateY(0); opacity: 0.4; }
+      30% { transform: translateY(-6px); opacity: 1; }
+    }
+    .chat-input-row {
+      padding: 12px 16px;
+      border-top: 1px solid var(--border);
+      display: flex; gap: 8px; align-items: flex-end;
+    }
+    #chat-input {
+      flex: 1;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      color: var(--white);
+      font-family: var(--font-b);
+      font-size: 13px;
+      padding: 10px 14px;
+      resize: none; outline: none;
+      line-height: 1.5;
+      max-height: 100px;
+      transition: border-color 0.2s;
+    }
+    #chat-input::placeholder { color: var(--pale); }
+    #chat-input:focus { border-color: rgba(201,169,110,0.4); }
+    #chat-send {
+      width: 38px; height: 38px; flex-shrink: 0;
+      border-radius: 10px;
+      background: var(--amber);
+      border: none; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      transition: background 0.2s, transform 0.15s;
+    }
+    #chat-send:hover { background: var(--amber2); transform: scale(1.05); }
+    #chat-send svg { width: 16px; height: 16px; color: #000; }
+    @media (max-width: 480px) {
+      #chat-panel { width: calc(100vw - 32px); right: 16px; bottom: 88px; }
+      #chat-btn { right: 16px; bottom: 16px; }
+    }
   </style>
 </head>
 <body>
@@ -958,7 +1112,7 @@
     <h1 class="hero__name">
       <span class="letter-wrap"><span class="letter-inner">K</span></span><span class="letter-wrap"><span class="letter-inner">A</span></span><span class="letter-wrap"><span class="letter-inner">R</span></span><span class="letter-wrap"><span class="letter-inner">A</span></span><span class="letter-wrap"><span class="letter-inner">N</span></span>
     </h1>
-    <p class="hero__tagline">I'm 17 and based in Frisco, TX. I build companies — one reached 500K users with zero paid marketing, another won a national championship, one is solving 56 billion disposable coffee pods a year. Here's the work.</p>
+    <p class="hero__tagline">I'm 17, based in Frisco, TX. I spend my time building things — apps, nonprofits, and startups — and trying to solve problems that feel worth solving. Some of them have worked out in ways I didn't expect. Here's what I've been up to.</p>
     <div class="hero__cta-row">
       <a class="btn-primary" href="#ventures">View Work</a>
       <a class="btn-outline" href="mailto:kvchiefs@gmail.com">Get in Touch →</a>
@@ -966,10 +1120,10 @@
     <div class="hero__scroll">
       <span>Scroll</span>
       <div class="hero__scroll-line"></div>
-  </div>
+    </div>
+    </div>
     <div class="hero__portrait">
       <img src="./photo.png" alt="Karan V" class="hero__portrait-img" />
-    </div>
     </div>
   </div>
 </section>
@@ -1300,6 +1454,32 @@
     </div>
   </div>
 </footer>
+<!-- AI Chatbot -->
+<button id="chat-btn" aria-label="Ask me anything">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+</button>
+<div id="chat-panel" role="dialog" aria-modal="true" aria-label="Chat with Karan's AI">
+  <div class="chat-header">
+    <div class="chat-header-avatar">K</div>
+    <div class="chat-header-info">
+      <div class="chat-header-name">Ask about Karan</div>
+      <div class="chat-header-sub">AI · usually answers instantly</div>
+    </div>
+    <button class="chat-close" aria-label="Close chat">&times;</button>
+  </div>
+  <div id="chat-messages">
+    <div class="chat-msg bot">
+      <div class="chat-bubble">Hey! I'm an AI that knows everything about Karan. Ask me about his ventures, awards, background — anything.</div>
+    </div>
+  </div>
+  <div class="chat-input-row">
+    <textarea id="chat-input" placeholder="Ask something…" rows="1" maxlength="500"></textarea>
+    <button id="chat-send" aria-label="Send">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+    </button>
+  </div>
+</div>
+
 <div id="venture-modal" class="vmodal" role="dialog" aria-modal="true">
   <div class="vmodal__backdrop"></div>
   <div class="vmodal__panel">
@@ -1878,6 +2058,88 @@ document.addEventListener('DOMContentLoaded', () => {
       card.addEventListener('click', () => openModal(key));
     }
   });
+
+  /* ============================================================
+     FEATURE 14 — AI CHATBOT
+     ============================================================ */
+  const chatBtn = document.getElementById('chat-btn');
+  const chatPanel = document.getElementById('chat-panel');
+  const chatClose = chatPanel ? chatPanel.querySelector('.chat-close') : null;
+  const chatMessages = document.getElementById('chat-messages');
+  const chatInput = document.getElementById('chat-input');
+  const chatSend = document.getElementById('chat-send');
+
+  const chatHistory = [];
+
+  function toggleChat() {
+    chatPanel.classList.toggle('open');
+    if (chatPanel.classList.contains('open')) chatInput.focus();
+  }
+
+  if (chatBtn) chatBtn.addEventListener('click', toggleChat);
+  if (chatClose) chatClose.addEventListener('click', toggleChat);
+
+  function appendMsg(role, text) {
+    const msg = document.createElement('div');
+    msg.className = 'chat-msg ' + role;
+    const bubble = document.createElement('div');
+    bubble.className = 'chat-bubble';
+    bubble.textContent = text;
+    msg.appendChild(bubble);
+    chatMessages.appendChild(msg);
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+    return bubble;
+  }
+
+  function showTyping() {
+    const wrap = document.createElement('div');
+    wrap.className = 'chat-msg bot';
+    wrap.id = 'chat-typing-indicator';
+    const bubble = document.createElement('div');
+    bubble.className = 'chat-bubble chat-typing';
+    bubble.innerHTML = '<span></span><span></span><span></span>';
+    wrap.appendChild(bubble);
+    chatMessages.appendChild(wrap);
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+    return wrap;
+  }
+
+  async function sendMessage() {
+    const text = chatInput.value.trim();
+    if (!text) return;
+    chatInput.value = '';
+    chatInput.style.height = 'auto';
+    appendMsg('user', text);
+    chatHistory.push({ role: 'user', content: text });
+    const typingEl = showTyping();
+    try {
+      const res = await fetch('/api/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ messages: chatHistory })
+      });
+      if (!res.ok) throw new Error('API error');
+      const data = await res.json();
+      const reply = data.reply || 'Sorry, something went wrong.';
+      typingEl.remove();
+      appendMsg('bot', reply);
+      chatHistory.push({ role: 'assistant', content: reply });
+    } catch {
+      typingEl.remove();
+      appendMsg('bot', 'Sorry, I ran into an error. Try again in a moment.');
+    }
+  }
+
+  if (chatSend) chatSend.addEventListener('click', sendMessage);
+  if (chatInput) {
+    chatInput.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); }
+    });
+    chatInput.addEventListener('input', () => {
+      chatInput.style.height = 'auto';
+      chatInput.style.height = Math.min(chatInput.scrollHeight, 100) + 'px';
+    });
+  }
 </script>
 </body>
 </html>
