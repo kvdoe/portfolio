@@ -367,6 +367,34 @@
       background: linear-gradient(180deg, var(--electric), transparent);
       animation: float 2s ease-in-out infinite;
     }
+    /* ── Hero two-column layout ──────────────────────────────────── */
+    .hero__inner {
+      display: flex;
+      align-items: center;
+      gap: 64px;
+    }
+    .hero__text-col {
+      flex: 1;
+      min-width: 0;
+    }
+    .hero__portrait {
+      flex-shrink: 0;
+      width: 360px;
+    }
+    .hero__portrait-img {
+      width: 100%;
+      height: 480px;
+      object-fit: cover;
+      object-position: center top;
+      border-radius: 16px;
+      display: block;
+      box-shadow: 0 24px 60px rgba(0,0,0,0.5);
+    }
+    @media (max-width: 900px) {
+      .hero__inner { flex-direction: column-reverse; gap: 32px; }
+      .hero__portrait { width: 100%; max-width: 340px; }
+      .hero__portrait-img { height: 360px; }
+    }
 
     /* ── Sections ────────────────────────────────────────────────── */
     .section {
@@ -925,10 +953,8 @@
 
 <section id="hero">
   <div class="hero__inner">
+    <div class="hero__text-col">
     <div class="hero__label">&gt; High School Entrepreneur · Frisco, TX · Class of 2027</div>
-        <div class="hero__photo-wrap">
-      <img src="./photo.png" alt="Karan V" class="hero__photo" />
-    </div>
     <h1 class="hero__name">
       <span class="letter-wrap"><span class="letter-inner">K</span></span><span class="letter-wrap"><span class="letter-inner">A</span></span><span class="letter-wrap"><span class="letter-inner">R</span></span><span class="letter-wrap"><span class="letter-inner">A</span></span><span class="letter-wrap"><span class="letter-inner">N</span></span>
     </h1>
@@ -940,6 +966,10 @@
     <div class="hero__scroll">
       <span>Scroll</span>
       <div class="hero__scroll-line"></div>
+  </div>
+    <div class="hero__portrait">
+      <img src="./photo.png" alt="Karan V" class="hero__portrait-img" />
+    </div>
     </div>
   </div>
 </section>
@@ -1292,7 +1322,8 @@ document.addEventListener('DOMContentLoaded', () => {
   if (canvas) {
     const ctx = canvas.getContext('2d');
     const PETAL_COUNT = 45;
-    const PETAL_COLORS = ['#c9a96e','#e8c99a','#d4856a','#c47b5c','#7a9e6e','#f4ede4','#e8d5a8'];
+    const PETAL_COLORS = ['#d4a070','#e8c99a','#d4856a','#c47b5c','#e8d0a8','#f0e0c8'];
+    const LEAF_COLORS  = ['#7a9e6e','#8ab87a','#5a8450','#a8c47a','#6a9460'];
     let petals = [];
     const mouse = { x: null, y: null };
 
@@ -1850,6 +1881,8 @@ document.addEventListener('DOMContentLoaded', () => {
 </script>
 </body>
 </html>
+
+
 
 
 
