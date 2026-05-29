@@ -44,7 +44,7 @@ export default async function handler(req) {
     return new Response('Method not allowed', { status: 405 });
   }
 
-  const apiKey = process.env.GEMINI_API_KEY;
+  const apiKey = process.env.GROQ_API_KEY;
   if (!apiKey) {
     return new Response(JSON.stringify({ reply: 'Chat is not configured yet.' }), {
       status: 200,
@@ -59,37 +59,35 @@ export default async function handler(req) {
     return new Response('Bad request', { status: 400 });
   }
 
-  const incoming = (body.messages || []).slice(-10);
+  const messages = (body.messages || []).slice(-10);
 
-  // Gemini uses "model" instead of "assistant"
-  const contents = incoming.map(m => ({
-    role: m.role === 'assistant' ? 'model' : 'user',
-    parts: [{ text: m.content }]
-  }));
+  const groqRes = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${apiKey}`
+    },
+    body: JSON.stringify({
+      model: 'llama-3.1-8b-instant',
+      max_tokens: 300,
+      messages: [
+        { role: 'system', content: SYSTEM_PROMPT },
+        ...messages
+      ]
+    })
+  });
 
-  const geminiRes = await fetch(
-    `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`,
-    {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        system_instruction: { parts: [{ text: SYSTEM_PROMPT }] },
-        contents
-      })
-    }
-  );
-
-  if (!geminiRes.ok) {
-    const err = await geminiRes.text();
-    console.error('Gemini error:', err);
+  if (!groqRes.ok) {
+    const err = await groqRes.text();
+    console.error('Groq error:', err);
     return new Response(JSON.stringify({ reply: 'Something went wrong on my end.' }), {
       status: 200,
       headers: { 'Content-Type': 'application/json' }
     });
   }
 
-  const data = await geminiRes.json();
-  const reply = data.candidates?.[0]?.content?.parts?.[0]?.text || 'No response.';
+  const data = await groqRes.json();
+  const reply = data.choices?.[0]?.message?.content || 'No response.';
 
   return new Response(JSON.stringify({ reply }), {
     status: 200,
