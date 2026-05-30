@@ -2343,176 +2343,143 @@ document.addEventListener('DOMContentLoaded', () => {
 </script>
 
 <!-- ═══ BATMAN SCROLLER ═══ -->
-<!-- rope on canvas (no DOM reflow), batman positioned with CSS transform (GPU composited) -->
-<canvas id="bm-canvas"></canvas>
-<div id="bm-char-wrap">
-  <svg id="bm-svg" xmlns="http://www.w3.org/2000/svg" width="76" height="102" viewBox="0 0 76 102" overflow="visible">
-    <g id="bm-cape">
-      <path d="M14,32 Q-8,55 -12,100 Q8,85 28,88 Q36,90 36,32Z" fill="#0e131c"/>
-      <path d="M36,32 Q30,60 28,88 Q36,90 36,32Z" fill="#1a2233" opacity="0.5"/>
-    </g>
-    <rect x="28" y="32" width="20" height="6" rx="3" fill="#2b3a52"/>
-    <rect x="16" y="36" width="44" height="30" rx="5" fill="#243044"/>
-    <line x1="16" y1="48" x2="60" y2="48" stroke="#1a2538" stroke-width="1" opacity="0.4"/>
-    <ellipse cx="38" cy="50" rx="14" ry="10" fill="#e8b820"/>
-    <path d="M38,45 Q33,40 26,45 Q33,50 38,46 Q43,50 50,45 Q43,40 38,45Z" fill="#111e2e"/>
-    <rect x="35" y="45" width="6" height="9" rx="1" fill="#111e2e"/>
-    <rect x="16" y="62" width="44" height="8" rx="3" fill="#e8b820"/>
-    <rect x="20" y="63" width="7" height="6" rx="1.5" fill="#b8900a"/>
-    <rect x="31" y="63" width="7" height="6" rx="1.5" fill="#d4a412"/>
-    <rect x="42" y="63" width="7" height="6" rx="1.5" fill="#b8900a"/>
-    <rect x="53" y="63" width="7" height="6" rx="1.5" fill="#d4a412"/>
-    <ellipse cx="38" cy="22" rx="19" ry="18" fill="#2b3a52"/>
-    <polygon points="22,13 16,0 27,11" fill="#2b3a52"/>
-    <polygon points="54,13 60,0 49,11" fill="#2b3a52"/>
-    <path d="M24,26 Q38,35 52,26 L52,30 Q38,38 24,30Z" fill="#d4956a"/>
-    <path d="M28,29 Q38,35 48,29" stroke="#3a1a0a" stroke-width="2" fill="none" stroke-linecap="round"/>
-    <ellipse cx="31" cy="21" rx="8"   ry="4.5" fill="white"/>
-    <ellipse cx="45" cy="21" rx="8"   ry="4.5" fill="white"/>
-    <ellipse cx="31" cy="21" rx="5.5" ry="3"   fill="#7ec8e3"/>
-    <ellipse cx="45" cy="21" rx="5.5" ry="3"   fill="#7ec8e3"/>
-    <ellipse cx="29" cy="20" rx="2"   ry="1.5" fill="white" opacity="0.6"/>
-    <ellipse cx="43" cy="20" rx="2"   ry="1.5" fill="white" opacity="0.6"/>
-    <rect x="5"  y="36" width="12" height="24" rx="5" fill="#2b3a52" transform="rotate(-50 16 42)"/>
-    <circle cx="6" cy="24" r="5.5" fill="#2b3a52"/>
-    <circle cx="6" cy="24" r="2.5" fill="#111e2e"/>
-    <rect x="60" y="36" width="12" height="24" rx="5" fill="#2b3a52" transform="rotate(40 60 42)"/>
-    <rect x="65" y="21" width="20" height="10" rx="4" fill="#e8b820"/>
-    <rect x="70" y="17" width="8"  height="8"  rx="2" fill="#c89010"/>
-    <rect x="65" y="24" width="6"  height="6"  rx="3" fill="#8899aa"/>
-    <rect x="19" y="70" width="17" height="28" rx="5" fill="#243044"/>
-    <rect x="40" y="70" width="17" height="28" rx="5" fill="#243044"/>
-    <rect x="19" y="82" width="17" height="4"  rx="2" fill="#1a2538"/>
-    <rect x="40" y="82" width="17" height="4"  rx="2" fill="#1a2538"/>
-    <rect x="16" y="93" width="23" height="9" rx="4" fill="#111e2e"/>
-    <rect x="37" y="93" width="23" height="9" rx="4" fill="#111e2e"/>
-  </svg>
+<div id="bm-wrap">
+<svg id="bm-svg" xmlns="http://www.w3.org/2000/svg" overflow="visible">
+<!-- NO blur filters on animated elements — use stacked strokes for glow -->
+
+<!-- ROPE: 3 stacked strokes (wide dim → narrow bright) = cheap fake glow -->
+<path id="rp3" fill="none" stroke="rgba(200,130,0,0.18)"  stroke-width="12" stroke-linecap="round"/>
+<path id="rp2" fill="none" stroke="rgba(240,180,20,0.35)" stroke-width="6"  stroke-linecap="round"/>
+<path id="rp1" fill="none" stroke="#ffe066"               stroke-width="2"  stroke-linecap="round"/>
+<!-- rope texture dashes -->
+<path id="rpt" fill="none" stroke="rgba(160,100,0,0.5)" stroke-width="2"
+      stroke-dasharray="5 6" stroke-linecap="round"/>
+
+<!-- hook (static-ish, no filter) -->
+<g id="bm-hook">
+  <circle id="hd" r="6" fill="#f5c842" opacity="0.9"/>
+  <path   id="hp" fill="none" stroke="#f5c842" stroke-width="3" stroke-linecap="round"/>
+</g>
+
+<!-- LEGO BATMAN — no drop-shadow filter -->
+<g id="bm-char">
+  <g id="bm-cape">
+    <path d="M14,32 Q-8,55 -12,100 Q8,85 28,88 Q36,90 36,32Z" fill="#0e131c"/>
+    <path d="M36,32 Q30,60 28,88 Q36,90 36,32Z" fill="#1a2233" opacity="0.5"/>
+  </g>
+  <!-- torso -->
+  <rect x="28" y="32" width="20" height="6"  rx="3" fill="#2b3a52"/>
+  <rect x="16" y="36" width="44" height="30" rx="5" fill="#243044"/>
+  <line x1="16" y1="48" x2="60" y2="48" stroke="#1a2538" stroke-width="1" opacity="0.4"/>
+  <!-- chest oval + bat -->
+  <ellipse cx="38" cy="50" rx="14" ry="10" fill="#e8b820"/>
+  <path d="M38,45 Q33,40 26,45 Q33,50 38,46 Q43,50 50,45 Q43,40 38,45Z" fill="#111e2e"/>
+  <rect x="35" y="45" width="6" height="9" rx="1" fill="#111e2e"/>
+  <!-- belt -->
+  <rect x="16" y="62" width="44" height="8" rx="3" fill="#e8b820"/>
+  <rect x="20" y="63" width="7" height="6" rx="1.5" fill="#b8900a"/>
+  <rect x="31" y="63" width="7" height="6" rx="1.5" fill="#d4a412"/>
+  <rect x="42" y="63" width="7" height="6" rx="1.5" fill="#b8900a"/>
+  <rect x="53" y="63" width="7" height="6" rx="1.5" fill="#d4a412"/>
+  <!-- cowl -->
+  <ellipse cx="38" cy="22" rx="19" ry="18" fill="#2b3a52"/>
+  <polygon points="22,13 16,0 27,11" fill="#2b3a52"/>
+  <polygon points="54,13 60,0 49,11" fill="#2b3a52"/>
+  <ellipse cx="34" cy="14" rx="8" ry="5" fill="rgba(255,255,255,0.06)" transform="rotate(-20 34 14)"/>
+  <!-- face -->
+  <path d="M24,26 Q38,35 52,26 L52,30 Q38,38 24,30Z" fill="#d4956a"/>
+  <path d="M28,29 Q38,35 48,29" stroke="#3a1a0a" stroke-width="2" fill="none" stroke-linecap="round"/>
+  <!-- eyes -->
+  <ellipse cx="31" cy="21" rx="8"   ry="4.5" fill="white"/>
+  <ellipse cx="45" cy="21" rx="8"   ry="4.5" fill="white"/>
+  <ellipse cx="31" cy="21" rx="5.5" ry="3"   fill="#7ec8e3"/>
+  <ellipse cx="45" cy="21" rx="5.5" ry="3"   fill="#7ec8e3"/>
+  <ellipse cx="29" cy="20" rx="2"   ry="1.5" fill="white" opacity="0.6"/>
+  <ellipse cx="43" cy="20" rx="2"   ry="1.5" fill="white" opacity="0.6"/>
+  <!-- left arm -->
+  <rect x="5" y="36" width="12" height="24" rx="5" fill="#2b3a52" transform="rotate(-50 16 42)"/>
+  <circle cx="6" cy="24" r="5.5" fill="#2b3a52"/>
+  <circle cx="6" cy="24" r="2.5" fill="#111e2e"/>
+  <!-- right arm + grapple gun -->
+  <rect x="60" y="36" width="12" height="24" rx="5" fill="#2b3a52" transform="rotate(40 60 42)"/>
+  <rect x="65" y="21" width="20" height="10" rx="4" fill="#e8b820"/>
+  <rect x="70" y="17" width="8"  height="8"  rx="2" fill="#c89010"/>
+  <rect x="65" y="24" width="6"  height="6"  rx="3" fill="#8899aa"/>
+  <!-- legs -->
+  <rect x="19" y="70" width="17" height="28" rx="5" fill="#243044"/>
+  <rect x="40" y="70" width="17" height="28" rx="5" fill="#243044"/>
+  <rect x="19" y="82" width="17" height="4"  rx="2" fill="#1a2538"/>
+  <rect x="40" y="82" width="17" height="4"  rx="2" fill="#1a2538"/>
+  <!-- boots -->
+  <rect x="16" y="93" width="23" height="9" rx="4" fill="#111e2e"/>
+  <rect x="37" y="93" width="23" height="9" rx="4" fill="#111e2e"/>
+</g>
+</svg>
 </div>
 
 <style>
-  #bm-canvas {
-    position: fixed; right: 0; top: 0;
-    width: 120px; height: 100vh;
-    z-index: 499; pointer-events: none;
-    will-change: transform;
-  }
-  #bm-char-wrap {
-    position: fixed; right: 0; top: 0;
-    z-index: 500; pointer-events: none;
-    will-change: transform;
-    transform-origin: 38px 51px;
-  }
-  #bm-cape { transform-origin: 38px 51px; will-change: transform; }
+  #bm-wrap{position:fixed;right:0;top:0;width:120px;height:100vh;z-index:500;pointer-events:none;overflow:visible;}
+  #bm-svg{position:absolute;top:0;left:0;width:100%;overflow:visible;}
+  @keyframes ropePulse{0%,100%{opacity:.8}50%{opacity:1}}
+  #rp2{animation:ropePulse 1.8s ease-in-out infinite;}
+  @keyframes ropeDash{to{stroke-dashoffset:-44}}
+  #rpt{animation:ropeDash 1.4s linear infinite;}
 </style>
 
 <script>
 (function(){
-  const canvas = document.getElementById('bm-canvas');
-  const ctx    = canvas.getContext('2d');
-  const wrap   = document.getElementById('bm-char-wrap');
-  const cape   = document.getElementById('bm-cape');
+  const rp1=document.getElementById('rp1');
+  const rp2=document.getElementById('rp2');
+  const rp3=document.getElementById('rp3');
+  const rpt=document.getElementById('rpt');
+  const hp =document.getElementById('hp');
+  const hd =document.getElementById('hd');
+  const char=document.getElementById('bm-char');
+  const cape=document.getElementById('bm-cape');
+  const svg =document.getElementById('bm-svg');
 
-  const CW=76, CH=102, HOOK_X=60, HOOK_Y=22;
+  const CX=60, HOOK_Y=22, CW=76, CH=102;
 
-  let vpH = window.innerHeight;
-  let maxScroll = Math.max(1, document.documentElement.scrollHeight - vpH);
-  let cachedScrollY = 0;
-  let dashOffset = 0;
-  let pulseT = 0;
-
-  function onResize(){
-    vpH = window.innerHeight;
-    maxScroll = Math.max(1, document.documentElement.scrollHeight - vpH);
-    canvas.width  = 120;
-    canvas.height = vpH;
+  /* cache scroll — updated by event, never read from DOM in rAF */
+  let cachedScrollY=0, maxScroll=1;
+  function updateScroll(){ cachedScrollY=window.scrollY; }
+  function updateMax(){
+    maxScroll=Math.max(1,document.documentElement.scrollHeight-window.innerHeight);
+    svg.setAttribute('height',window.innerHeight);
   }
-  onResize();
-  window.addEventListener('resize', onResize, {passive:true});
-  window.addEventListener('scroll', ()=>{ cachedScrollY = window.scrollY; }, {passive:true});
+  window.addEventListener('scroll',updateScroll,{passive:true});
+  window.addEventListener('resize',updateMax,{passive:true});
+  updateMax();
 
   /* pendulum */
-  let sp=0, sv=0.022, gustT=0;
+  let sp=0,sv=0.022,gustT=0;
+  const AMP=36,SPRING=0.0022,DAMP=0.997;
 
   function draw(){
     requestAnimationFrame(draw);
 
-    /* pendulum physics */
-    if(--gustT<=0){ sv+=(Math.random()-.5)*.045; gustT=80+Math.random()*120|0; }
-    sv += -sp * 0.0022;
-    sv *= 0.997;
-    sp = Math.max(-1, Math.min(1, sp+sv));
+    gustT--;
+    if(gustT<=0){ sv+=(Math.random()-.5)*.045; gustT=80+Math.random()*120|0; }
+    sv+=(-sp)*SPRING; sv*=DAMP; sp=Math.max(-1,Math.min(1,sp+sv));
 
-    const sway = sp * 36;
-    const pct  = cachedScrollY / maxScroll;
-    const batY = HOOK_Y + 50 + pct * (vpH - CH - HOOK_Y - 70);
-    const batX = HOOK_X + sway;
+    const sway = sp*AMP;
+    const pct  = cachedScrollY/maxScroll;
+    const batY = HOOK_Y+50 + pct*(window.innerHeight-CH-HOOK_Y-70);
+    const batX = CX+sway;
+    const hY   = batY+10;
+    const ctX  = CX+sway*.35;
+    const ctY  = (HOOK_Y+hY)*.5 + Math.abs(sway)*.15;
+    const d    = `M${CX} ${HOOK_Y} Q${ctX} ${ctY} ${batX} ${hY}`;
 
-    /* ── position batman via CSS transform (GPU composited, no reflow) ── */
-    const tx   = batX - CW/2;
-    const ty   = batY;
-    const tilt = sp * 22;
-    wrap.style.transform = `translate(${tx}px,${ty}px) rotate(${tilt}deg)`;
-    cape.style.transform = `rotate(${-sp*14}deg)`;
+    rp1.setAttribute('d',d); rp2.setAttribute('d',d);
+    rp3.setAttribute('d',d); rpt.setAttribute('d',d);
 
-    /* ── draw rope on canvas (no DOM, no reflow) ── */
-    ctx.clearRect(0, 0, 120, vpH);
+    hd.setAttribute('cx',CX); hd.setAttribute('cy',HOOK_Y);
+    hp.setAttribute('d',`M${CX-10} ${HOOK_Y-12}L${CX} ${HOOK_Y} M${CX} ${HOOK_Y-18}Q${CX+9} ${HOOK_Y-18} ${CX+9} ${HOOK_Y-10}`);
 
-    const hX = batX, hY = batY + 10;
-    const cX = HOOK_X + sway * 0.35;
-    const cY = (HOOK_Y + hY) * 0.5 + Math.abs(sway) * 0.15;
-
-    /* outer glow — wide dim stroke */
-    ctx.beginPath();
-    ctx.moveTo(HOOK_X, HOOK_Y);
-    ctx.quadraticCurveTo(cX, cY, hX, hY);
-    ctx.strokeStyle = 'rgba(200,130,0,0.18)';
-    ctx.lineWidth = 12; ctx.lineCap = 'round';
-    ctx.stroke();
-
-    /* mid glow */
-    pulseT += 0.04;
-    const pulseA = 0.32 + Math.sin(pulseT) * 0.12;
-    ctx.beginPath();
-    ctx.moveTo(HOOK_X, HOOK_Y);
-    ctx.quadraticCurveTo(cX, cY, hX, hY);
-    ctx.strokeStyle = `rgba(240,180,20,${pulseA})`;
-    ctx.lineWidth = 5;
-    ctx.stroke();
-
-    /* core bright line */
-    ctx.beginPath();
-    ctx.moveTo(HOOK_X, HOOK_Y);
-    ctx.quadraticCurveTo(cX, cY, hX, hY);
-    ctx.strokeStyle = '#ffe066';
-    ctx.lineWidth = 1.8;
-    ctx.stroke();
-
-    /* dashed texture */
-    dashOffset -= 0.6;
-    ctx.beginPath();
-    ctx.moveTo(HOOK_X, HOOK_Y);
-    ctx.quadraticCurveTo(cX, cY, hX, hY);
-    ctx.strokeStyle = 'rgba(160,100,0,0.45)';
-    ctx.lineWidth = 2;
-    ctx.setLineDash([5, 6]);
-    ctx.lineDashOffset = dashOffset;
-    ctx.stroke();
-    ctx.setLineDash([]);
-
-    /* hook */
-    ctx.beginPath();
-    ctx.arc(HOOK_X, HOOK_Y, 5, 0, Math.PI*2);
-    ctx.fillStyle = '#f5c842';
-    ctx.fill();
-    ctx.beginPath();
-    ctx.moveTo(HOOK_X-9, HOOK_Y-11);
-    ctx.lineTo(HOOK_X, HOOK_Y);
-    ctx.moveTo(HOOK_X, HOOK_Y-17);
-    ctx.arcTo(HOOK_X+9, HOOK_Y-17, HOOK_X+9, HOOK_Y-9, 8);
-    ctx.lineTo(HOOK_X+9, HOOK_Y-9);
-    ctx.strokeStyle = '#f5c842';
-    ctx.lineWidth = 2.5; ctx.lineCap = 'round';
-    ctx.stroke();
+    const tilt=sp*22, capeTilt=-sp*14;
+    char.setAttribute('transform',`translate(${batX-CW/2},${batY}) rotate(${tilt},${CW/2},${CH/2})`);
+    cape.setAttribute('transform',`rotate(${capeTilt},${CW/2},${CH/2})`);
   }
 
   draw();
