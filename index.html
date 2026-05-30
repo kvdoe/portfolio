@@ -1077,242 +1077,211 @@
 </head>
 <body>
 <!-- ═══ PORTAL OVERLAY ═══ -->
-<div id="portal-overlay">
-  <canvas id="portal-canvas"></canvas>
-  <div id="portal-label-wrap">
-    <p id="portal-label">click to enter<br>Karan's world</p>
-  </div>
+<div id="po">
+  <canvas id="pc"></canvas>
+  <div id="pb"></div>
+  <div id="pl-wrap"><p id="pl">click to enter<br>Karan's world</p></div>
 </div>
 
 <style>
-  #portal-overlay {
-    position: fixed; inset: 0; z-index: 9999;
-    background: #030201;
-    display: flex; align-items: center; justify-content: center;
-    cursor: pointer; overflow: hidden;
+  #po {
+    position:fixed;inset:0;z-index:9999;
+    background:#020100;
+    display:flex;align-items:center;justify-content:center;
+    cursor:pointer;overflow:hidden;
   }
-  #portal-overlay.opening { animation: portalFade 0.7s ease forwards; }
-  @keyframes portalFade { 0%{opacity:1} 100%{opacity:0; pointer-events:none} }
-
-  #portal-canvas { position: absolute; inset: 0; width: 100%; height: 100%; }
-
-  #portal-label-wrap {
-    position: relative; z-index: 2;
-    pointer-events: none;
-    text-align: center;
+  #pc { position:absolute;inset:0;width:100%;height:100%; }
+  /* black expander — starts as portal-sized circle, expands on click */
+  #pb {
+    position:absolute;
+    border-radius:50%;
+    background:#000;
+    transform:scale(1);
+    transition:none;
+    z-index:3;
+    pointer-events:none;
   }
-  #portal-label {
-    font-family: 'Space Grotesk', sans-serif;
-    font-size: clamp(14px, 2.4vmin, 22px);
-    font-weight: 600;
-    color: #e8c878;
-    text-align: center;
-    letter-spacing: 0.12em;
-    line-height: 1.75;
-    text-shadow: 0 0 20px rgba(230,180,60,1), 0 0 50px rgba(210,130,20,0.8), 0 0 90px rgba(200,100,10,0.4);
-    animation: labelPulse 2.2s ease-in-out infinite;
-    user-select: none;
+  #pb.expand {
+    border-radius:0;
+    transition:transform 0.65s cubic-bezier(0.55,0,1,0.45);
+    transform:scale(80);
   }
-  @keyframes labelPulse {
-    0%,100% { opacity:0.75; text-shadow: 0 0 16px rgba(220,170,50,0.8), 0 0 40px rgba(200,120,15,0.5); }
-    50%     { opacity:1;    text-shadow: 0 0 28px rgba(255,210,80,1),   0 0 70px rgba(230,150,30,0.9), 0 0 110px rgba(200,100,10,0.5); }
+  #pl-wrap {
+    position:relative;z-index:2;text-align:center;pointer-events:none;
   }
+  #pl {
+    font-family:'Space Grotesk',sans-serif;
+    font-size:clamp(13px,2.2vmin,20px);
+    font-weight:600;color:#eacc80;
+    letter-spacing:.1em;line-height:1.75;
+    text-shadow:0 0 18px rgba(230,180,50,1),0 0 40px rgba(210,130,15,.7);
+    animation:plp 2.2s ease-in-out infinite;
+    user-select:none;
+  }
+  @keyframes plp {
+    0%,100%{opacity:.75;text-shadow:0 0 14px rgba(220,170,40,.8),0 0 35px rgba(200,120,10,.5)}
+    50%    {opacity:1;  text-shadow:0 0 26px rgba(255,210,70,1),0 0 60px rgba(230,145,25,.9)}
+  }
+  #po.bye { opacity:0; transition:opacity .3s ease .55s; pointer-events:none; }
 </style>
 
 <script>
-(function () {
-  const overlay = document.getElementById('portal-overlay');
-  const canvas  = document.getElementById('portal-canvas');
-  const ctx     = canvas.getContext('2d');
-  let W, H, CX, CY, R;
+(function(){
+  const ov  = document.getElementById('po');
+  const cv  = document.getElementById('pc');
+  const pb  = document.getElementById('pb');
+  const ctx = cv.getContext('2d');
+  let W,H,CX,CY,R;
 
-  function resize() {
-    W = canvas.width  = window.innerWidth;
-    H = canvas.height = window.innerHeight;
-    CX = W / 2; CY = H / 2;
-    R = Math.min(W, H) * 0.30;
+  function resize(){
+    W=cv.width=window.innerWidth; H=cv.height=window.innerHeight;
+    CX=W/2; CY=H/2; R=Math.min(W,H)*0.28;
+    // size the black expander to exactly cover the portal interior
+    const d = (R*1.88)+'px';
+    pb.style.width=d; pb.style.height=d;
+    pb.style.left=(CX-R*0.94)+'px'; pb.style.top=(CY-R*0.94)+'px';
   }
   resize();
-  window.addEventListener('resize', resize);
+  window.addEventListener('resize',resize);
 
-  /* ── Spark class ── */
-  class Spark {
-    constructor() { this.reset(); }
-    reset() {
-      // born on the ring at a random angle
-      this.angle = Math.random() * Math.PI * 2;
-      const jitter = (Math.random() - 0.5) * 10;
-      this.x = CX + Math.cos(this.angle) * (R + jitter);
-      this.y = CY + Math.sin(this.angle) * (R + jitter);
+  /* ── Spark pool ── */
+  const N = 90;
+  const sparks = [];
+  for(let i=0;i<N;i++) sparks.push(makeSpark(true));
 
-      // orbit velocity + slight outward kick
-      const orbitSpeed = (0.018 + Math.random() * 0.032) * (Math.random() < 0.5 ? 1 : -1);
-      const radialKick  = (Math.random() - 0.3) * 1.8;
-      this.vx = -Math.sin(this.angle) * orbitSpeed * R + Math.cos(this.angle) * radialKick;
-      this.vy =  Math.cos(this.angle) * orbitSpeed * R + Math.sin(this.angle) * radialKick;
-
-      this.life    = 0.6 + Math.random() * 0.4;
-      this.decay   = 0.008 + Math.random() * 0.018;
-      this.size    = 1.2 + Math.random() * 2.8;
-      this.hue     = 26 + Math.random() * 22;       // orange-gold
-      this.lit     = 65 + Math.random() * 30;
-      this.trail   = [];                              // history of [x,y]
-      this.maxTrail= Math.floor(6 + Math.random() * 10);
-    }
-    update() {
-      this.trail.push([this.x, this.y]);
-      if (this.trail.length > this.maxTrail) this.trail.shift();
-      // gentle drag so sparks curve naturally
-      this.vx *= 0.985;
-      this.vy *= 0.985;
-      this.x  += this.vx;
-      this.y  += this.vy;
-      this.life -= this.decay;
-    }
-    draw() {
-      if (this.trail.length < 2) return;
-      // draw trail as a tapering line
-      for (let i = 1; i < this.trail.length; i++) {
-        const t  = i / this.trail.length;
-        const a  = t * this.life * 0.85;
-        const sw = this.size * t * 0.9;
-        ctx.beginPath();
-        ctx.moveTo(this.trail[i-1][0], this.trail[i-1][1]);
-        ctx.lineTo(this.trail[i][0],   this.trail[i][1]);
-        ctx.strokeStyle = `hsla(${this.hue},100%,${this.lit}%,${a})`;
-        ctx.lineWidth   = sw;
-        ctx.lineCap     = 'round';
-        ctx.shadowColor = `hsl(${this.hue},100%,${this.lit}%)`;
-        ctx.shadowBlur  = 8;
-        ctx.stroke();
-      }
-      // bright head dot
-      ctx.beginPath();
-      ctx.arc(this.x, this.y, this.size * 0.7 * this.life, 0, Math.PI * 2);
-      ctx.fillStyle = `hsla(${this.hue + 10},100%,92%,${this.life * 0.95})`;
-      ctx.shadowColor = `hsl(${this.hue},100%,80%)`;
-      ctx.shadowBlur  = 14;
-      ctx.fill();
-    }
-    get dead() { return this.life <= 0; }
+  function makeSpark(spread){
+    const a  = Math.random()*Math.PI*2;
+    const r  = R + (Math.random()-.5)*8;
+    const dir= Math.random()<.5?1:-1;
+    const spd= (.014+Math.random()*.022)*dir;
+    const rv = (Math.random()-.35)*1.2;
+    return {
+      x: CX+Math.cos(a)*r, y: CY+Math.sin(a)*r,
+      vx:-Math.sin(a)*spd*R + Math.cos(a)*rv,
+      vy: Math.cos(a)*spd*R + Math.sin(a)*rv,
+      life:spread?Math.random():(.5+Math.random()*.5),
+      decay:.01+Math.random()*.016,
+      size:1+Math.random()*2.2,
+      hue:24+Math.random()*20,
+      lit:62+Math.random()*32,
+      tx:[],ty:[],tlen:4+Math.floor(Math.random()*7)
+    };
   }
 
-  /* ── Burst spark: shoots outward from ring ── */
-  class BurstSpark {
-    constructor() {
-      const a = Math.random() * Math.PI * 2;
-      this.x  = CX + Math.cos(a) * R;
-      this.y  = CY + Math.sin(a) * R;
-      const spd = 2.5 + Math.random() * 4.5;
-      this.vx = Math.cos(a) * spd;
-      this.vy = Math.sin(a) * spd;
-      this.life  = 1;
-      this.decay = 0.025 + Math.random() * 0.03;
-      this.size  = 1 + Math.random() * 2;
-      this.hue   = 26 + Math.random() * 20;
-      this.trail = [];
-      this.maxTrail = 5 + Math.floor(Math.random() * 8);
-    }
-    update() {
-      this.trail.push([this.x, this.y]);
-      if (this.trail.length > this.maxTrail) this.trail.shift();
-      this.vx *= 0.93; this.vy *= 0.93;
-      this.x  += this.vx; this.y += this.vy;
-      this.life -= this.decay;
-    }
-    draw() {
-      if (this.trail.length < 2) return;
-      for (let i = 1; i < this.trail.length; i++) {
-        const t = i / this.trail.length;
-        ctx.beginPath();
-        ctx.moveTo(this.trail[i-1][0], this.trail[i-1][1]);
-        ctx.lineTo(this.trail[i][0],   this.trail[i][1]);
-        ctx.strokeStyle = `hsla(${this.hue},100%,78%,${t * this.life * 0.9})`;
-        ctx.lineWidth   = this.size * t * this.life;
-        ctx.lineCap     = 'round';
-        ctx.shadowColor = `hsl(${this.hue},100%,75%)`;
-        ctx.shadowBlur  = 10;
-        ctx.stroke();
-      }
-      ctx.beginPath();
-      ctx.arc(this.x, this.y, this.size * this.life * 0.8, 0, Math.PI * 2);
-      ctx.fillStyle = `hsla(40,100%,95%,${this.life * 0.9})`;
-      ctx.shadowBlur = 12;
-      ctx.fill();
-    }
-    get dead() { return this.life <= 0; }
+  function resetSpark(s){
+    const n=makeSpark(false);
+    Object.assign(s,n);
   }
 
-  /* pool */
-  const POOL = 260;
-  let sparks = Array.from({ length: POOL }, () => new Spark());
-  let bursts = [];
-  let frame  = 0;
+  /* ── Burst pool (outward flying sparks) ── */
+  const bursts=[];
+  function addBurst(){
+    const a=Math.random()*Math.PI*2;
+    const spd=2+Math.random()*4;
+    bursts.push({
+      x:CX+Math.cos(a)*R, y:CY+Math.sin(a)*R,
+      vx:Math.cos(a)*spd,  vy:Math.sin(a)*spd,
+      life:1, decay:.028+Math.random()*.025,
+      size:1+Math.random()*1.8, hue:26+Math.random()*18,
+      tx:[],ty:[],tlen:3+Math.floor(Math.random()*5)
+    });
+  }
 
-  function drawGlow() {
-    // rings of glow around portal edge
-    for (const [width, alpha] of [[48, 0.10], [28, 0.18], [14, 0.30], [5, 0.55]]) {
-      const g = ctx.createRadialGradient(CX, CY, R - width, CX, CY, R + width);
-      g.addColorStop(0,   'rgba(210,150,20,0)');
-      g.addColorStop(0.5, `rgba(225,160,30,${alpha})`);
-      g.addColorStop(1,   'rgba(210,150,20,0)');
+  /* draw one spark with trail — no shadowBlur (too expensive) */
+  function drawSpark(s,alpha){
+    const pts=s.tx.length;
+    if(pts<2) return;
+    for(let i=1;i<pts;i++){
+      const t=i/pts;
       ctx.beginPath();
-      ctx.arc(CX, CY, R, 0, Math.PI * 2);
-      ctx.strokeStyle = g;
-      ctx.lineWidth   = width * 2;
+      ctx.moveTo(s.tx[i-1],s.ty[i-1]);
+      ctx.lineTo(s.tx[i],  s.ty[i]);
+      ctx.strokeStyle=`hsla(${s.hue},100%,${s.lit}%,${t*alpha*.8})`;
+      ctx.lineWidth=s.size*t*.85;
       ctx.stroke();
     }
-    // inner black fill
+    // bright tip
     ctx.beginPath();
-    ctx.arc(CX, CY, R - 6, 0, Math.PI * 2);
-    ctx.fillStyle = '#000';
+    ctx.arc(s.x,s.y,s.size*.65*Math.min(alpha,1),0,Math.PI*2);
+    ctx.fillStyle=`hsla(45,100%,92%,${alpha*.9})`;
     ctx.fill();
   }
 
-  function loop() {
+  /* one shared glow pass on a tiny offscreen canvas — cheap bloom */
+  const gc=document.createElement('canvas');
+  const gx=gc.getContext('2d');
+  gc.width=gc.height=4;
+
+  let frame=0;
+  function loop(){
     frame++;
-    ctx.clearRect(0, 0, W, H);
+    ctx.clearRect(0,0,W,H);
 
-    // faint background vignette
-    const vg = ctx.createRadialGradient(CX, CY, R * 0.8, CX, CY, Math.max(W, H) * 0.9);
-    vg.addColorStop(0, 'rgba(20,10,2,0)');
-    vg.addColorStop(1, 'rgba(0,0,0,0.7)');
-    ctx.fillStyle = vg;
-    ctx.fillRect(0, 0, W, H);
+    /* vignette */
+    const vg=ctx.createRadialGradient(CX,CY,R*.5,CX,CY,Math.max(W,H)*.85);
+    vg.addColorStop(0,'rgba(12,6,1,0)');
+    vg.addColorStop(1,'rgba(0,0,0,.75)');
+    ctx.fillStyle=vg; ctx.fillRect(0,0,W,H);
 
+    /* glow ring — CSS shadow on a canvas arc is cheaper than per-particle shadow */
     ctx.save();
-    drawGlow();
-
-    // clip sparks to outside the black center
-    ctx.globalCompositeOperation = 'source-over';
-
-    // update + draw orbit sparks
-    for (const s of sparks) {
-      s.update();
-      if (s.dead) s.reset();
-      else        s.draw();
-    }
-
-    // spawn burst sparks occasionally
-    if (frame % 8 === 0) bursts.push(new BurstSpark());
-    bursts = bursts.filter(b => !b.dead);
-    for (const b of bursts) { b.update(); b.draw(); }
-
+    ctx.shadowColor='rgba(220,150,25,1)';
+    ctx.shadowBlur=28;
+    ctx.beginPath();
+    ctx.arc(CX,CY,R,0,Math.PI*2);
+    ctx.strokeStyle='rgba(200,140,20,.55)';
+    ctx.lineWidth=4;
+    ctx.stroke();
+    ctx.shadowBlur=12;
+    ctx.strokeStyle='rgba(240,190,60,.35)';
+    ctx.lineWidth=1.5;
+    ctx.stroke();
     ctx.restore();
 
-    // re-stamp black center over everything so sparks don't bleed in
+    /* update + draw sparks */
+    ctx.lineJoin='round';
+    ctx.lineCap='round';
+    for(const s of sparks){
+      s.tx.push(s.x); s.ty.push(s.y);
+      if(s.tx.length>s.tlen){s.tx.shift();s.ty.shift();}
+      s.vx*=.988; s.vy*=.988;
+      s.x+=s.vx;  s.y+=s.vy;
+      s.life-=s.decay;
+      if(s.life<=0){ resetSpark(s); continue; }
+      drawSpark(s,s.life);
+    }
+
+    /* burst sparks */
+    if(frame%10===0) addBurst();
+    for(let i=bursts.length-1;i>=0;i--){
+      const b=bursts[i];
+      b.tx.push(b.x); b.ty.push(b.y);
+      if(b.tx.length>b.tlen){b.tx.shift();b.ty.shift();}
+      b.vx*=.92; b.vy*=.92;
+      b.x+=b.vx; b.y+=b.vy;
+      b.life-=b.decay;
+      if(b.life<=0){bursts.splice(i,1);continue;}
+      drawSpark(b,b.life);
+    }
+
+    /* solid black center — stamp over everything inside ring */
     ctx.beginPath();
-    ctx.arc(CX, CY, R - 8, 0, Math.PI * 2);
-    ctx.fillStyle = '#000';
+    ctx.arc(CX,CY,R-5,0,Math.PI*2);
+    ctx.fillStyle='#000';
     ctx.fill();
 
     requestAnimationFrame(loop);
   }
 
-  overlay.addEventListener('click', () => {
-    overlay.classList.add('opening');
-    setTimeout(() => overlay.remove(), 720);
-  });
+  /* ── Click: suck into portal ── */
+  ov.addEventListener('click',()=>{
+    ov.removeEventListener('click', arguments.callee);
+    // black circle expands outward from portal center
+    pb.classList.add('expand');
+    // once it covers screen, fade out the overlay
+    ov.classList.add('bye');
+    setTimeout(()=>ov.remove(), 900);
+  },{once:true});
 
   loop();
 })();
