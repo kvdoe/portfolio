@@ -2344,189 +2344,232 @@ document.addEventListener('DOMContentLoaded', () => {
 
 <!-- ═══ BATMAN SCROLLER ═══ -->
 <div id="bm-wrap">
-<svg id="bm-svg" xmlns="http://www.w3.org/2000/svg">
+<svg id="bm-svg" xmlns="http://www.w3.org/2000/svg" overflow="visible">
 <defs>
-  <filter id="rope-glow" x="-100%" y="-10%" width="300%" height="120%">
-    <feGaussianBlur in="SourceGraphic" stdDeviation="3.5" result="b1"/>
-    <feGaussianBlur in="SourceGraphic" stdDeviation="1.5" result="b2"/>
-    <feMerge><feMergeNode in="b1"/><feMergeNode in="b2"/><feMergeNode in="SourceGraphic"/></feMerge>
+  <!-- rope glow pulse -->
+  <filter id="rg" x="-80%" y="-10%" width="260%" height="120%">
+    <feGaussianBlur in="SourceGraphic" stdDeviation="4" result="b"/>
+    <feMerge><feMergeNode in="b"/><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
   </filter>
-  <filter id="hook-glow" x="-80%" y="-80%" width="260%" height="260%">
-    <feGaussianBlur stdDeviation="4" result="b"/>
+  <filter id="rg2" x="-80%" y="-10%" width="260%" height="120%">
+    <feGaussianBlur in="SourceGraphic" stdDeviation="2" result="b"/>
     <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
   </filter>
-  <filter id="char-shadow" x="-20%" y="-10%" width="140%" height="130%">
-    <feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="rgba(0,0,0,0.7)"/>
+  <filter id="hg" x="-100%" y="-100%" width="300%" height="300%">
+    <feGaussianBlur stdDeviation="5" result="b"/>
+    <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+  </filter>
+  <filter id="cs">
+    <feDropShadow dx="1" dy="3" stdDeviation="4" flood-color="rgba(0,0,0,0.8)"/>
   </filter>
 </defs>
-<!-- rope (updated via JS) -->
-<path id="bm-rope" fill="none" stroke="url(#rope-grad)" stroke-width="2.5" filter="url(#rope-glow)"/>
-<path id="bm-rope2" fill="none" stroke="rgba(255,230,120,0.25)" stroke-width="5"/>
-<!-- grapple hook anchor -->
-<g id="bm-hook" filter="url(#hook-glow)">
-  <path id="bm-hook-path" fill="none" stroke="#f0c84a" stroke-width="2.5" stroke-linecap="round"/>
-  <circle id="bm-hook-dot" r="4" fill="#f0c84a"/>
+
+<!-- ROPE layers: texture + glow + core -->
+<path id="rp-shadow" fill="none" stroke="rgba(0,0,0,0.4)"  stroke-width="6"/>
+<path id="rp-glow"   fill="none" stroke="#f5c842"          stroke-width="3"   filter="url(#rg)"  opacity="0.9"/>
+<path id="rp-core"   fill="none" stroke="#ffe680"          stroke-width="2"   filter="url(#rg2)"/>
+<!-- rope texture: dashes over the rope -->
+<path id="rp-tex"    fill="none" stroke="rgba(180,120,0,0.55)" stroke-width="2.5"
+      stroke-dasharray="4 5" stroke-dashoffset="0"/>
+
+<!-- grapple hook -->
+<g id="bm-hook" filter="url(#hg)">
+  <path id="hp" fill="none" stroke="#f5c842" stroke-width="3" stroke-linecap="round"/>
+  <circle id="hd" r="5.5" fill="#f5c842"/>
 </g>
-<!-- gradient def for rope (updated dynamically) -->
-<linearGradient id="rope-grad" x1="0" y1="0" x2="0" y2="1">
-  <stop offset="0%" stop-color="#ffe066"/>
-  <stop offset="100%" stop-color="#c9880a"/>
-</linearGradient>
-<!-- batman character group -->
-<g id="bm-char" filter="url(#char-shadow)">
-  <!-- CAPE (behind body) -->
-  <path d="M14,34 Q2,58 0,95 Q22,76 40,84 Q58,76 80,95 Q78,58 66,34" fill="#111111"/>
-  <!-- BODY -->
-  <path d="M20,34 Q20,66 40,68 Q60,66 60,34 Q50,30 40,30 Q30,30 20,34Z" fill="#1e1e1e"/>
-  <!-- YELLOW CHEST OVAL -->
-  <ellipse cx="40" cy="48" rx="13" ry="10" fill="#c9a040"/>
-  <!-- BAT SYMBOL on chest -->
-  <path d="M40,43 Q35,38 29,43 Q35,47 40,44 Q45,47 51,43 Q45,38 40,43Z" fill="#111"/>
-  <path d="M40,44 Q38,50 36,50 Q38,48 40,48 Q42,48 44,50 Q42,50 40,44Z" fill="#111"/>
-  <!-- BELT -->
-  <rect x="22" y="60" width="36" height="7" rx="3.5" fill="#c9a040"/>
-  <rect x="27" y="61" width="5" height="5" rx="1.5" fill="#a07a18"/>
-  <rect x="35" y="61" width="5" height="5" rx="1.5" fill="#b08a22"/>
-  <rect x="43" y="61" width="5" height="5" rx="1.5" fill="#a07a18"/>
-  <!-- COWL -->
-  <ellipse cx="40" cy="20" rx="16" ry="15" fill="#1e1e1e"/>
-  <!-- EAR LEFT -->
-  <polygon points="26,12 21,0 30,10" fill="#1e1e1e"/>
-  <!-- EAR RIGHT -->
-  <polygon points="54,12 59,0 50,10" fill="#1e1e1e"/>
-  <!-- FACE (slightly lighter) -->
-  <path d="M28,20 Q40,28 52,20 Q52,26 40,29 Q28,26 28,20Z" fill="#2e2020"/>
-  <!-- EYES (white slits) -->
-  <path d="M30,19 L35,17 L36,20 L30,21Z" fill="white" opacity="0.9"/>
-  <path d="M50,19 L45,17 L44,20 L50,21Z" fill="white" opacity="0.9"/>
-  <!-- LEFT ARM up to rope -->
-  <path d="M22,36 Q14,26 10,14" stroke="#1e1e1e" stroke-width="7" fill="none" stroke-linecap="round"/>
-  <!-- LEFT HAND -->
-  <circle cx="10" cy="13" r="4.5" fill="#2a2a2a"/>
-  <!-- RIGHT ARM with grapple gun -->
-  <path d="M58,36 Q66,26 70,14" stroke="#1e1e1e" stroke-width="7" fill="none" stroke-linecap="round"/>
-  <!-- GRAPPLE GUN -->
-  <rect x="66" y="10" width="18" height="7" rx="3" fill="#c9a040"/>
-  <rect x="71" y="7" width="5" height="6" rx="2" fill="#a07820"/>
-  <circle cx="66" cy="13.5" r="3" fill="#888"/>
-  <line x1="66" y1="13" x2="64" y2="11" stroke="#c9a040" stroke-width="1.5"/>
-  <!-- LEFT LEG -->
-  <path d="M31,68 Q27,80 25,95" stroke="#1e1e1e" stroke-width="8" fill="none" stroke-linecap="round"/>
-  <!-- LEFT BOOT -->
-  <ellipse cx="24" cy="96" rx="7" ry="4" fill="#111"/>
-  <!-- RIGHT LEG -->
-  <path d="M49,68 Q53,80 55,95" stroke="#1e1e1e" stroke-width="8" fill="none" stroke-linecap="round"/>
-  <!-- RIGHT BOOT -->
-  <ellipse cx="56" cy="96" rx="7" ry="4" fill="#111"/>
-  <!-- CAPE SHOULDER DETAIL -->
-  <path d="M20,34 Q10,28 10,14" stroke="#222" stroke-width="3" fill="none"/>
-  <path d="M60,34 Q70,28 70,14" stroke="#222" stroke-width="3" fill="none"/>
+
+<!-- LEGO BATMAN character -->
+<g id="bm-char" filter="url(#cs)">
+  <!-- ── CAPE (billows behind, wind-animated) ── -->
+  <g id="bm-cape">
+    <path d="M14,32 Q-8,55 -12,100 Q8,85 28,88 Q36,90 36,32Z" fill="#0e131c"/>
+    <path d="M36,32 Q30,60 28,88 Q36,90 36,32Z" fill="#1a2233" opacity="0.6"/>
+  </g>
+
+  <!-- ── TORSO (LEGO brick) ── -->
+  <!-- neck stud -->
+  <rect x="28" y="32" width="20" height="6" rx="3" fill="#2b3a52"/>
+  <!-- main torso block -->
+  <rect x="16" y="36" width="44" height="30" rx="5" fill="#243044"/>
+  <!-- torso detail lines (LEGO printed look) -->
+  <line x1="16" y1="48" x2="60" y2="48" stroke="#1a2538" stroke-width="1" opacity="0.5"/>
+  <!-- chest bat oval -->
+  <ellipse cx="38" cy="50" rx="14" ry="10" fill="#e8b820"/>
+  <!-- bat symbol -->
+  <path d="M38,45 Q33,40 26,45 Q33,50 38,46 Q43,50 50,45 Q43,40 38,45Z" fill="#111e2e"/>
+  <rect x="35" y="45" width="6" height="9" rx="1" fill="#111e2e"/>
+  <!-- yellow utility belt -->
+  <rect x="16" y="62" width="44" height="8" rx="3" fill="#e8b820"/>
+  <rect x="20" y="63" width="7" height="6" rx="1.5" fill="#b8900a"/>
+  <rect x="31" y="63" width="7" height="6" rx="1.5" fill="#d4a412"/>
+  <rect x="42" y="63" width="7" height="6" rx="1.5" fill="#b8900a"/>
+  <rect x="53" y="63" width="7" height="6" rx="1.5" fill="#d4a412"/>
+
+  <!-- ── HEAD / COWL ── -->
+  <!-- cowl base -->
+  <ellipse cx="38" cy="22" rx="19" ry="18" fill="#2b3a52"/>
+  <!-- bat ears -->
+  <polygon points="22,13 16,0 27,11" fill="#2b3a52"/>
+  <polygon points="54,13 60,0 49,11" fill="#2b3a52"/>
+  <!-- cowl highlight (LEGO sheen) -->
+  <ellipse cx="34" cy="14" rx="8" ry="5" fill="rgba(255,255,255,0.07)" transform="rotate(-20 34 14)"/>
+  <!-- chin/lower face (LEGO skin) -->
+  <path d="M24,26 Q38,35 52,26 L52,30 Q38,38 24,30Z" fill="#d4956a"/>
+  <!-- LEGO grin -->
+  <path d="M28,29 Q38,35 48,29" stroke="#3a1a0a" stroke-width="2" fill="none" stroke-linecap="round"/>
+  <path d="M30,30 L28,29 M46,29 L48,29" stroke="#3a1a0a" stroke-width="1.5" stroke-linecap="round"/>
+  <!-- LEGO eyes (white slits + blue inner glow) -->
+  <ellipse cx="31" cy="21" rx="8" ry="4.5" fill="white"/>
+  <ellipse cx="45" cy="21" rx="8" ry="4.5" fill="white"/>
+  <ellipse cx="31" cy="21" rx="5.5" ry="3" fill="#7ec8e3"/>
+  <ellipse cx="45" cy="21" rx="5.5" ry="3" fill="#7ec8e3"/>
+  <!-- pupil glint -->
+  <ellipse cx="29" cy="20" rx="2" ry="1.5" fill="white" opacity="0.6"/>
+  <ellipse cx="43" cy="20" rx="2" ry="1.5" fill="white" opacity="0.6"/>
+
+  <!-- ── LEFT ARM (raised, gripping rope) ── -->
+  <rect x="5" y="36" width="12" height="24" rx="5" fill="#2b3a52"
+        transform="rotate(-50 16 42)"/>
+  <!-- left hand (LEGO c-clip) -->
+  <circle cx="6" cy="24" r="5.5" fill="#2b3a52"/>
+  <circle cx="6" cy="24" r="2.5" fill="#111e2e"/>
+
+  <!-- ── RIGHT ARM (grapple gun) ── -->
+  <rect x="60" y="36" width="12" height="24" rx="5" fill="#2b3a52"
+        transform="rotate(40 60 42)"/>
+  <!-- LEGO grapple gun (blocky) -->
+  <rect x="65" y="21" width="20" height="10" rx="4" fill="#e8b820"/>
+  <rect x="70" y="17" width="8" height="8"  rx="2" fill="#c89010"/>
+  <rect x="65" y="24" width="6"  height="6"  rx="3" fill="#8899aa"/>
+  <circle cx="65" cy="26" r="3" fill="#667788"/>
+  <!-- gun barrel flash -->
+  <line x1="85" y1="26" x2="90" y2="26" stroke="#ffe080" stroke-width="2" stroke-linecap="round"/>
+
+  <!-- ── LEGS (dangling, slightly spread) ── -->
+  <rect x="19" y="70" width="17" height="28" rx="5" fill="#243044"/>
+  <rect x="40" y="70" width="17" height="28" rx="5" fill="#243044"/>
+  <!-- knee detail -->
+  <rect x="19" y="82" width="17" height="4" rx="2" fill="#1a2538"/>
+  <rect x="40" y="82" width="17" height="4" rx="2" fill="#1a2538"/>
+  <!-- boots/feet (LEGO wider foot) -->
+  <rect x="16" y="93" width="23" height="9" rx="4" fill="#111e2e"/>
+  <rect x="37" y="93" width="23" height="9" rx="4" fill="#111e2e"/>
 </g>
 </svg>
 </div>
 
 <style>
-  #bm-wrap {
-    position: fixed;
-    right: 0; top: 0;
-    width: 110px;
-    height: 100vh;
-    z-index: 500;
-    pointer-events: none;
-    overflow: visible;
+  #bm-wrap{
+    position:fixed;right:0;top:0;
+    width:120px;height:100vh;
+    z-index:500;pointer-events:none;overflow:visible;
   }
-  #bm-svg {
-    position: absolute;
-    top: 0; left: 0;
-    width: 100%;
-    overflow: visible;
+  #bm-svg{position:absolute;top:0;left:0;width:100%;overflow:visible;}
+
+  /* rope pulse animation */
+  @keyframes ropePulse {
+    0%,100%{ opacity:.85; }
+    50%    { opacity:1;   }
   }
-  #bm-char {
-    transition: none;
+  #rp-glow{ animation: ropePulse 1.6s ease-in-out infinite; }
+  /* rope texture drift */
+  @keyframes ropeDash {
+    from{ stroke-dashoffset:0; }
+    to  { stroke-dashoffset:-36; }
   }
+  #rp-tex{ animation: ropeDash 1.2s linear infinite; }
 </style>
 
 <script>
 (function(){
-  const svg     = document.getElementById('bm-svg');
-  const rope    = document.getElementById('bm-rope');
-  const rope2   = document.getElementById('bm-rope2');
-  const hookPth = document.getElementById('bm-hook-path');
-  const hookDot = document.getElementById('bm-hook-dot');
-  const char    = document.getElementById('bm-char');
-  const grad    = document.getElementById('rope-grad');
+  const rpShadow = document.getElementById('rp-shadow');
+  const rpGlow   = document.getElementById('rp-glow');
+  const rpCore   = document.getElementById('rp-core');
+  const rpTex    = document.getElementById('rp-tex');
+  const hookP    = document.getElementById('hp');
+  const hookD    = document.getElementById('hd');
+  const char     = document.getElementById('bm-char');
+  const cape     = document.getElementById('bm-cape');
+  const svg      = document.getElementById('bm-svg');
 
-  const CHAR_W  = 80;   // batman viewBox width
-  const CHAR_H  = 100;  // batman viewBox height
-  const STRIP_X = 35;   // center x within #bm-wrap (110px wide strip)
+  /* layout */
+  const STRIP_CX = 60;   // center x of our 120px strip
+  const HOOK_Y   = 22;
+  const CHAR_W   = 76;
+  const CHAR_H   = 102;
 
-  /* pendulum sway state */
-  let swayX    = 0;
-  let swayVel  = 0.006;
-  let swayPos  = 0;   // -1 to 1
-  const SWAY_AMP = 18; // pixels of horizontal swing
-  const SWAY_SPEED = 0.012;
+  /* pendulum — more wind-like: bigger amp + slight randomness */
+  let swayPos = 0, swayVel = 0.022;
+  const SWAY_AMP   = 36;   // pixels left/right
+  const SPRING     = 0.0022;
+  const DAMP       = 0.997;
+  /* add occasional gusts */
+  let gustTimer = 0;
 
-  /* hook position at top of strip */
-  const HOOK_X = STRIP_X;
-  const HOOK_Y = 18;
+  function resize(){
+    svg.setAttribute('height', window.innerHeight);
+    svg.setAttribute('width', '120');
+  }
+  resize();
+  window.addEventListener('resize', resize);
 
-  function getBatmanY() {
+  function getBatY(){
     const maxScroll = Math.max(1,
       document.documentElement.scrollHeight - window.innerHeight);
     const pct = Math.min(1, window.scrollY / maxScroll);
-    const minY = HOOK_Y + 40;
-    const maxY = window.innerHeight - CHAR_H - 20;
-    return minY + pct * (maxY - minY);
+    return HOOK_Y + 50 + pct * (window.innerHeight - CHAR_H - HOOK_Y - 70);
   }
 
-  function draw() {
-    /* advance pendulum */
-    swayPos += swayVel;
-    swayVel += (-swayPos) * 0.0018; // spring restore
-    swayVel *= 0.998;               // very slight damping
-
-    const sway = swayPos * SWAY_AMP;
-    const batY  = getBatmanY();
-    const batX  = STRIP_X + sway;
-    const handX = batX;         // rope attaches to batman's center-top
-    const handY = batY + 12;    // a bit below batman top (hands-up position)
-
-    /* rope: quadratic bezier from hook to hands, bows with sway */
-    const midX = HOOK_X + sway * .45;
-    const midY = (HOOK_Y + handY) / 2;
-    const d = `M ${HOOK_X} ${HOOK_Y} Q ${midX} ${midY} ${handX} ${handY}`;
-    rope.setAttribute('d', d);
-    rope2.setAttribute('d', d);
-
-    /* update gradient direction to match rope angle */
-    grad.setAttribute('y2', '1');
-
-    /* hook shape — small grapple */
-    hookDot.setAttribute('cx', HOOK_X);
-    hookDot.setAttribute('cy', HOOK_Y);
-    hookPth.setAttribute('d',
-      `M ${HOOK_X-8} ${HOOK_Y-10} L ${HOOK_X} ${HOOK_Y} M ${HOOK_X} ${HOOK_Y-14} Q ${HOOK_X+6} ${HOOK_Y-14} ${HOOK_X+6} ${HOOK_Y-8}`
-    );
-
-    /* move batman — slight body tilt with sway */
-    const tilt = swayPos * 6; // degrees
-    const tx   = batX - CHAR_W/2;
-    const ty   = batY;
-    char.setAttribute('transform',
-      `translate(${tx},${ty}) rotate(${tilt}, ${CHAR_W/2}, ${CHAR_H/2})`
-    );
-
+  function draw(){
     requestAnimationFrame(draw);
-  }
 
-  /* set SVG height dynamically */
-  function setSize() {
-    svg.setAttribute('height', window.innerHeight);
-    svg.setAttribute('width', '110');
+    /* gust: randomly kick the pendulum */
+    gustTimer--;
+    if(gustTimer <= 0){
+      swayVel += (Math.random() - 0.5) * 0.045;
+      gustTimer = 80 + Math.floor(Math.random() * 120);
+    }
+
+    /* physics */
+    swayVel += -swayPos * SPRING;
+    swayVel *= DAMP;
+    swayPos += swayVel;
+    swayPos = Math.max(-1, Math.min(1, swayPos));
+
+    const sway   = swayPos * SWAY_AMP;
+    const batY   = getBatY();
+    const batCX  = STRIP_CX + sway;
+    const handY  = batY + 10;
+
+    /* rope control point bows with sway for realism */
+    const ctrlX  = STRIP_CX + sway * 0.35;
+    const ctrlY  = (HOOK_Y + handY) * 0.5 + Math.abs(sway) * 0.15;
+    const d      = `M ${STRIP_CX} ${HOOK_Y} Q ${ctrlX} ${ctrlY} ${batCX} ${handY}`;
+
+    rpShadow.setAttribute('d', d);
+    rpGlow  .setAttribute('d', d);
+    rpCore  .setAttribute('d', d);
+    rpTex   .setAttribute('d', d);
+
+    /* hook */
+    hookD.setAttribute('cx', STRIP_CX);
+    hookD.setAttribute('cy', HOOK_Y);
+    hookP.setAttribute('d',
+      `M ${STRIP_CX-10} ${HOOK_Y-12} L ${STRIP_CX} ${HOOK_Y} ` +
+      `M ${STRIP_CX} ${HOOK_Y-18} Q ${STRIP_CX+9} ${HOOK_Y-18} ${STRIP_CX+9} ${HOOK_Y-10}`
+    );
+
+    /* character: translate + tilt (wind tilt = ~20 degrees max) */
+    const tilt = swayPos * 22;
+    /* cape counter-tilts for wind flap effect */
+    const capeTilt = -swayPos * 14;
+    const tx = batCX - CHAR_W / 2;
+    const ty = batY;
+    char.setAttribute('transform',
+      `translate(${tx},${ty}) rotate(${tilt},${CHAR_W/2},${CHAR_H/2})`);
+    cape.setAttribute('transform',
+      `rotate(${capeTilt},${CHAR_W/2},${CHAR_H/2})`);
   }
-  setSize();
-  window.addEventListener('resize', setSize);
 
   draw();
 })();
