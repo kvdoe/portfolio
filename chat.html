@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -221,269 +221,290 @@
    NATURE SCENE
 ═══════════════════════════════════════════ */
 (function(){
-  const cv  = document.getElementById('nature');
-  const ctx = cv.getContext('2d');
-  let W, H;
-  let mountainCache = null;
+  const cv=document.getElementById('nature');
+  const ctx=cv.getContext('2d');
+  let W,H;
 
   function resize(){
-    W = cv.width  = window.innerWidth;
-    H = cv.height = window.innerHeight;
-    mountainCache = null;
+    W=cv.width=window.innerWidth;
+    H=cv.height=window.innerHeight;
+    skyCache=null; mtCache=null;
   }
   resize();
-  window.addEventListener('resize', resize, {passive:true});
+  window.addEventListener('resize',resize,{passive:true});
 
-  /* ── Draw and cache mountain silhouettes ── */
+  /* ── Sky (cached) ── */
+  let skyCache=null;
+  function drawSky(){
+    if(skyCache) return ctx.drawImage(skyCache,0,0);
+    const oc=document.createElement('canvas'); oc.width=W; oc.height=H;
+    const ox=oc.getContext('2d');
+    const g=ox.createLinearGradient(0,0,0,H);
+    g.addColorStop(0,  '#0b1a3d');   // deep night blue top
+    g.addColorStop(0.3,'#1a3d6b');   // mid sky blue
+    g.addColorStop(0.55,'#2d6b9e');  // bright sky
+    g.addColorStop(0.72,'#6aa5c8');  // light blue near horizon
+    g.addColorStop(0.82,'#d4884a');  // warm golden horizon
+    g.addColorStop(0.9, '#c87030');  // amber ground glow
+    g.addColorStop(1,   '#7a3a10');  // deep amber earth
+    ox.fillStyle=g; ox.fillRect(0,0,W,H);
+    /* sun glow (upper right behind waterfall) */
+    const sg=ox.createRadialGradient(W*0.8,H*0.18,0,W*0.8,H*0.18,H*0.38);
+    sg.addColorStop(0,'rgba(255,230,120,0.22)');
+    sg.addColorStop(0.4,'rgba(240,170,50,0.10)');
+    sg.addColorStop(1,'rgba(0,0,0,0)');
+    ox.fillStyle=sg; ox.fillRect(0,0,W,H);
+    skyCache=oc; ctx.drawImage(oc,0,0);
+  }
+
+  /* ── Mountains (cached) ── */
+  let mtCache=null;
   function drawMountains(){
-    if(mountainCache && mountainCache.width === W) return mountainCache;
-    const oc  = document.createElement('canvas');
-    oc.width  = W; oc.height = H;
-    const ox  = oc.getContext('2d');
+    if(mtCache) return ctx.drawImage(mtCache,0,0);
+    const oc=document.createElement('canvas'); oc.width=W; oc.height=H;
+    const ox=oc.getContext('2d');
 
-    /* back mountains (left + center, lighter) */
+    /* far mountains — blue-purple haze */
     ox.beginPath();
-    ox.moveTo(0, H);
-    ox.lineTo(0, H*.52);
-    ox.bezierCurveTo(W*.04, H*.28, W*.1,  H*.15, W*.18, H*.22);
-    ox.bezierCurveTo(W*.24, H*.28, W*.28, H*.38, W*.34, H*.32);
-    ox.bezierCurveTo(W*.38, H*.26, W*.42, H*.12, W*.48, H*.18);
-    ox.bezierCurveTo(W*.52, H*.23, W*.55, H*.35, W*.60, H*.40);
-    ox.lineTo(W*.65, H);
+    ox.moveTo(0,H);
+    ox.lineTo(0,H*0.48);
+    ox.bezierCurveTo(W*0.05,H*0.22,W*0.12,H*0.10,W*0.20,H*0.18);
+    ox.bezierCurveTo(W*0.27,H*0.25,W*0.30,H*0.34,W*0.38,H*0.28);
+    ox.bezierCurveTo(W*0.43,H*0.22,W*0.48,H*0.08,W*0.56,H*0.14);
+    ox.bezierCurveTo(W*0.60,H*0.18,W*0.62,H*0.28,W*0.66,H*0.30);
+    ox.lineTo(W*0.70,H);
     ox.closePath();
-    ox.fillStyle = '#151008';
-    ox.fill();
+    const mg1=ox.createLinearGradient(0,H*0.1,0,H*0.5);
+    mg1.addColorStop(0,'#2a3d6b'); mg1.addColorStop(1,'#1e3055');
+    ox.fillStyle=mg1; ox.fill();
 
-    /* mid mountains */
+    /* mid mountains — dark forest green */
     ox.beginPath();
-    ox.moveTo(0, H);
-    ox.lineTo(0, H*.62);
-    ox.bezierCurveTo(W*.05, H*.44, W*.12, H*.30, W*.20, H*.36);
-    ox.bezierCurveTo(W*.26, H*.41, W*.30, H*.50, W*.36, H*.44);
-    ox.bezierCurveTo(W*.40, H*.38, W*.44, H*.24, W*.50, H*.30);
-    ox.bezierCurveTo(W*.54, H*.35, W*.56, H*.45, W*.60, H*.50);
-    ox.lineTo(W*.60, H);
+    ox.moveTo(0,H);
+    ox.lineTo(0,H*0.58);
+    ox.bezierCurveTo(W*0.04,H*0.42,W*0.10,H*0.32,W*0.16,H*0.38);
+    ox.bezierCurveTo(W*0.22,H*0.44,W*0.26,H*0.52,W*0.32,H*0.46);
+    ox.bezierCurveTo(W*0.36,H*0.40,W*0.40,H*0.28,W*0.46,H*0.34);
+    ox.bezierCurveTo(W*0.50,H*0.38,W*0.52,H*0.48,W*0.58,H*0.50);
+    ox.lineTo(W*0.62,H);
     ox.closePath();
-    ox.fillStyle = '#0e0905';
-    ox.fill();
+    const mg2=ox.createLinearGradient(0,H*0.28,0,H*0.6);
+    mg2.addColorStop(0,'#1e5020'); mg2.addColorStop(1,'#163818');
+    ox.fillStyle=mg2; ox.fill();
 
-    /* front ridge (very left) */
+    /* front mountains — vibrant green */
     ox.beginPath();
-    ox.moveTo(0, H);
-    ox.lineTo(0, H*.70);
-    ox.bezierCurveTo(W*.04, H*.55, W*.10, H*.48, W*.18, H*.55);
-    ox.bezierCurveTo(W*.24, H*.60, W*.28, H*.68, W*.34, H*.65);
-    ox.lineTo(W*.38, H);
+    ox.moveTo(0,H);
+    ox.lineTo(0,H*0.68);
+    ox.bezierCurveTo(W*0.04,H*0.56,W*0.10,H*0.50,W*0.18,H*0.56);
+    ox.bezierCurveTo(W*0.24,H*0.61,W*0.28,H*0.68,W*0.35,H*0.64);
+    ox.bezierCurveTo(W*0.40,H*0.60,W*0.44,H*0.54,W*0.50,H*0.58);
+    ox.lineTo(W*0.55,H);
     ox.closePath();
-    ox.fillStyle = '#0a0703';
-    ox.fill();
+    const mg3=ox.createLinearGradient(0,H*0.50,0,H*0.75);
+    mg3.addColorStop(0,'#2e7830'); mg3.addColorStop(1,'#1e5020');
+    ox.fillStyle=mg3; ox.fill();
 
-    /* atmospheric mist near mountain tops */
-    const mg = ox.createLinearGradient(0, H*.1, 0, H*.5);
-    mg.addColorStop(0, 'rgba(212,150,40,0.0)');
-    mg.addColorStop(0.5, 'rgba(212,140,30,0.04)');
-    mg.addColorStop(1, 'rgba(0,0,0,0)');
-    ox.fillStyle = mg;
-    ox.fillRect(0, 0, W*.65, H);
+    /* tree line along left edge */
+    for(let i=0;i<18;i++){
+      const tx=i*(W*0.036);
+      const th=H*(0.06+Math.random()*0.06);
+      const ty=H*0.70-th;
+      ox.beginPath();
+      ox.moveTo(tx+6, H*0.72);
+      ox.lineTo(tx+6, ty+th*0.4);
+      ox.strokeStyle='#1a3d18'; ox.lineWidth=4; ox.stroke();
+      ox.beginPath();
+      ox.moveTo(tx+6,ty);
+      ox.lineTo(tx-6,ty+th*0.65);
+      ox.lineTo(tx+18,ty+th*0.65);
+      ox.closePath();
+      ox.fillStyle=i%2===0?'#2a5e28':'#336630'; ox.fill();
+      ox.beginPath();
+      ox.moveTo(tx+6,ty+th*0.28);
+      ox.lineTo(tx-8,ty+th*0.78);
+      ox.lineTo(tx+20,ty+th*0.78);
+      ox.closePath();
+      ox.fillStyle=i%2===0?'#2e6830':'#3a7235'; ox.fill();
+    }
 
-    mountainCache = oc;
-    return oc;
+    /* ground / grass */
+    const gg=ox.createLinearGradient(0,H*0.78,0,H);
+    gg.addColorStop(0,'#1e5020'); gg.addColorStop(0.4,'#163818'); gg.addColorStop(1,'#0e2410');
+    ox.fillStyle=gg; ox.fillRect(0,H*0.78,W,H*0.22);
+
+    /* cliff on right side (waterfall source) */
+    ox.beginPath();
+    ox.moveTo(W*0.75,0);
+    ox.lineTo(W,0);
+    ox.lineTo(W,H*0.60);
+    ox.bezierCurveTo(W*0.95,H*0.58,W*0.88,H*0.50,W*0.84,H*0.46);
+    ox.bezierCurveTo(W*0.80,H*0.42,W*0.77,H*0.30,W*0.75,H*0.20);
+    ox.closePath();
+    const cg=ox.createLinearGradient(W*0.75,0,W,H*0.5);
+    cg.addColorStop(0,'#2a2218'); cg.addColorStop(1,'#1e1a10');
+    ox.fillStyle=cg; ox.fill();
+    /* cliff face detail */
+    ox.beginPath();
+    ox.moveTo(W*0.78,0);
+    ox.lineTo(W*0.78,H*0.18);
+    ox.bezierCurveTo(W*0.77,H*0.24,W*0.76,H*0.30,W*0.775,H*0.36);
+    ox.strokeStyle='rgba(100,80,50,0.3)'; ox.lineWidth=2; ox.stroke();
+
+    /* water pool at base (golden reflection) */
+    const pg=ox.createEllipse? null : null;
+    ox.beginPath();
+    ox.ellipse(W*0.80,H*0.82,W*0.08,H*0.03,0,0,Math.PI*2);
+    const pool=ox.createRadialGradient(W*0.80,H*0.82,0,W*0.80,H*0.82,W*0.08);
+    pool.addColorStop(0,'rgba(220,170,40,0.55)');
+    pool.addColorStop(0.5,'rgba(180,130,25,0.30)');
+    pool.addColorStop(1,'rgba(0,0,0,0)');
+    ox.fillStyle=pool; ox.fill();
+
+    mtCache=oc; ctx.drawImage(oc,0,0);
   }
 
-  /* ── Waterfall particles ── */
-  const WF_X     = () => W * 0.82;  // right side
-  const WF_TOP   = () => H * 0.05;
-  const WF_BOT   = () => H * 0.82;
-  const WF_W     = 32;
-  const PARTICLE_N = 280;
-  const wfParticles = [];
+  /* ── Waterfall particles (constrained to fall channel) ── */
+  const WFX  = ()=>W*0.783;  // center x of fall
+  const WFTOP= ()=>H*0.0;
+  const WFBOT= ()=>H*0.80;
+  const WFHW = 22;           // half-width of fall
 
-  function makeWFP(rand){
-    const x = WF_X() + (Math.random() - 0.5) * WF_W;
-    return {
-      x, ox: x,
-      y:    rand ? Math.random() * (WF_BOT() - WF_TOP()) + WF_TOP() : WF_TOP() - 4,
-      vy:   3.5 + Math.random() * 4.5,
-      vx:   (Math.random() - 0.5) * 0.6,
-      size: 1.2 + Math.random() * 2.2,
-      alpha:0.55 + Math.random() * 0.45,
-      hue:  36 + Math.random() * 18,
-      lit:  58 + Math.random() * 36
+  const N=320;
+  const ps=[];
+  function mkP(rand){
+    const cx=WFX();
+    return{
+      x:cx+(Math.random()-0.5)*WFHW*1.4,
+      y:rand?Math.random()*(WFBOT()-WFTOP())+WFTOP():WFTOP()-2,
+      vy:4+Math.random()*6,
+      len:8+Math.random()*18,
+      alpha:0.6+Math.random()*0.4,
+      w:1+Math.random()*2.5,
+      type:Math.random()<0.7?'gold':'white'
     };
   }
-  for(let i=0;i<PARTICLE_N;i++) wfParticles.push(makeWFP(true));
+  for(let i=0;i<N;i++) ps.push(mkP(true));
 
-  /* mist pool at base */
-  const MIST_N = 60;
-  const mistP  = [];
-  function makeMist(rand){
-    const bx = WF_X();
-    const by = WF_BOT();
-    return {
-      x:  bx + (Math.random()-0.5)*80,
-      y:  rand ? by + Math.random()*50 : by,
-      vx: (Math.random()-0.5)*1.4,
-      vy: -0.4 - Math.random()*0.8,
-      r:  8 + Math.random()*22,
-      alpha: 0.08 + Math.random()*0.1,
-      life: rand ? Math.random() : 1,
-      decay: 0.004 + Math.random()*0.006
+  /* mist */
+  const mist=[];
+  function mkM(rand){
+    const cx=WFX(),by=WFBOT();
+    return{
+      x:cx+(Math.random()-0.5)*100,
+      y:rand?by+Math.random()*40:by,
+      vx:(Math.random()-0.5)*1.8,
+      vy:-0.5-Math.random()*1.2,
+      r:6+Math.random()*20,
+      alpha:0.12+Math.random()*0.1,
+      life:rand?Math.random():1,
+      dec:0.006+Math.random()*0.006
     };
   }
-  for(let i=0;i<MIST_N;i++) mistP.push(makeMist(true));
+  for(let i=0;i<55;i++) mist.push(mkM(true));
 
   /* ── Birds ── */
-  class Bird {
-    constructor(delay){
-      this.reset(true, delay);
-    }
-    reset(init, delay){
-      this.flock = Math.floor(Math.random()*3); // flock group
-      this.x  = init ? Math.random()*W : (Math.random()<0.5 ? -60 : W+60);
-      this.dir= this.x < W/2 ? 1 : -1;
-      if(!init) this.x = this.dir>0 ? -60 : W+60;
-      this.y  = (delay||0) + H*(0.04 + Math.random()*0.22);
-      this.baseY = this.y;
-      this.spd= 0.6 + Math.random()*1.1;
-      this.wingT = Math.random()*Math.PI*2;
-      this.wingSpd = 0.08 + Math.random()*0.06;
-      this.size = 3 + Math.random()*4;
-      this.waveAmp = 8 + Math.random()*12;
-      this.waveSpd = 0.01 + Math.random()*0.008;
-      this.t = 0;
-    }
-    update(){
-      this.x += this.spd * this.dir;
-      this.wingT += this.wingSpd;
-      this.t += this.waveSpd;
-      this.y = this.baseY + Math.sin(this.t) * this.waveAmp;
-      if(this.x > W+80 || this.x < -80) this.reset(false, 0);
-    }
-    draw(ctx){
-      const w = this.size;
-      const flap = Math.sin(this.wingT) * w * 1.1;
-      ctx.save();
-      ctx.translate(this.x, this.y);
-      if(this.dir < 0) ctx.scale(-1, 1);
-      ctx.strokeStyle = 'rgba(20,12,5,0.75)';
-      ctx.lineWidth = 1.2;
-      ctx.lineCap = 'round';
-      ctx.beginPath();
-      // left wing
-      ctx.moveTo(-w*1.8, -flap*0.3);
-      ctx.quadraticCurveTo(-w*0.8, -flap, 0, 0);
-      // right wing
-      ctx.quadraticCurveTo(w*0.8, -flap, w*1.8, -flap*0.3);
-      ctx.stroke();
-      ctx.restore();
-    }
+  const birds=[];
+  for(let i=0;i<20;i++){
+    birds.push({
+      x:Math.random()*W,
+      y:H*(0.05+Math.random()*0.20),
+      baseY:0,
+      vx:0.5+Math.random()*1.2,
+      dir:Math.random()<0.5?1:-1,
+      wt:Math.random()*Math.PI*2,
+      ws:0.07+Math.random()*0.05,
+      sz:4+Math.random()*5,
+      wave:0,
+      wavespd:0.008+Math.random()*0.006,
+      waveamp:10+Math.random()*15,
+      t:Math.random()*100
+    });
+    birds[birds.length-1].baseY=birds[birds.length-1].y;
+    if(birds[birds.length-1].dir<0) birds[birds.length-1].x=Math.random()*W+W;
   }
 
-  const BIRD_N = 22;
-  const birds  = Array.from({length: BIRD_N}, (_, i) => new Bird(i * 8));
-
-  /* ── Sky gradient (drawn each frame cheaply) ── */
-  let skyCache = null;
-  function getSky(){
-    if(skyCache) return skyCache;
-    const oc = document.createElement('canvas');
-    oc.width = W; oc.height = H;
-    const ox = oc.getContext('2d');
-    const g = ox.createLinearGradient(0, 0, 0, H);
-    g.addColorStop(0,   '#040201');
-    g.addColorStop(0.3, '#07040200');
-    g.addColorStop(0.55,'#100801');
-    g.addColorStop(0.75,'#1a0e04');
-    g.addColorStop(1,   '#0e0702');
-    ox.fillStyle = g; ox.fillRect(0, 0, W, H);
-    /* faint warm horizon glow */
-    const hg = ox.createRadialGradient(W*0.5, H*0.72, 0, W*0.5, H*0.72, W*0.5);
-    hg.addColorStop(0, 'rgba(180,100,20,0.16)');
-    hg.addColorStop(1, 'rgba(0,0,0,0)');
-    ox.fillStyle = hg; ox.fillRect(0, 0, W, H);
-    skyCache = oc;
-    return oc;
+  function drawBird(b){
+    const flap=Math.sin(b.wt)*b.sz*1.2;
+    ctx.save();
+    ctx.translate(b.x,b.y);
+    if(b.dir<0) ctx.scale(-1,1);
+    ctx.strokeStyle='rgba(15,10,5,0.85)';
+    ctx.lineWidth=1.4; ctx.lineCap='round';
+    ctx.beginPath();
+    ctx.moveTo(-b.sz*2,-flap*0.25);
+    ctx.quadraticCurveTo(-b.sz*0.8,-flap*0.9,0,0);
+    ctx.quadraticCurveTo(b.sz*0.8,-flap*0.9,b.sz*2,-flap*0.25);
+    ctx.stroke();
+    ctx.restore();
   }
 
-  /* ── Ground ── */
-  function drawGround(ctx){
-    const g = ctx.createLinearGradient(0, H*0.78, 0, H);
-    g.addColorStop(0, '#0a0602');
-    g.addColorStop(1, '#060401');
-    ctx.fillStyle = g;
-    ctx.fillRect(0, H*0.78, W, H*0.22);
-    /* water pool at base of waterfall */
-    const wg = ctx.createRadialGradient(WF_X(), H*0.84, 0, WF_X(), H*0.84, 90);
-    wg.addColorStop(0,   'rgba(212,160,30,0.22)');
-    wg.addColorStop(0.5, 'rgba(180,120,15,0.10)');
-    wg.addColorStop(1,   'rgba(0,0,0,0)');
-    ctx.fillStyle = wg; ctx.fillRect(0, H*0.78, W, H*0.22);
-  }
-
-  /* ── Waterfall glow column ── */
-  function drawWFGlow(ctx){
-    const x = WF_X(), top = WF_TOP(), bot = WF_BOT();
-    const g = ctx.createLinearGradient(x-24, top, x+24, top);
-    g.addColorStop(0,   'rgba(200,140,10,0)');
-    g.addColorStop(0.5, 'rgba(220,160,25,0.18)');
-    g.addColorStop(1,   'rgba(200,140,10,0)');
-    ctx.fillStyle = g;
-    ctx.fillRect(x-24, top, 48, bot-top);
-  }
-
-  let frame = 0;
+  let frame=0;
   function loop(){
     requestAnimationFrame(loop);
     frame++;
-
     ctx.clearRect(0,0,W,H);
 
-    /* sky */
-    if(frame===1 || !skyCache) skyCache=null;
-    ctx.drawImage(getSky(),0,0);
+    drawSky();
+    drawMountains();
 
-    /* mountains */
-    ctx.drawImage(drawMountains(),0,0);
+    /* waterfall shimmer glow column */
+    const wfx=WFX(),wftop=WFTOP(),wfbot=WFBOT();
+    const wfg=ctx.createLinearGradient(wfx-WFHW,0,wfx+WFHW,0);
+    wfg.addColorStop(0,'rgba(255,220,80,0)');
+    wfg.addColorStop(0.5,'rgba(255,230,100,0.28)');
+    wfg.addColorStop(1,'rgba(255,220,80,0)');
+    ctx.fillStyle=wfg;
+    ctx.fillRect(wfx-WFHW,wftop,WFHW*2,wfbot-wftop);
 
-    /* waterfall glow column */
-    drawWFGlow(ctx);
+    /* waterfall edge highlights */
+    ctx.beginPath();
+    ctx.moveTo(wfx-WFHW,wftop); ctx.lineTo(wfx-WFHW,wfbot);
+    ctx.strokeStyle='rgba(255,255,200,0.18)'; ctx.lineWidth=2; ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(wfx+WFHW,wftop); ctx.lineTo(wfx+WFHW,wfbot);
+    ctx.strokeStyle='rgba(255,255,200,0.18)'; ctx.lineWidth=2; ctx.stroke();
 
-    /* waterfall particles */
-    const wfx = WF_X(), wfTop = WF_TOP(), wfBot = WF_BOT();
-    for(const p of wfParticles){
-      p.x  += p.vx; p.y += p.vy;
-      if(p.y > wfBot + 10){ Object.assign(p, makeWFP(false)); continue; }
-      const alpha = p.alpha * Math.min(1, (wfBot - p.y) / 60);
+    /* particles */
+    ctx.lineCap='round';
+    for(const p of ps){
+      p.y+=p.vy;
+      if(p.y>wfbot+p.len){ Object.assign(p,mkP(false)); continue; }
+      const a=p.alpha*Math.min(1,(wfbot-p.y)/80);
       ctx.beginPath();
-      ctx.moveTo(p.ox, p.y - p.vy*2);
-      ctx.lineTo(p.x,  p.y);
-      ctx.strokeStyle = `hsla(${p.hue},95%,${p.lit}%,${alpha})`;
-      ctx.lineWidth   = p.size * 0.55;
-      ctx.lineCap     = 'round';
-      ctx.stroke();
-      p.ox = p.x;
+      ctx.moveTo(p.x,p.y-p.len);
+      ctx.lineTo(p.x,p.y);
+      if(p.type==='gold'){
+        ctx.strokeStyle=`rgba(255,210,60,${a})`;
+      } else {
+        ctx.strokeStyle=`rgba(255,250,220,${a*0.85})`;
+      }
+      ctx.lineWidth=p.w; ctx.stroke();
     }
 
     /* mist at base */
-    for(const m of mistP){
-      m.x += m.vx; m.y += m.vy; m.life -= m.decay;
-      if(m.life <= 0){ Object.assign(m, makeMist(false)); continue; }
+    for(const m of mist){
+      m.x+=m.vx; m.y+=m.vy; m.life-=m.dec;
+      if(m.life<=0){ Object.assign(m,mkM(false)); continue; }
       ctx.beginPath();
-      ctx.arc(m.x, m.y, m.r * m.life, 0, Math.PI*2);
-      ctx.fillStyle = `rgba(220,170,60,${m.alpha * m.life})`;
+      ctx.arc(m.x,m.y,m.r*m.life,0,Math.PI*2);
+      ctx.fillStyle=`rgba(255,230,120,${m.alpha*m.life})`;
       ctx.fill();
     }
 
-    /* ground */
-    drawGround(ctx);
-
     /* birds */
-    for(const b of birds){ b.update(); b.draw(ctx); }
+    for(const b of birds){
+      b.t++; b.wt+=b.ws;
+      b.x+=b.vx*b.dir;
+      b.y=b.baseY+Math.sin(b.t*b.wavespd)*b.waveamp;
+      if(b.x>W+80){ b.x=-60; b.baseY=H*(0.05+Math.random()*0.20); b.y=b.baseY; }
+      if(b.x<-80){  b.x=W+60; b.baseY=H*(0.05+Math.random()*0.20); b.y=b.baseY; }
+      drawBird(b);
+    }
   }
 
   loop();
 })();
-
 /* ═══════════════════════════════════════════
    CHAT
 ═══════════════════════════════════════════ */
