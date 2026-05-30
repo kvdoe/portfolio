@@ -1082,62 +1082,20 @@
   <div id="pb"></div>
   <div id="pl-wrap"><p id="pl">click to enter<br>Karan's world</p></div>
 </div>
-
 <style>
-  #po {
-    position:fixed;inset:0;z-index:9999;
-    background:#020100;
-    display:flex;align-items:center;justify-content:center;
-    cursor:pointer;overflow:hidden;
-  }
-  #pc { position:absolute;inset:0;width:100%;height:100%;z-index:1; }
-  /* black expander — hidden until click, then bursts outward */
-  #pb {
-    position:absolute;border-radius:50%;background:#000;
-    z-index:3;pointer-events:none;
-    opacity:0;transform:scale(1);transition:none;
-  }
-  #pb.expand {
-    opacity:1;border-radius:50%;
-    transition:transform 0.75s cubic-bezier(0.6,0,0.85,0.6), border-radius .2s, opacity 0s;
-    transform:scale(80);
-  }
-  /* golden flash on click */
-  #pf {
-    position:absolute;inset:0;z-index:6;pointer-events:none;
-    background:radial-gradient(circle at 50% 50%, rgba(255,210,80,.85) 0%, rgba(200,120,10,.4) 40%, transparent 70%);
-    opacity:0;transition:none;
-  }
-  #pf.flash {
-    animation:flashBurst .5s ease-out forwards;
-  }
-  @keyframes flashBurst {
-    0%  {opacity:0;  transform:scale(.6)}
-    18% {opacity:1;  transform:scale(1.05)}
-    100%{opacity:0;  transform:scale(1.6)}
-  }
-  /* text sits above everything including the expander until click */
-  #pl-wrap {
-    position:absolute;z-index:5;
-    pointer-events:none;text-align:center;
-  }
-  #pl {
-    font-family:'Space Grotesk',sans-serif;
-    font-size:clamp(13px,2.2vmin,20px);
-    font-weight:600;color:#efd080;
-    letter-spacing:.1em;line-height:1.75;
-    text-shadow:0 0 18px rgba(235,185,55,1),0 0 40px rgba(210,130,15,.8);
-    animation:plp 2.2s ease-in-out infinite;
-    user-select:none;
-  }
-  @keyframes plp {
-    0%,100%{opacity:.8; text-shadow:0 0 14px rgba(225,175,45,.9),0 0 32px rgba(205,125,12,.6)}
-    50%    {opacity:1;  text-shadow:0 0 26px rgba(255,215,75,1),0 0 55px rgba(235,150,28,1),0 0 90px rgba(200,100,10,.5)}
-  }
-  #pl-wrap.hide { opacity:0; transition:opacity .15s; }
-  #po.bye { opacity:0; transition:opacity .25s ease .6s; pointer-events:none; }
+  #po{position:fixed;inset:0;z-index:9999;background:#020100;display:flex;align-items:center;justify-content:center;cursor:pointer;overflow:hidden;}
+  #pc{position:absolute;inset:0;width:100%;height:100%;z-index:1;}
+  #pb{position:absolute;border-radius:50%;background:#000;z-index:3;pointer-events:none;opacity:0;}
+  #pb.expand{opacity:1;border-radius:50%;transition:transform .8s cubic-bezier(.55,0,.85,.55);transform:scale(80);}
+  #pl-wrap{position:absolute;z-index:5;pointer-events:none;text-align:center;}
+  #pl{font-family:'Space Grotesk',sans-serif;font-size:clamp(13px,2.2vmin,20px);font-weight:600;color:#efd080;letter-spacing:.1em;line-height:1.75;text-shadow:0 0 18px rgba(235,185,55,1),0 0 40px rgba(210,130,15,.8);animation:plp 2.2s ease-in-out infinite;user-select:none;}
+  @keyframes plp{0%,100%{opacity:.8;text-shadow:0 0 14px rgba(225,175,45,.9),0 0 32px rgba(205,125,12,.6)}50%{opacity:1;text-shadow:0 0 26px rgba(255,215,75,1),0 0 55px rgba(235,150,28,1)}}
+  #pl-wrap.hide{opacity:0;transition:opacity .1s;}
+  #po.bye{opacity:0;transition:opacity .3s ease .65s;pointer-events:none;}
+  #pf{position:absolute;inset:0;z-index:6;pointer-events:none;opacity:0;}
+  #pf.flash{animation:fb .5s ease-out forwards;}
+  @keyframes fb{0%{opacity:0;transform:scale(.5)}20%{opacity:1;transform:scale(1)}100%{opacity:0;transform:scale(1.8)}}
 </style>
-
 <script>
 (function(){
   const ov=document.getElementById('po');
@@ -1146,170 +1104,170 @@
   const lw=document.getElementById('pl-wrap');
   const ctx=cv.getContext('2d');
   let W,H,CX,CY,R;
+  let vigCache=null; // cached vignette ImageData
 
   function resize(){
-    W=cv.width=window.innerWidth; H=cv.height=window.innerHeight;
+    W=cv.width=window.innerWidth;
+    H=cv.height=window.innerHeight;
     CX=W/2; CY=H/2;
-    R=Math.min(W,H)*0.28;
-    // size black expander to cover portal hole
+    R=Math.min(W,H)*.28;
     const d=Math.round(R*1.82)+'px';
     pb.style.width=d; pb.style.height=d;
     pb.style.left=Math.round(CX-R*.91)+'px';
-    pb.style.top =Math.round(CY-R*.91)+'px';
+    pb.style.top=Math.round(CY-R*.91)+'px';
+    vigCache=null; // invalidate on resize
   }
   resize();
   window.addEventListener('resize',resize);
 
-  /* ── Sparks: all orbit clockwise, stay near the ring ── */
-  const N=110;
-  const pool=[];
-
-  function makeSpark(randomLife){
-    const angle=Math.random()*Math.PI*2;
-    // orbital speed varies slightly for organic feel — all clockwise (positive)
-    const spd=0.016+Math.random()*0.018;
-    // small radial offset from ring
-    const rOff=(Math.random()-.5)*12;
-    return {
-      angle,
-      rOff,
-      dRoff:(Math.random()-.5)*.004, // gentle radial drift
-      spd,
-      life: randomLife ? Math.random() : .7+Math.random()*.3,
-      decay:.009+Math.random()*.013,
-      size:1.6+Math.random()*2.6,
-      hue:24+Math.random()*22,
-      lit:68+Math.random()*28,
-      // trail stored as past angles
-      hist:[],
-      histLen:6+Math.floor(Math.random()*9)
-    };
+  /* pre-render vignette once per size */
+  function getVig(){
+    if(vigCache) return vigCache;
+    const oc=document.createElement('canvas');
+    oc.width=W; oc.height=H;
+    const ox=oc.getContext('2d');
+    const g=ox.createRadialGradient(CX,CY,R*.4,CX,CY,Math.max(W,H)*.9);
+    g.addColorStop(0,'rgba(10,5,1,0)');
+    g.addColorStop(1,'rgba(0,0,0,.78)');
+    ox.fillStyle=g; ox.fillRect(0,0,W,H);
+    vigCache=oc;
+    return oc;
   }
 
-  for(let i=0;i<N;i++) pool.push(makeSpark(true));
+  /* ── Spark: orbits clockwise, one stroke() per spark ── */
+  const N=65;
+  const pool=[];
+  function mk(rand){
+    const a=Math.random()*Math.PI*2;
+    return{
+      a,                                    // current angle
+      rOff:(Math.random()-.5)*10,           // radial offset from ring
+      dR:(Math.random()-.5)*.003,
+      spd:.017+Math.random()*.019,          // all positive = clockwise
+      life:rand?Math.random():.65+Math.random()*.35,
+      dec:.01+Math.random()*.014,
+      sz:1.8+Math.random()*2.4,
+      hue:24+Math.random()*22,
+      lit:70+Math.random()*26,
+      // trail: ring-buffer of last 5 [x,y]
+      tx:new Float32Array(5), ty:new Float32Array(5), ti:0, tc:0
+    };
+  }
+  for(let i=0;i<N;i++) pool.push(mk(true));
 
-  /* ── Burst sparks fired outward on ring ── */
+  /* burst sparks: shoot outward, single line per spark */
   const bursts=[];
   function addBurst(){
     const a=Math.random()*Math.PI*2;
-    const spd=1.8+Math.random()*3.8;
+    const sp=2+Math.random()*3.5;
     bursts.push({
-      x:CX+Math.cos(a)*(R+(Math.random()-.5)*8),
-      y:CY+Math.sin(a)*(R+(Math.random()-.5)*8),
-      vx:Math.cos(a)*spd, vy:Math.sin(a)*spd,
-      life:1, decay:.022+Math.random()*.024,
-      size:1.2+Math.random()*2,
-      hue:28+Math.random()*16,
-      tx:[],ty:[],tlen:4+Math.floor(Math.random()*6)
+      x:CX+Math.cos(a)*R, y:CY+Math.sin(a)*R,
+      px:CX+Math.cos(a)*R, py:CY+Math.sin(a)*R,
+      vx:Math.cos(a)*sp, vy:Math.sin(a)*sp,
+      life:1, dec:.028+Math.random()*.025,
+      sz:1.2+Math.random()*1.8, hue:26+Math.random()*16
     });
   }
 
-  let frame=0, rafId;
+  /* draw glow ring once per frame with one shadowBlur pass */
+  function drawRing(){
+    ctx.save();
+    ctx.shadowColor='rgba(220,150,25,1)';
+    ctx.shadowBlur=30;
+    ctx.beginPath(); ctx.arc(CX,CY,R,0,Math.PI*2);
+    ctx.strokeStyle='rgba(210,145,22,.65)';
+    ctx.lineWidth=5; ctx.stroke();
+    ctx.restore();
+  }
 
+  let frame=0, rafId;
   function loop(){
     rafId=requestAnimationFrame(loop);
     frame++;
-    ctx.clearRect(0,0,W,H);
 
-    // vignette
-    const vg=ctx.createRadialGradient(CX,CY,R*.4,CX,CY,Math.max(W,H)*.9);
-    vg.addColorStop(0,'rgba(10,5,1,0)');
-    vg.addColorStop(1,'rgba(0,0,0,.78)');
-    ctx.fillStyle=vg; ctx.fillRect(0,0,W,H);
+    /* draw cached vignette */
+    ctx.drawImage(getVig(),0,0);
 
-    // glow ring (single shadowBlur pass — cheap)
-    ctx.save();
-    ctx.shadowColor='rgba(225,155,28,1)';
-    ctx.shadowBlur=32;
-    ctx.beginPath(); ctx.arc(CX,CY,R,0,Math.PI*2);
-    ctx.strokeStyle='rgba(210,145,22,.6)';
-    ctx.lineWidth=5; ctx.stroke();
-    ctx.shadowBlur=10;
-    ctx.strokeStyle='rgba(245,200,65,.3)';
-    ctx.lineWidth=2; ctx.stroke();
-    ctx.restore();
+    drawRing();
 
-    ctx.lineCap='round'; ctx.lineJoin='round';
+    ctx.lineCap='round';
 
-    // orbit sparks
+    /* orbit sparks — ONE stroke() per spark */
     for(const s of pool){
-      s.angle+=s.spd;
-      s.rOff +=s.dRoff;
-      if(Math.abs(s.rOff)>10) s.dRoff*=-1;
-      s.life -=s.decay;
-      if(s.life<=0){ Object.assign(s,makeSpark(false)); continue; }
+      s.a+=s.spd;
+      s.rOff+=s.dR;
+      if(Math.abs(s.rOff)>9) s.dR*=-1;
+      s.life-=s.dec;
+      if(s.life<=0){ Object.assign(s,mk(false)); continue; }
 
       const r=R+s.rOff;
-      const x=CX+Math.cos(s.angle)*r;
-      const y=CY+Math.sin(s.angle)*r;
-      s.hist.push([x,y]);
-      if(s.hist.length>s.histLen) s.hist.shift();
+      const nx=CX+Math.cos(s.a)*r;
+      const ny=CY+Math.sin(s.a)*r;
 
-      const h=s.hist;
-      const hl=h.length;
-      if(hl<2) continue;
+      /* store in ring buffer */
+      const i=s.ti%5;
+      s.tx[i]=nx; s.ty[i]=ny;
+      s.ti++; if(s.tc<5) s.tc++;
 
-      // draw tapered trail
-      for(let i=1;i<hl;i++){
-        const t=i/hl;
-        ctx.beginPath();
-        ctx.moveTo(h[i-1][0],h[i-1][1]);
-        ctx.lineTo(h[i][0],  h[i][1]);
-        ctx.strokeStyle=`hsla(${s.hue},100%,${s.lit}%,${t*s.life*.95})`;
-        ctx.lineWidth=s.size*t*.9;
-        ctx.stroke();
-      }
-      // bright head
+      /* build single gradient path from oldest to newest point */
+      const len=s.tc;
+      if(len<2) continue;
+      const start=(s.ti-len+5)%5; // oldest index
+
       ctx.beginPath();
-      ctx.arc(x,y,s.size*.7,0,Math.PI*2);
-      ctx.fillStyle=`hsla(48,100%,94%,${s.life*.95})`;
+      ctx.moveTo(s.tx[start], s.ty[start]);
+      for(let j=1;j<len;j++){
+        const idx=(start+j)%5;
+        ctx.lineTo(s.tx[idx],s.ty[idx]);
+      }
+      ctx.strokeStyle=`hsla(${s.hue},100%,${s.lit}%,${s.life*.9})`;
+      ctx.lineWidth=s.sz*.8;
+      ctx.stroke(); // ONE call per spark
+
+      /* bright head dot */
+      ctx.beginPath();
+      ctx.arc(nx,ny,s.sz*.65,0,Math.PI*2);
+      ctx.fillStyle=`hsla(48,100%,95%,${s.life*.92})`;
       ctx.fill();
     }
 
-    // burst sparks
-    if(frame%12===0) addBurst();
+    /* burst sparks — two points, one stroke each */
+    if(frame%14===0) addBurst();
     for(let i=bursts.length-1;i>=0;i--){
       const b=bursts[i];
-      b.tx.push(b.x); b.ty.push(b.y);
-      if(b.tx.length>b.tlen){b.tx.shift();b.ty.shift();}
+      b.px=b.x; b.py=b.y;
       b.vx*=.91; b.vy*=.91;
       b.x+=b.vx; b.y+=b.vy;
-      b.life-=b.decay;
+      b.life-=b.dec;
       if(b.life<=0){bursts.splice(i,1);continue;}
-      const bl=b.tx.length;
-      for(let j=1;j<bl;j++){
-        const t=j/bl;
-        ctx.beginPath();
-        ctx.moveTo(b.tx[j-1],b.ty[j-1]);
-        ctx.lineTo(b.tx[j],  b.ty[j]);
-        ctx.strokeStyle=`hsla(${b.hue},100%,76%,${t*b.life*.85})`;
-        ctx.lineWidth=b.size*t*b.life;
-        ctx.stroke();
-      }
       ctx.beginPath();
-      ctx.arc(b.x,b.y,b.size*b.life*.7,0,Math.PI*2);
-      ctx.fillStyle=`hsla(42,100%,92%,${b.life*.9})`;
+      ctx.moveTo(b.px,b.py); ctx.lineTo(b.x,b.y);
+      ctx.strokeStyle=`hsla(${b.hue},100%,78%,${b.life*.8})`;
+      ctx.lineWidth=b.sz*b.life;
+      ctx.stroke();
+      ctx.beginPath();
+      ctx.arc(b.x,b.y,b.sz*b.life*.6,0,Math.PI*2);
+      ctx.fillStyle=`hsla(44,100%,93%,${b.life*.85})`;
       ctx.fill();
     }
 
-    // stamp black center
-    ctx.beginPath(); ctx.arc(CX,CY,R-7,0,Math.PI*2);
+    /* stamp black center */
+    ctx.beginPath(); ctx.arc(CX,CY,R-6,0,Math.PI*2);
     ctx.fillStyle='#000'; ctx.fill();
   }
 
-  // add flash element
+  /* flash element */
   const pf=document.createElement('div');
-  pf.id='pf'; ov.appendChild(pf);
+  pf.id='pf';
+  pf.style.background='radial-gradient(circle at 50% 50%,rgba(255,210,80,.9) 0%,rgba(200,120,10,.4) 40%,transparent 70%)';
+  ov.appendChild(pf);
 
   ov.addEventListener('click',()=>{
     cancelAnimationFrame(rafId);
     lw.classList.add('hide');
-    // 1: golden flash
     pf.classList.add('flash');
-    // 2: after flash peaks, expand black fill
-    setTimeout(()=>{ pb.classList.add('expand'); },120);
-    // 3: fade overlay after black covers screen
-    setTimeout(()=>{ ov.classList.add('bye'); },400);
+    setTimeout(()=>pb.classList.add('expand'),110);
+    setTimeout(()=>ov.classList.add('bye'),380);
     setTimeout(()=>ov.remove(),1050);
   },{once:true});
 
